@@ -299,6 +299,16 @@ section {
     white-space: nowrap;
 }
 
+#events {
+    background-color: rgba(0, 0, 0, 0.5); /* ← 50% melns caurspīdīgs */
+    padding: 40px 25px;
+    border-radius: 16px;
+    margin: 40px auto;
+    max-width: 1000px;
+    color: white;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
 /* Media Queries for Mobile Optimization */
 @media (max-width: 768px) {
     .buttons {
