@@ -272,7 +272,7 @@ section {
     color: white;
     padding: 15px 25px;
     border-radius: 12px;
-    font-size: 1.3rem;
+    font-size: 16px;
     font-weight: 500;
     animation: update 3s infinite;
     text-align: center;
@@ -400,3 +400,4 @@ section {
         padding: 10px;
     }
 }
+
