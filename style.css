@@ -343,10 +343,14 @@ section {
     background-color: #111;
 }
 
-#jaunumi img {
+/* desktop defaults */
+#jaunumi .news-img {
   display: block;
   margin: 16px auto;
+  max-width: 500px;
+  height: auto;
 }
+
 
 #jaunumi .whatsapp2 {
   display: inline-block;
@@ -408,12 +412,12 @@ section {
 
 @media (max-width: 768px) {
   #jaunumi img {
-    max-width: 60%;   /* bilde aizņem tikai 60% no ekrāna platuma */
+    max-width: 60%;
     margin: 16px auto;
-    height: auto;
     display: block;
+    height: auto;
   }
-
+}
   #jaunumi .whatsapp2 {
     margin: 20px auto 0;
     font-size: 0.9rem;
@@ -444,4 +448,8 @@ section {
     }
 }
 
-
+@media (max-width: 768px) {
+  #jaunumi .news-img {
+    max-width: 60%;
+  }
+}
