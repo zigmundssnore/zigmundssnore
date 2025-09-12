@@ -200,7 +200,7 @@ section {
 .button:hover {
     opacity: 0.6;
 }
-
+.button.whatsapp2 { background: #BBBBBB; }
 .button.whatsapp { background: #25D366; }
 .button.facebook { background: #1877F2; }
 .button.sms { background: #db833b; }
@@ -341,6 +341,32 @@ section {
     padding: 20px;
     text-align: center;
     background-color: #111;
+}
+
+#jaunumi img {
+  display: block;
+  margin: 16px auto;
+}
+
+#jaunumi .whatsapp2 {
+  display: inline-block;
+  margin: 20px auto 0;
+  padding: 10px 20px;
+  border-radius: 8px;
+  background: #25d366; /* WhatsApp zaļais */
+  color: white;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+#jaunumi .whatsapp2:hover {
+  background: #1ebe5d;
+}
+
+#jaunumi .container {
+  text-align: center; /* centrē visu saturu šajā sekcijā */
 }
 
 
