@@ -406,6 +406,23 @@ section {
     }
 }
 
+@media (max-width: 768px) {
+  #jaunumi img {
+    max-width: 60%;   /* bilde aizņem tikai 60% no ekrāna platuma */
+    margin: 16px auto;
+    height: auto;
+    display: block;
+  }
+
+  #jaunumi .whatsapp2 {
+    margin: 20px auto 0;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    display: inline-block;
+  }
+}
+
+
 @media (min-width: 769px) {
     .gallery-container {
         grid-template-columns: repeat(4, 1fr);
