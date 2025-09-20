@@ -44,6 +44,27 @@
       <img src="plakaats.jpg" alt="Jaunākā izstāde Jūrmalā" class="news-img">
 
       <a href="https://wa.me/37122811564" class="button whatsapp2">Saziņai</a>
+
+      <!-- Newsletter form -->
+      <form id="subForm" style="max-width:480px;margin:20px 0;">
+        <label for="email" style="display:block;margin-bottom:6px;">Pieraksties jaunumiem</label>
+        <input id="email" name="email" type="email" required placeholder="tavs@epasts.lv"
+               style="width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;">
+
+        <!-- honeypot pret botu -->
+        <input type="text" name="website" style="display:none">
+
+        <label style="display:block;margin:10px 0;">
+          <input type="checkbox" id="gdpr" required>
+          Piekrītu saņemt jaunumu e-pastus (GDPR).
+        </label>
+
+        <button type="submit" style="padding:10px 16px;border:0;border-radius:8px;cursor:pointer;">
+          Pierakstīties
+        </button>
+
+        <p id="msg" style="margin-top:8px;"></p>
+      </form>
     </div>
   </section>
 
