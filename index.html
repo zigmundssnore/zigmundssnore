@@ -515,6 +515,46 @@
     <span class="whatsapp-text">Sazinies ar mums!</span>
 </a>
 
+    <!-- Newsletter JS (ieliec pirms </body>) -->
+<script>
+  // PRECĪZAIS /exec URL no "Web app URL (Copy)" — bez /u/1 !
+  const ENDPOINT = 'https://script.google.com/macros/s/AKfycbw3XfENtzU0OxUBWgyyyLuVay0ru9iu2aUXhnWnqLqbTv0-Yi1VPXSlIhglZh32YrAt/exec';
 
+  document.getElementById('subForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value.trim();
+    const gdpr = document.getElementById('gdpr').checked;
+    const honeypot = form.website.value; // ja bots aizpilda, mēs ignorējam
+    const msg = document.getElementById('msg');
+
+    if (honeypot) return;
+    if (!gdpr) { msg.textContent = 'Nepieciešama piekrišana (GDPR).'; return; }
+
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      // Dažreiz Apps Script atdod redirect/tekstu — mēģinam nolasīt droši
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); } catch { data = { ok: true, _raw: text }; }
+
+      msg.textContent = data.ok
+        ? 'Paldies! E-pasts pievienots.'
+        : (data.error || 'Kļūda. Pamēģini vēlreiz.');
+
+      if (data.ok) form.reset();
+    } catch (err) {
+      msg.textContent = 'Tīkla/CORS kļūda (pārbaudi Console).';
+    }
+  });
+</script>
+
+    
 </body>
 </html>
+
