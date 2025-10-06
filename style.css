@@ -206,6 +206,7 @@ section {
 .button.facebook2 { background: #1877F2; }
 .button.sms { background: #db833b; }
 .button.instagram { background: linear-gradient(to right, #E1306C, #515BD4); }
+.button.youtube { background: #FF0000; }
 
 .button-link {
     display: block;
@@ -471,3 +472,4 @@ section {
     max-width: 60%;
   }
 }
+
