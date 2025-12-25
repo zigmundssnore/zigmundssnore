@@ -297,7 +297,7 @@ section {
 
 .whatsapp-float {
     position: fixed;
-    bottom: 20px;
+    bottom: 50px;
     left: 20px;
     display: flex;
     align-items: center;
@@ -472,4 +472,5 @@ section {
     max-width: 60%;
   }
 }
+
 
