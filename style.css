@@ -184,16 +184,12 @@ section {
    BEFORE / AFTER SLIDER
 ========================= */
 .slider-wrapper {
-    min-height: 100vh;
     max-width: 720px;
     width: 100%;
-    margin: 0 auto;
+    margin: 30px auto;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
 }
-
 .compare {
     position: relative;
     width: 100%;
@@ -511,6 +507,7 @@ section {
     max-width: 60%;
   }
 }
+
 
 
 
