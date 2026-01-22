@@ -180,6 +180,9 @@ section {
     cursor: pointer;
 }
 
+/* =========================
+   BEFORE / AFTER SLIDER
+========================= */
 .slider-wrapper {
     min-height: 100vh;
     max-width: 720px;
@@ -214,6 +217,7 @@ section {
     width: 100%;
     margin-top: 15px;
 }
+
 
 /* Buttons */
 .buttons {
@@ -507,6 +511,7 @@ section {
     max-width: 60%;
   }
 }
+
 
 
 
