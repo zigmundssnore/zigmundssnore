@@ -324,7 +324,7 @@ section {
     animation: update 3s infinite;
     text-align: center;
     display: block;
-    margin-bottom: 60px;
+    margin-bottom: 100px;
 }
 
 
@@ -517,6 +517,7 @@ section {
     max-width: 60%;
   }
 }
+
 
 
 
