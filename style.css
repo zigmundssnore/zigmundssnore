@@ -180,6 +180,41 @@ section {
     cursor: pointer;
 }
 
+.slider-wrapper {
+    min-height: 100vh;
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.compare {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+}
+
+.compare img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.compare .after {
+    clip-path: inset(0 50% 0 0);
+}
+
+#slider {
+    width: 100%;
+    margin-top: 15px;
+}
+
 /* Buttons */
 .buttons {
     display: flex;
@@ -472,5 +507,6 @@ section {
     max-width: 60%;
   }
 }
+
 
 
