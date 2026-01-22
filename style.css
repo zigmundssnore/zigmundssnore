@@ -46,6 +46,10 @@ section {
     text-align: center;
 }
 
+.last-text {
+    margin-bottom: 25px;
+}
+
 /* Image Section Above Gallery */
 #before-gallery {
     display: flex;
@@ -507,6 +511,7 @@ section {
     max-width: 60%;
   }
 }
+
 
 
 
