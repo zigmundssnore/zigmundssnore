@@ -218,6 +218,12 @@ section {
     margin-top: 15px;
 }
 
+@media (max-width: 768px) {
+    .slider-wrapper {
+        max-width: 95%;
+        margin: 20px auto;
+    }
+}
 
 /* Buttons */
 .buttons {
@@ -511,6 +517,7 @@ section {
     max-width: 60%;
   }
 }
+
 
 
 
