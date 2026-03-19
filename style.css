@@ -705,3 +705,43 @@ section {
     }
 }
  
+/* ── Lightbox nav bultiņas ── */
+.lightbox-prev,
+.lightbox-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    color: white;
+    font-size: 2.2rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.2s;
+    user-select: none;
+    line-height: 1;
+    padding: 0;
+}
+ 
+.lightbox-prev { left: 20px; }
+.lightbox-next { right: 20px; }
+ 
+.lightbox-prev:hover,
+.lightbox-next:hover {
+    background: var(--glass-bg-heavy);
+    transform: translateY(-50%) scale(1.1);
+}
+ 
+/* Uz mobilā paslēpj bultiņas — swipe pietiek */
+@media (max-width: 768px) {
+    .lightbox-prev,
+    .lightbox-next { display: none; }
+}
+ 
