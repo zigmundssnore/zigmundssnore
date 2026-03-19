@@ -20,8 +20,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="nav-overlay" id="navOverlay"></div>
     <header>
-        <nav>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <nav id="mainNav">
             <ul>
                 <li><a href="#jaunumi">Jaunumi</a></li>
                 <li><a href="#par-makslinieku">Par mākslinieku</a></li>
@@ -33,7 +37,7 @@
  
  
 <main>
-<section id="jaunumi" class="page-section">
+<section id="jaunumi" class="page-section reveal">
   <div class="container">
  
     <h2>Jaunumi</h2>
@@ -88,7 +92,7 @@
 </main>
  
  
-        <section id="par-makslinieku" class="page-section">
+        <section id="par-makslinieku" class="page-section reveal">
             <div class="glass-card">
                 <h2>Zigmunds Šnore</h2>
                 <p><strong>Zigmunds Šnore</strong> dzimis <strong>1942.</strong> gada 3. novembrī</p>
@@ -103,7 +107,7 @@
             </div>
         </section>
  
-     <section id="before-gallery" class="page-section">
+     <section id="before-gallery" class="page-section reveal">
  
         <!-- Image 1 on the left side -->
         <div class="image-left">
@@ -116,7 +120,7 @@
         </div>
      </section>
         <!-- Kontakti section -->
-        <section id="kontakti" class="page-section">
+        <section id="kontakti" class="page-section reveal">
             <h1>Kontakti</h1>
             <div class="buttons">
                 <a href="https://wa.me/37122811564" class="button whatsapp">WhatsApp</a>
@@ -881,4 +885,3 @@
     -->
 </body>
 </html>
- 
