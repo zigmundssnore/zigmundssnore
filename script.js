@@ -1,5 +1,36 @@
 document.addEventListener('DOMContentLoaded', () => {
  
+ 
+    // =========================
+    // Gallery numuri + WhatsApp poga
+    // =========================
+    const waNumber = '37122811564';
+    document.querySelectorAll('.gallery-container .gallery-item').forEach((item, i) => {
+        const num = i + 1;
+        const info = item.querySelector('.image-info');
+        if (!info) return;
+ 
+        // Pievieno numuru
+        const numEl = document.createElement('p');
+        numEl.className = 'gallery-number';
+        numEl.textContent = 'Nr. ' + num;
+        info.insertBefore(numEl, info.firstChild);
+ 
+        // Pievieno WA pogu
+        const msg = encodeURIComponent('Sveiki! Man ir interese par gleznu Nr.' + num + '. Vēlos noskaidrot kāda būtu cena un kā es to varētu iegādāties.');
+        const btn = document.createElement('a');
+        btn.className = 'btn-inquire';
+        btn.href = 'https://wa.me/' + waNumber + '?text=' + msg;
+        btn.target = '_blank';
+        btn.rel = 'noopener';
+        btn.textContent = 'Uzzināt vairāk';
+ 
+        // Aptur lightbox atvēršanu kad spiež pogu
+        btn.addEventListener('click', (e) => e.stopPropagation());
+ 
+        info.appendChild(btn);
+    });
+ 
     // =========================
     // Smooth scroll
     // =========================
