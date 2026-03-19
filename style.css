@@ -1,206 +1,351 @@
-/* General Styles */
+/* ============================================================
+   LIQUID GLASS — zigmundssnore.lv
+   iPhone-style glassmorphism, production-grade
+   ============================================================ */
+ 
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+ 
+/* ── CSS Variables ── */
+:root {
+    --glass-bg:        rgba(255, 255, 255, 0.10);
+    --glass-bg-heavy:  rgba(255, 255, 255, 0.15);
+    --glass-border:    rgba(255, 255, 255, 0.25);
+    --glass-border-top:rgba(255, 255, 255, 0.45);
+    --glass-blur:      blur(24px) saturate(180%);
+    --glass-blur-heavy:blur(40px) saturate(200%);
+    --glass-shadow:    0 8px 32px rgba(0, 0, 0, 0.35),
+                       0 2px 8px  rgba(0, 0, 0, 0.20),
+                       inset 0 1px 0 rgba(255,255,255,0.40);
+    --glass-shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.25),
+                       inset 0 1px 0 rgba(255,255,255,0.35);
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm:  8px;
+    --text:       #ffffff;
+    --text-dim:   rgba(255,255,255,0.70);
+    --accent:     rgba(255,255,255,0.90);
+}
+ 
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; }
+ 
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background-image: url('background.jpg'); /* Replace with your image file */
+    font-family: 'DM Sans', sans-serif;
+    background-image: url('background.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: fixed;
-    color: #fff;
-    line-height: 1.6;
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100vh;
 }
-
+ 
+/* subtle dark veil so glass pops */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.38);
+    pointer-events: none;
+    z-index: 0;
+}
+ 
+main, section, header, footer { position: relative; z-index: 1; }
+ 
+/* ── Typography ── */
+h1, h2, h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    margin-top: 0;
+}
+ 
+h1 { font-size: clamp(2rem, 5vw, 3.2rem); }
+h2 { font-size: clamp(1.6rem, 4vw, 2.6rem); margin-bottom: 0.6em; }
+h3 { font-size: clamp(1.2rem, 3vw, 1.8rem); margin-bottom: 0.5em; }
+ 
+p { font-size: 1rem; color: var(--text-dim); margin: 0.35em 0; }
+p strong { color: var(--text); font-weight: 500; }
+ 
+/* ── Liquid Glass Mixin (utility class) ── */
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-top-color: var(--glass-border-top);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius-lg);
+}
+ 
+/* ── Header / Nav ── */
 header {
-    background: #333;
-    padding: 10px 20px;
+    background: rgba(20, 20, 20, 0.30);
+    backdrop-filter: var(--glass-blur-heavy);
+    -webkit-backdrop-filter: var(--glass-blur-heavy);
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: 0 1px 0 var(--glass-border-top),
+                0 8px 24px rgba(0,0,0,0.3);
+    padding: 0 20px;
     position: sticky;
     top: 0;
     z-index: 1000;
+    height: 60px;
+    display: flex;
+    align-items: center;
 }
-
+ 
 header nav ul {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
     justify-content: center;
+    width: 100%;
+    gap: 8px;
 }
-
-header nav ul li {
-    margin: 0 15px;
-}
-
+ 
 header nav ul li a {
+    color: var(--text);
+    text-decoration: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    padding: 7px 16px;
+    border-radius: 30px;
+    transition: background 0.25s, color 0.25s;
+    display: block;
+}
+ 
+header nav ul li a:hover {
+    background: var(--glass-bg-heavy);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
     color: #fff;
     text-decoration: none;
-    font-size: 1.2rem;
 }
-
-header nav ul li a:hover {
-    text-decoration: underline;
-}
-
+ 
+/* ── Page Sections ── */
 section {
-    padding: 20px;
+    padding: 60px 20px;
     text-align: center;
 }
-
-.last-text {
-    margin-bottom: 25px;
+ 
+/* ── Jaunumi section ── */
+#jaunumi {
+    padding: 60px 20px;
 }
-
-/* Image Section Above Gallery */
+ 
+#jaunumi .container {
+    max-width: 780px;
+    margin: 0 auto;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-top-color: var(--glass-border-top);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius-lg);
+    padding: 40px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+ 
+/* specular top-edge highlight */
+#jaunumi .container::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
+}
+ 
+#jaunumi .muted p { color: var(--text-dim); }
+ 
+.news-img {
+    display: block;
+    margin: 24px auto;
+    max-width: 480px;
+    width: 90%;
+    height: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+ 
+.last-text { margin-bottom: 28px; }
+ 
+/* ── Par mākslinieku ── */
+#par-makslinieku {
+    padding: 60px 20px;
+}
+ 
+#par-makslinieku > * {
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+}
+ 
+/* Glass card wrapping the bio content */
+#par-makslinieku {
+    position: relative;
+}
+ 
+#par-makslinieku .glass-card {
+    max-width: 720px;
+    margin: 0 auto;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-top-color: var(--glass-border-top);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius-lg);
+    padding: 40px 48px;
+    position: relative;
+    overflow: hidden;
+}
+ 
+#par-makslinieku .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.55), transparent);
+}
+ 
+/* ── Before-Gallery (vectēva foto) ── */
 #before-gallery {
     display: flex;
     justify-content: center;
     gap: 35px;
     align-items: center;
-    margin: 20px 20px;
-    text-align: center;
-}
-
-.image-left {
-    width: 100%;
-    max-width: 600px;
-}
-
-.image-right {
-    width: 100%;
-    max-width: 600px;
-}
-
-/* Gallery Items */
-.gallery-item {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: 20px;
-}
-
-.gallery-item img {
-    width: 80%;
-    border: 2px solid transparent;
-    border-radius: 5px;
-    transition: transform 0.3s;
-    cursor: pointer;
-}
-
-.gallery-item0 img {
-    width: 70%;
-    border: 2px solid transparent;
-    border-radius: 5px;
-    transition: transform 0.3s;
-    cursor: pointer;
-}
-
-.gallery-item img:hover {
-    transform: scale(1);
-}
-
-.image-info {
-    margin: 5px auto;
-    text-align: center;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    width: 80%;
-    font-size: 0.9rem;
-}
-
-.image-name {
-    font-size: 1.2rem;
-    font-weight: bold;
-}
-
-.image-size {
-    font-size: 1rem;
-    margin-top: 5px;
-}
-
-/* Gallery Section */
-#gallery {
     padding: 20px;
     text-align: center;
-    background-color: #111;
 }
-
-#gallery h2 {
-    color: white;
-    margin-bottom: 40px;
-    font-size: 2rem;
+ 
+.image-left  { width: 100%; max-width: 500px; }
+.image-right { width: 100%; max-width: 500px; }
+ 
+.zigis-image {
+    width: 80%;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
 }
-
-.gallery-container {
-    display: grid;
-    gap: 20px;
-    justify-items: center;
-    align-items: center;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+ 
+/* ── Kontakti ── */
+#kontakti {
+    padding: 70px 20px;
 }
-
-.gallery-container img {
-    width: 100%;
-    max-width: 421px;
-    border: 2px solid black;
-    border-radius: 5px;
-    transition: transform 0.3s;
-    cursor: pointer;
+ 
+#kontakti h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 32px;
 }
-
-.gallery-container img:hover {
-    transform: scale(1.1);
-    border-color: white;
-}
-
-/* Lightbox styles */
-.lightbox {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
+ 
+/* ── Buttons ── */
+.buttons {
+    display: flex;
     justify-content: center;
-    align-items: center;
-    z-index: 1001;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
 }
-
-.lightbox img {
-    max-width: 90%;
-    max-height: 90%;
-    border: 2px solid white;
-    border-radius: 5px;
+ 
+.button {
+    position: relative;
+    padding: 11px 22px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #fff;
+    letter-spacing: 0.03em;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.30);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.30),
+                inset 0 1px 0 rgba(255,255,255,0.40);
 }
-
-.lightbox .close {
+ 
+/* specular pill highlight */
+.button::before {
+    content: '';
     position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 3rem;
-    color: white;
-    cursor: pointer;
+    top: 0; left: 12%; right: 12%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.7), transparent);
 }
-
-/* =========================
-   BEFORE / AFTER SLIDER
-========================= */
+ 
+.button:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.40),
+                inset 0 1px 0 rgba(255,255,255,0.50);
+    opacity: 1;
+}
+ 
+.button:active { transform: scale(0.97); }
+ 
+.button.whatsapp  { background: rgba(37,  211, 102, 0.70); }
+.button.whatsapp2 { background: rgba(187, 187, 187, 0.50); }
+.button.facebook  { background: rgba(24,  119, 242, 0.70); }
+.button.facebook2 { background: rgba(24,  119, 242, 0.70); }
+.button.sms       { background: rgba(219, 131,  59, 0.70); }
+.button.instagram { background: linear-gradient(135deg, rgba(225,48,108,0.75), rgba(81,91,212,0.75)); }
+.button.youtube   { background: rgba(255,   0,   0, 0.70); }
+ 
+.button-link {
+    display: inline-block;
+    background: rgba(26, 188, 156, 0.65);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: white;
+    padding: 13px 28px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    border: 1px solid rgba(255,255,255,0.30);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.30),
+                inset 0 1px 0 rgba(255,255,255,0.40);
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin: 20px auto;
+}
+ 
+.button-link:hover {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.35);
+}
+ 
+/* ── Before/After Slider ── */
 .slider-wrapper {
-    max-width: 720px;
+    max-width: 680px;
     width: 100%;
     margin: 30px auto;
     display: flex;
     flex-direction: column;
+    gap: 14px;
 }
+ 
 .compare {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
     overflow: hidden;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
 }
-
+ 
 .compare img {
     position: absolute;
     inset: 0;
@@ -208,138 +353,190 @@ section {
     height: 100%;
     object-fit: cover;
 }
-
+ 
 .compare .after {
     clip-path: inset(0 50% 0 0);
 }
-
+ 
 #slider {
     width: 100%;
-    margin-top: 15px;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--glass-bg-heavy);
+    border: 1px solid var(--glass-border);
+    border-radius: 30px;
+    outline: none;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
 }
-
-@media (max-width: 768px) {
-    .slider-wrapper {
-        max-width: 95%;
-        margin: 20px auto;
-    }
+ 
+#slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.85);
+    border: 1px solid rgba(255,255,255,0.5);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.8);
+    cursor: grab;
+    transition: transform 0.15s;
 }
-
-/* Buttons */
-.buttons {
-    display: flex;
+ 
+#slider::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.15); }
+ 
+/* ── Gallery Section ── */
+#gallery {
+    padding: 60px 20px 80px;
+    background: rgba(0,0,0,0.25);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+ 
+#gallery h2 {
+    color: white;
+    margin-bottom: 44px;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+}
+ 
+.gallery-container {
+    display: grid;
+    gap: 18px;
+    justify-items: center;
+    align-items: start;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    max-width: 1400px;
+    margin: 0 auto;
+}
+ 
+/* ── Gallery Item (liquid glass card) ── */
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    border-radius: var(--radius-md);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-top-color: var(--glass-border-top);
+    box-shadow: var(--glass-shadow-sm);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+ 
+.gallery-item::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 8%; right: 8%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.55), transparent);
+    z-index: 2;
+    pointer-events: none;
+}
+ 
+.gallery-item:hover {
+    transform: translateY(-4px) scale(1.015);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.45),
+                inset 0 1px 0 rgba(255,255,255,0.45);
+}
+ 
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    border: none;
+    transition: transform 0.4s;
+}
+ 
+.gallery-item:hover img { transform: scale(1.04); }
+ 
+.gallery-container img {
+    width: 100%;
+    max-width: 100%;
+    border: none;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    transition: transform 0.4s;
+    cursor: pointer;
+}
+ 
+.image-info {
+    padding: 10px 14px 12px;
+    text-align: center;
+}
+ 
+.image-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--text-dim);
+    margin: 0;
+    letter-spacing: 0.04em;
+}
+ 
+.image-size {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.45);
+    margin-top: 3px;
+}
+ 
+/* ── Lightbox ── */
+.lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
     justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
+    align-items: center;
+    z-index: 1001;
 }
-
-.button {
-    padding: 10px 15px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: bold;
+ 
+.lightbox img {
+    max-width: 88%;
+    max-height: 88%;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border-top);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.7),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+}
+ 
+.lightbox .close {
+    position: absolute;
+    top: 22px;
+    right: 26px;
+    font-size: 2.4rem;
+    color: rgba(255,255,255,0.75);
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background 0.2s, color 0.2s;
+    line-height: 1;
+}
+ 
+.lightbox .close:hover {
+    background: rgba(255,255,255,0.20);
     color: #fff;
-    transition: background 0.3s, opacity 0.3s;
 }
-
-.button:hover {
-    opacity: 0.6;
+ 
+/* ── WhatsApp Float ── */
+@keyframes glassGlow {
+    0%   { box-shadow: 0 4px 20px rgba(37,211,102,0.25), var(--glass-shadow-sm); }
+    50%  { box-shadow: 0 4px 28px rgba(37,211,102,0.55), var(--glass-shadow-sm); }
+    100% { box-shadow: 0 4px 20px rgba(37,211,102,0.25), var(--glass-shadow-sm); }
 }
-.button.whatsapp2 { background: #BBBBBB; }
-.button.whatsapp { background: #25D366; }
-.button.facebook { background: #1877F2; }
-.button.facebook2 { background: #1877F2; }
-.button.sms { background: #db833b; }
-.button.instagram { background: linear-gradient(to right, #E1306C, #515BD4); }
-.button.youtube { background: #FF0000; }
-
-.button-link {
-    display: block;
-    width: fit-content;
-    background-color: #1abc9c; /* zaļganāks, lai izceļas */
-    color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 1.1rem;
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin: 20px auto;
-}
-
-.button-link:hover {
-    background-color: #16a085;
-    transform: scale(1.05);
-}
-
-@keyframes redPulse {
-    0% {
-        background-color: #2980b9;
-        box-shadow: 0 0 0 rgba(41, 128, 185, 0.6);
-    }
-    50% {
-        background-color: #3498db;
-        box-shadow: 0 0 25px rgba(52, 152, 219, 1);
-    }
-    100% {
-        background-color: #2980b9;
-        box-shadow: 0 0 0 rgba(41, 128, 185, 0.6);
-    }
-}
-
-@keyframes update {
-    0% {
-        background-color: #2E2E2E;
-        box-shadow: 0 0 0 rgba(46, 46, 46, 0.6);
-    }
-    50% {
-        background-color: #4B4B4B;
-        box-shadow: 0 0 25px rgba(75, 75, 75, 1);
-    }
-    100% {
-        background-color: #2E2E2E;
-        box-shadow: 0 0 0 rgba(46, 46, 46, 0.6);
-    }
-}
-
-
-.alert-pulse {
-    color: white;
-    padding: 15px 25px;
-    border-radius: 12px;
-    font-size: 1.3rem;
-    font-weight: 500;
-    animation: redPulse 3s infinite;
-    text-align: center;
-    display: block;
-    margin-bottom: 20px;
-}
-
-.alert-pulse2 {
-    color: white;
-    padding: 15px 25px;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 500;
-    animation: update 3s infinite;
-    text-align: center;
-    display: block;
-    margin-bottom: 100px;
-}
-
-
-@keyframes whatsappPulse {
-    0% {
-        box-shadow: 0 0 0px rgba(37, 211, 102, 0.4);
-    }
-    50% {
-        box-shadow: 0 0 12px rgba(37, 211, 102, 0.9);
-    }
-    100% {
-        box-shadow: 0 0 0px rgba(37, 211, 102, 0.4);
-    }
-}
-
+ 
 .whatsapp-float {
     position: fixed;
     bottom: 50px;
@@ -347,182 +544,164 @@ section {
     display: flex;
     align-items: center;
     gap: 10px;
-    background-color: #25D366;
-    padding: 10px 15px;
+    background: rgba(37, 211, 102, 0.55);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid rgba(255,255,255,0.30);
+    border-top-color: rgba(255,255,255,0.50);
+    box-shadow: 0 4px 20px rgba(37,211,102,0.30),
+                inset 0 1px 0 rgba(255,255,255,0.45);
+    padding: 10px 18px;
     border-radius: 30px;
     z-index: 999;
     text-decoration: none;
-    animation: whatsappPulse 2s infinite;
-    transition: transform 0.3s ease;
+    animation: glassGlow 2.5s ease-in-out infinite;
+    transition: transform 0.3s;
 }
-
+ 
 .whatsapp-float:hover {
-    transform: scale(1.05);
-    background-color: #20b455;
+    transform: scale(1.06) translateY(-2px);
+    background: rgba(37, 211, 102, 0.70);
 }
-
-.whatsapp-icon {
-    width: 30px;
-    height: 30px;
-    object-fit: contain;
-}
-
+ 
+.whatsapp-icon { width: 28px; height: 28px; object-fit: contain; }
+ 
 .whatsapp-text {
     color: white;
-    font-weight: bold;
-    font-size: 14px;
+    font-weight: 500;
+    font-size: 0.9rem;
     white-space: nowrap;
+    letter-spacing: 0.02em;
 }
-
+ 
+/* ── Update section ── */
+#update {
+    padding: 30px 20px 60px;
+    background: rgba(0,0,0,0.25);
+}
+ 
+@keyframes update {
+    0%   { box-shadow: 0 0 0 rgba(255,255,255,0.0);  background: rgba(255,255,255,0.06); }
+    50%  { box-shadow: 0 0 28px rgba(255,255,255,0.15); background: rgba(255,255,255,0.10); }
+    100% { box-shadow: 0 0 0 rgba(255,255,255,0.0);  background: rgba(255,255,255,0.06); }
+}
+ 
+.alert-pulse2 {
+    display: inline-block;
+    color: var(--text-dim);
+    padding: 14px 28px;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-weight: 400;
+    font-family: 'DM Sans', sans-serif;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: update 4s ease-in-out infinite;
+    margin-bottom: 10px;
+}
+ 
+.alert-pulse2 strong { color: #fff; font-weight: 500; }
+ 
+@keyframes redPulse {
+    0%   { box-shadow: 0 0 0 rgba(52,152,219,0);  background: rgba(41,128,185,0.5); }
+    50%  { box-shadow: 0 0 22px rgba(52,152,219,0.5); background: rgba(52,152,219,0.6); }
+    100% { box-shadow: 0 0 0 rgba(52,152,219,0);  background: rgba(41,128,185,0.5); }
+}
+ 
+.alert-pulse {
+    display: inline-block;
+    color: white;
+    padding: 14px 28px;
+    border-radius: var(--radius-md);
+    font-size: 1.1rem;
+    font-weight: 500;
+    border: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: redPulse 3s ease-in-out infinite;
+    margin-bottom: 20px;
+}
+ 
+/* ── Events section ── */
 #events {
-    background-color: rgba(0, 0, 0, 0.5); /* ← 50% melns caurspīdīgs */
-    padding: 40px 25px;
-    border-radius: 16px;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-top-color: var(--glass-border-top);
+    padding: 40px 28px;
+    border-radius: var(--radius-lg);
     margin: 40px auto;
     max-width: 1000px;
-    color: white;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    box-shadow: var(--glass-shadow);
 }
-
-#update {
-    padding: 20px;
-    text-align: center;
-    background-color: #111;
-}
-
-/* desktop defaults */
-#jaunumi .news-img {
-  display: block;
-  margin: 16px auto;
-  max-width: 500px;
-  height: auto;
-}
-
-
-#jaunumi .whatsapp2 {
-  display: inline-block;
-  margin: 20px auto 0;
-  padding: 10px 20px;
-  border-radius: 8px;
-  background: #25d366; /* WhatsApp zaļais */
-  color: white;
-  font-weight: 600;
-  text-align: center;
-  text-decoration: none;
-  transition: background 0.2s ease;
-}
-
-#jaunumi .whatsapp2:hover {
-  background: #1ebe5d;
-}
-
+ 
+/* ── Jaunumi inline buttons ── */
+#jaunumi .whatsapp2,
 #jaunumi .facebook2 {
-  display: inline-block;
-  margin: 20px auto 0;
-  padding: 10px 20px;
-  border-radius: 8px;
-  background: #1877F2; /* WhatsApp zaļais */
-  color: white;
-  font-weight: 600;
-  text-align: center;
-  text-decoration: none;
-  transition: background 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    margin: 20px 6px 0;
+    padding: 10px 22px;
+    border-radius: 30px;
+    color: white;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-align: center;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.30);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--glass-shadow-sm);
+    transition: transform 0.2s, opacity 0.2s;
 }
-
-#jaunumi .facebook2:hover {
-  background: #145dbf;
-}
-
-#jaunumi .container {
-  text-align: center; /* centrē visu saturu šajā sekcijā */
-}
-
-
-/* Media Queries for Mobile Optimization */
+ 
+#jaunumi .whatsapp2 { background: rgba(37, 211, 102, 0.65); }
+#jaunumi .facebook2 { background: rgba(24, 119, 242, 0.65); }
+#jaunumi .whatsapp2:hover,
+#jaunumi .facebook2:hover { transform: translateY(-2px); opacity: 0.9; }
+ 
+/* ── Responsive ── */
 @media (max-width: 768px) {
     .buttons {
         flex-direction: column;
-        gap: 5px;
-        justify-content: center;
+        gap: 8px;
+        align-items: center;
     }
-
-    .button {
-        width: 92%;
-    }
-
+ 
+    .button { width: 88%; text-align: center; }
+ 
     .gallery-container {
-        grid-template-columns: 2fr;
-        gap: 15px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
     }
-
-    .gallery-container img {
-        max-width: 300px;
-    }
-
-    #before-gallery {
-        flex-direction: column;
-    }
-
-    .image-left {
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-    .image-right {
-        width: 110%;
-        margin-bottom: 20px;
+ 
+    #before-gallery { flex-direction: column; }
+ 
+    .image-left, .image-right { width: 100%; margin-bottom: 16px; }
+ 
+    header nav ul { gap: 2px; }
+    header nav ul li a { font-size: 0.78rem; padding: 6px 10px; }
+ 
+    #jaunumi .container { padding: 28px 20px; }
+    #par-makslinieku .glass-card { padding: 28px 20px; }
+ 
+    .news-img { max-width: 80%; }
+}
+ 
+@media (max-width: 480px) {
+    header nav ul { flex-wrap: wrap; justify-content: center; }
+    section { padding: 40px 12px; }
+ 
+    .gallery-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
     }
 }
-
-@media (max-width: 768px) {
-  #jaunumi img {
-    max-width: 60%;
-    margin: 16px auto;
-    display: block;
-    height: auto;
-  }
-}
-  #jaunumi .whatsapp2 {
-    margin: 20px auto 0;
-    font-size: 0.9rem;
-    padding: 8px 16px;
-    display: inline-block;
-  }
-}
-
-
+ 
 @media (min-width: 769px) {
     .gallery-container {
         grid-template-columns: repeat(4, 1fr);
     }
 }
-
-@media (max-width: 480px) {
-    header nav ul {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    header nav ul li {
-        margin: 5px 0;
-    }
-
-    section {
-        padding: 10px;
-    }
-}
-
-@media (max-width: 768px) {
-  #jaunumi .news-img {
-    max-width: 60%;
-  }
-}
-
-
-
-
-
-
-
-
-
