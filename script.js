@@ -43,12 +43,14 @@ document.addEventListener('DOMContentLoaded', () => {
         lightboxImage.src = img.getAttribute('data-src') || img.getAttribute('src');
         lightbox.style.display = 'flex';
         lightboxOpen = true;
+        document.body.classList.add('lightbox-open');
         history.pushState({ lightbox: true }, document.title, location.href);
     }
  
     function closeLightbox() {
         lightbox.style.display = 'none';
         lightboxOpen = false;
+        document.body.classList.remove('lightbox-open');
         history.pushState(null, document.title, location.href);
     }
  
