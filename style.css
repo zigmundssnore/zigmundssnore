@@ -739,10 +739,16 @@ section {
     transform: translateY(-50%) scale(1.1);
 }
  
-/* Uz mobilā paslēpj bultiņas — swipe pietiek */
+/* Bultiņas redzamas arī mobilajā */
 @media (max-width: 768px) {
+    .lightbox-prev { left: 8px; }
+    .lightbox-next { right: 8px; }
     .lightbox-prev,
-    .lightbox-next { display: none; }
+    .lightbox-next {
+        width: 38px;
+        height: 38px;
+        font-size: 1.6rem;
+    }
 }
  
 /* ── Scroll Reveal ── */
@@ -757,3 +763,8 @@ section {
 }
 .gallery-item.reveal { transition-delay: calc(var(--i, 0) * 0.06s); }
  
+/* ── Scroll lock kad lightbox atvērts ── */
+body.lightbox-open {
+    overflow: hidden;
+    touch-action: none;
+}
