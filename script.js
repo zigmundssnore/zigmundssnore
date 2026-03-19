@@ -79,54 +79,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
  
-    // =========================
-    // Hamburger Menu
-    // =========================
-    const hamburger = document.getElementById('hamburger');
-    const mainNav = document.getElementById('mainNav');
-    const navOverlay = document.getElementById('navOverlay');
- 
-    function closeNav() {
-        hamburger?.classList.remove('open');
-        mainNav?.classList.remove('open');
-        navOverlay?.classList.remove('open');
-    }
- 
-    hamburger?.addEventListener('click', () => {
-        const isOpen = mainNav.classList.toggle('open');
-        hamburger.classList.toggle('open', isOpen);
-        navOverlay.classList.toggle('open', isOpen);
-    });
- 
-    navOverlay?.addEventListener('click', closeNav);
- 
-    document.querySelectorAll('#mainNav a').forEach(link => {
-        link.addEventListener('click', closeNav);
-    });
- 
-    // =========================
-    // Scroll Reveal
-    // =========================
-    // Zemāks threshold + rootMargin lai mobilajā strādā droši
-    const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                revealObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
- 
-    // Sekcijas
-    document.querySelectorAll('.reveal').forEach(el => {
-        revealObserver.observe(el);
-    });
- 
-    // Gallery items ar stagger
-    document.querySelectorAll('.gallery-item').forEach((item, i) => {
-        item.classList.add('reveal');
-        item.style.setProperty('--i', i % 8);
-        revealObserver.observe(item);
-    });
- 
 });
+ 
