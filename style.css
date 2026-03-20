@@ -803,3 +803,137 @@ body.lightbox-open {
     background: rgba(180, 180, 180, 0.40);
 }
  
+ 
+/* ── Delivery Modal ── */
+.delivery-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.70);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+ 
+.delivery-overlay.open {
+    display: flex;
+}
+ 
+.delivery-modal {
+    background: rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-top-color: rgba(255, 255, 255, 0.45);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.40);
+    border-radius: 20px;
+    padding: 36px 32px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+ 
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.88) translateY(20px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+ 
+.delivery-modal::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
+}
+ 
+.delivery-modal h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: white;
+    margin: 0 0 14px;
+}
+ 
+.delivery-modal p {
+    font-size: 0.92rem;
+    color: rgba(255,255,255,0.70);
+    line-height: 1.6;
+    margin-bottom: 28px;
+}
+ 
+.delivery-modal p strong {
+    color: white;
+}
+ 
+.delivery-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+ 
+.delivery-btn {
+    display: block;
+    padding: 12px 20px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: white;
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25),
+                inset 0 1px 0 rgba(255,255,255,0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+}
+ 
+.delivery-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 12%; right: 12%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
+}
+ 
+.delivery-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35),
+                inset 0 1px 0 rgba(255,255,255,0.45);
+}
+ 
+.delivery-btn.klatiene {
+    background: rgba(37, 211, 102, 0.55);
+}
+ 
+.delivery-btn.omniva {
+    background: rgba(255, 255, 255, 0.12);
+}
+ 
+.delivery-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    font-size: 1.4rem;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    padding: 0;
+}
+ 
+.delivery-modal-close:hover {
+    color: white;
+}
+ 
+body.modal-open {
+    overflow: hidden;
+    touch-action: none;
+}
