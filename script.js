@@ -16,19 +16,44 @@ document.addEventListener('DOMContentLoaded', () => {
         numEl.textContent = 'Nr. ' + num;
         info.insertBefore(numEl, info.firstChild);
  
-        // Pievieno WA pogu
-        const msg = encodeURIComponent('Labdien! Vēlos uzzināt vairāk par gleznu Nr.' + num + ' — vai tā ir pieejama iegādei? Paldies par atbildi!');
-        const btn = document.createElement('a');
+        // Pievieno pogu kas atver modālu
+        const btn = document.createElement('button');
         btn.className = 'btn-inquire';
-        btn.href = 'https://wa.me/' + waNumber + '?text=' + msg;
-        btn.target = '_blank';
-        btn.rel = 'noopener';
         btn.textContent = 'Uzzināt vairāk';
- 
-        // Aptur lightbox atvēršanu kad spiež pogu
-        btn.addEventListener('click', (e) => e.stopPropagation());
- 
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openDeliveryModal(num);
+        });
         info.appendChild(btn);
+    });
+ 
+    // =========================
+    // Delivery Modal
+    // =========================
+    const deliveryOverlay = document.getElementById('deliveryOverlay');
+    const modalKlatiene = document.getElementById('modalKlatiene');
+    const modalOmniva = document.getElementById('modalOmniva');
+ 
+    function openDeliveryModal(num) {
+        const msgKlatiene = encodeURIComponent('Sveiki, vēlos iegādāties un saņemt klātienē gleznu Nr.' + num + '. Vai tā ir pieejama?');
+        const msgOmniva = encodeURIComponent('Sveiki, vēlos iegādāties un saņemt ar pakomātu gleznu Nr.' + num + '. Vai tā ir pieejama?');
+        modalKlatiene.href = 'https://wa.me/' + waNumber + '?text=' + msgKlatiene;
+        modalOmniva.href = 'https://wa.me/' + waNumber + '?text=' + msgOmniva;
+        deliveryOverlay.classList.add('open');
+        document.body.classList.add('modal-open');
+    }
+ 
+    function closeDeliveryModal() {
+        deliveryOverlay.classList.remove('open');
+        document.body.classList.remove('modal-open');
+    }
+ 
+    document.getElementById('deliveryModalClose')?.addEventListener('click', closeDeliveryModal);
+    deliveryOverlay?.addEventListener('click', (e) => {
+        if (e.target === deliveryOverlay) closeDeliveryModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeDeliveryModal();
     });
  
     // =========================
@@ -184,4 +209,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
  
 });
- 
