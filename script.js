@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         info.insertBefore(numEl, info.firstChild);
  
         // Pievieno WA pogu
-        const msg = encodeURIComponent('Labdien! Vēlos uzzināt vairāk par gleznu Nr.' + num + ' — kāda ir tās cena un vai tā ir pieejama iegādei? Paldies par atbildi!');
+        const msg = encodeURIComponent('Labdien! Vēlos uzzināt vairāk par gleznu Nr.' + num + ' — vai tā ir pieejama iegādei? Paldies par atbildi!');
         const btn = document.createElement('a');
         btn.className = 'btn-inquire';
         btn.href = 'https://wa.me/' + waNumber + '?text=' + msg;
@@ -184,3 +184,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
  
 });
+ 
