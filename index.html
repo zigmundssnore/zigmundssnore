@@ -33,7 +33,7 @@
  
  
 <main>
-
+ 
             <section id="par-makslinieku" class="page-section reveal">
             <div class="glass-card">
                 <h2>Zigmunds Šnore</h2>
@@ -49,16 +49,16 @@
                 <img src="zigis1.jpg" alt="Zigmunds Šnore" class="news-img" style="margin-top: 30px;">
             </div>
         </section>
-
+ 
     
 <section id="jaunumi" class="page-section reveal">
   <div class="container">
  
     <h2>Jaunumi</h2>
-
+ 
 <h3>Zigmunds Šnore ir atvērts jauniem izstāžu piedāvājumiem jebkur Latvijā.</h3>
 <p style="margin-bottom: 30px;">Ja ir kāds piedāvājums, sazinieties ar mums WhatsApp, spiežot uz zemāk esošo pogu.</p>  
-
+ 
 <a class="button whatsapp" style="margin-bottom: 10px;" href="https://wa.me/37122811564?text=Sveiki!%20Atrodamies%20%5BJ%C5%ABsu%20pl%C4%81not%C4%81s%20izst%C4%81des%20lok%C4%81cija%5D.%20Izst%C4%81di%20v%C4%93lamies%20r%C4%ABkot%20%5BIzst%C4%81des%20r%C4%ABko%C5%A1anas%20s%C4%81kuma%20un%20beigu%20datums%5D%20un%20v%C4%93lamies%20redzēt%20%5BV%C4%93lam%C4%81%20m%C4%81kslas%20darbu%20tematika%5D." target="_blank">
   Izstādes rīkošanas piedāvājums
 </a>  
@@ -84,7 +84,7 @@
     </div>
  
     <input type="range" min="0" max="100" value="50" id="slider">
-
+ 
           
     <h3 style="margin-top: 80px;">Sērijas "Dzīves stāsti"</h3>
  
@@ -106,15 +106,15 @@
         <p>Liels paldies visiem, kuri apmeklēja šo izstādi un atbalstīja mūs!</p>
     </div>
           
-
+ 
   </div>
 </section>
 </main>
  
  
-
  
-
+ 
+ 
         <!-- Kontakti section -->
         <section id="kontakti" class="page-section reveal">
             <h1>Kontakti</h1>
@@ -779,7 +779,20 @@
     <img src="whatsapp-icon.png" alt="WhatsApp" class="whatsapp-icon">
     <span class="whatsapp-text">Sazinies ar mums!</span>
 </a>
-<!-- Newsletter JS (ieliec pirms </body>) 
+<!-- Newsletter JS (ieliec pirms 
+    <!-- Delivery Modal -->
+    <div id="deliveryOverlay" class="delivery-overlay">
+        <div class="delivery-modal">
+            <button class="delivery-modal-close" id="deliveryModalClose">×</button>
+            <h3>Piegāde un saņemšana</h3>
+            <p>Šo gleznu ir iespējams saņemt <strong>bez maksas Jūrmalā un Rīgā</strong>, vai nosūtīt ar <strong>DPD / Omniva</strong> uz pircēja rēķina.</p>
+            <div class="delivery-buttons">
+                <a id="modalKlatiene" class="delivery-btn klatiene" href="#" target="_blank" rel="noopener">📍 Saņemt klātienē</a>
+                <a id="modalOmniva" class="delivery-btn omniva" href="#" target="_blank" rel="noopener">📦 Sūtīt ar Omniva / DPD</a>
+            </div>
+        </div>
+    </div>
+</body>) 
 <script>
   // PRECĪZAIS /exec URL no "Web app URL (Copy)" — bez /u/1 !
   const ENDPOINT = 'https://script.google.com/macros/s/AKfycbw3XfENtzU0OxUBWgyyyLuVay0ru9iu2aUXhnWnqLqbTv0-Yi1VPXSlIhglZh32YrAt/exec';
@@ -819,6 +832,18 @@
 </script>
  
     -->
-</body>
-</html>
  
+    <!-- Delivery Modal -->
+    <div id="deliveryOverlay" class="delivery-overlay">
+        <div class="delivery-modal">
+            <button class="delivery-modal-close" id="deliveryModalClose">×</button>
+            <h3>Piegāde un saņemšana</h3>
+            <p>Šo gleznu ir iespējams saņemt <strong>bez maksas Jūrmalā un Rīgā</strong>, vai nosūtīt ar <strong>DPD / Omniva</strong> uz pircēja rēķina.</p>
+            <div class="delivery-buttons">
+                <a id="modalKlatiene" class="delivery-btn klatiene" href="#" target="_blank" rel="noopener">📍 Saņemt klātienē</a>
+                <a id="modalOmniva" class="delivery-btn omniva" href="#" target="_blank" rel="noopener">📦 Sūtīt ar Omniva / DPD</a>
+            </div>
+        </div>
+    </div>
+</body>
+</ht
