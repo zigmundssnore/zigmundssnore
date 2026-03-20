@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modalOmniva.href = 'https://wa.me/' + waNumber + '?text=' + msgOmniva;
         deliveryOverlay.classList.add('open');
         document.body.classList.add('modal-open');
+        history.pushState({ modal: true }, document.title, location.href);
     }
  
     function closeDeliveryModal() {
@@ -157,8 +158,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Back button
     history.pushState(null, document.title, location.href);
     window.onpopstate = () => {
-        if (lightboxOpen) closeLightbox();
-        else history.pushState(null, document.title, location.href);
+        if (deliveryOverlay?.classList.contains('open')) {
+            closeDeliveryModal();
+        } else if (lightboxOpen) {
+            closeLightbox();
+        } else {
+            history.pushState(null, document.title, location.href);
+        }
     };
  
     // Prev/Next pogas
