@@ -992,7 +992,7 @@ body.modal-open {
 /* ── Lightbox Zoom poga ── */
 .lightbox-zoom {
     position: absolute;
-    bottom: 24px;
+    bottom: 60px;
     left: 50%;
     transform: translateX(-50%);
     background: var(--glass-bg);
@@ -1016,4 +1016,3 @@ body.modal-open {
     background: var(--glass-bg-heavy);
     transform: translateX(-50%) translateY(-2px);
 }
- 
