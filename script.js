@@ -80,6 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
         tab.addEventListener('click', () => switchTab(tab.dataset.tab));
     });
  
+    // Inicializē uzreiz lapas ielādē
+    switchTab('bez-ramja');
+ 
     // Auto-mark ieramettas items based on filename
     allItems.forEach(item => {
         const img = item.querySelector('img');
