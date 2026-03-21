@@ -66,7 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function switchTab(tabName) {
         tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
         allItems.forEach(item => {
-            item.classList.toggle('hidden', item.dataset.category !== tabName);
+            const hide = item.dataset.category !== tabName;
+            item.classList.toggle('hidden', hide);
+            // Ja bilde tiek atkal parādīta - pārliecinās ka reveal ir aktīvs
+            if (!hide) item.classList.add('visible');
         });
         updateLightboxItems();
     }
@@ -233,3 +236,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
  
 });
+ 
