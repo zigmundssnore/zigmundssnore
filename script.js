@@ -111,9 +111,50 @@ document.addEventListener('DOMContentLoaded', () => {
  
     let currentIndex = 0;
     let lightboxOpen = false;
+    let isZoomed = false;
  
     // Transition
     lightboxImage.style.transition = 'opacity 0.15s ease';
+ 
+    const zoomBtn = document.getElementById('lightboxZoom');
+ 
+    function updateZoomButton() {
+        const item = galleryItems[currentIndex];
+        const isFramed = item?.dataset.category === 'ieramettas';
+        if (zoomBtn) {
+            zoomBtn.style.display = isFramed ? 'block' : 'none';
+            zoomBtn.textContent = '🔍 Pietuvināt';
+            isZoomed = false;
+        }
+    }
+ 
+    if (zoomBtn) {
+        zoomBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const item = galleryItems[currentIndex];
+            const img = item.querySelector('img');
+            const mainSrc = img.getAttribute('data-src') || img.getAttribute('src');
+ 
+            if (!isZoomed) {
+                const zoomSrc = mainSrc.replace('.jpg', 'nr2.jpg');
+                lightboxImage.style.opacity = '0';
+                setTimeout(() => {
+                    lightboxImage.src = zoomSrc;
+                    lightboxImage.style.opacity = '1';
+                }, 150);
+                zoomBtn.textContent = '← Atpakaļ';
+                isZoomed = true;
+            } else {
+                lightboxImage.style.opacity = '0';
+                setTimeout(() => {
+                    lightboxImage.src = mainSrc;
+                    lightboxImage.style.opacity = '1';
+                }, 150);
+                zoomBtn.textContent = '🔍 Pietuvināt';
+                isZoomed = false;
+            }
+        });
+    }
  
     function openLightbox(index) {
         currentIndex = index;
@@ -122,6 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lightbox.style.display = 'flex';
         lightboxOpen = true;
         document.body.classList.add('lightbox-open');
+        updateZoomButton();
         history.pushState({ lightbox: true }, document.title, location.href);
     }
  
@@ -139,6 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const img = galleryItems[currentIndex].querySelector('img');
             lightboxImage.src = img.getAttribute('data-src') || img.getAttribute('src');
             lightboxImage.style.opacity = '1';
+            updateZoomButton();
         }, 150);
     }
  
@@ -149,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const img = galleryItems[currentIndex].querySelector('img');
             lightboxImage.src = img.getAttribute('data-src') || img.getAttribute('src');
             lightboxImage.style.opacity = '1';
+            updateZoomButton();
         }, 150);
     }
  
