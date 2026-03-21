@@ -58,6 +58,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
  
     // =========================
+    // Gallery Tabs
+    // =========================
+    const tabs = document.querySelectorAll('.gallery-tab');
+    const allItems = document.querySelectorAll('.gallery-container .gallery-item');
+ 
+    function switchTab(tabName) {
+        tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
+        allItems.forEach(item => {
+            item.classList.toggle('hidden', item.dataset.category !== tabName);
+        });
+        // Update lightbox to only use visible items
+        updateLightboxItems();
+    }
+ 
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+    });
+ 
+    // Auto-mark ieramettas items based on filename
+    allItems.forEach(item => {
+        const img = item.querySelector('img');
+        if (img && img.getAttribute('src')?.includes('ramis-')) {
+            item.dataset.category = 'ieramettas';
+            item.classList.add('hidden'); // hidden by default
+        }
+    });
+ 
+    // =========================
     // Smooth scroll
     // =========================
     document.querySelectorAll('header nav ul li a').forEach(link => {
@@ -82,7 +110,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================
     // Gallery Lightbox + Swipe
     // =========================
-    const galleryItems = Array.from(document.querySelectorAll('.gallery-container .gallery-item'));
+    let galleryItems = Array.from(document.querySelectorAll('.gallery-container .gallery-item:not(.hidden)'));
+ 
+    function updateLightboxItems() {
+        galleryItems = Array.from(document.querySelectorAll('.gallery-container .gallery-item:not(.hidden)'));
+    }
     const lightbox = document.getElementById('lightbox');
     const lightboxImage = document.getElementById('lightbox-image');
  
