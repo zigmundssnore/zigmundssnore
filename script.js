@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const isFramed = clickedItem?.dataset.category === 'ieramettas';
         if (frameNote) frameNote.style.display = isFramed ? 'none' : 'block';
         if (modalIeramet) {
-            const msgIeramet = encodeURIComponent('Sveiki, vēlos iegādāties gleznu Nr.' + num + ' rāmī.');
+            const msgIeramet = encodeURIComponent('Sveiki, vēlos iegādāties gleznu Nr.' + num + ' rāmī. Vai tā būtu pieejama?');
             modalIeramet.href = 'https://wa.me/' + waNumber + '?text=' + msgIeramet;
         }
  
