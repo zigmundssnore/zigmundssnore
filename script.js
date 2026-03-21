@@ -68,8 +68,12 @@ document.addEventListener('DOMContentLoaded', () => {
         allItems.forEach(item => {
             item.classList.toggle('hidden', item.dataset.category !== tabName);
         });
-        // Update lightbox to only use visible items
         updateLightboxItems();
+ 
+        // Rāda ziņu ja nav nevienas gleznas šajā kategorijā
+        const emptyMsg = document.getElementById('galleryEmpty');
+        const visible = Array.from(allItems).filter(i => i.dataset.category === tabName);
+        if (emptyMsg) emptyMsg.style.display = visible.length === 0 ? 'block' : 'none';
     }
  
     tabs.forEach(tab => {
