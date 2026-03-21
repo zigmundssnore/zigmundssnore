@@ -39,6 +39,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const msgOmniva = encodeURIComponent('Sveiki, vēlos iegādāties un saņemt ar pakomātu gleznu Nr.' + num + '. Vai tā ir pieejama?');
         modalKlatiene.href = 'https://wa.me/' + waNumber + '?text=' + msgKlatiene;
         modalOmniva.href = 'https://wa.me/' + waNumber + '?text=' + msgOmniva;
+ 
+        // Rāda vai slēpj ierāmēšanas tekstu
+        const frameNote = document.getElementById('modalFrameNote');
+        const allGalleryItems = Array.from(document.querySelectorAll('.gallery-container .gallery-item'));
+        const clickedItem = allGalleryItems[num - 1];
+        const isFramed = clickedItem?.dataset.category === 'ieramettas';
+        if (frameNote) frameNote.style.display = isFramed ? 'none' : 'block';
+ 
         deliveryOverlay.classList.add('open');
         document.body.classList.add('modal-open');
         history.pushState({ modal: true }, document.title, location.href);
