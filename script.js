@@ -164,6 +164,14 @@ document.addEventListener('DOMContentLoaded', () => {
         lightboxOpen = true;
         document.body.classList.add('lightbox-open');
         updateZoomButton();
+        // Preload nr2 bilde fonā ja ierāmēta glezna
+        const openedItem = galleryItems[index];
+        if (openedItem?.dataset.category === 'ieramettas') {
+            const openedImg = openedItem.querySelector('img');
+            const mainSrc = openedImg.getAttribute('data-src') || openedImg.getAttribute('src');
+            const preload = new Image();
+            preload.src = mainSrc.replace('.jpg', 'nr2.jpg');
+        }
         history.pushState({ lightbox: true }, document.title, location.href);
     }
  
@@ -280,4 +288,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
  
 });
- 
