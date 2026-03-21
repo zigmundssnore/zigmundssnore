@@ -58,6 +58,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
  
     // =========================
+    // Gallery Tabs
+    // =========================
+    const tabs = document.querySelectorAll('.gallery-tab');
+    const allItems = document.querySelectorAll('.gallery-container .gallery-item');
+ 
+    function switchTab(tabName) {
+        tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
+        allItems.forEach(item => {
+            item.classList.toggle('hidden', item.dataset.category !== tabName);
+        });
+        updateLightboxItems();
+    }
+ 
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+    });
+ 
+    // =========================
     // Smooth scroll
     // =========================
     document.querySelectorAll('header nav ul li a').forEach(link => {
