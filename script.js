@@ -134,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const item = galleryItems[currentIndex];
             const img = item.querySelector('img');
             const mainSrc = img.getAttribute('data-src') || img.getAttribute('src');
- 
             if (!isZoomed) {
                 const zoomSrc = mainSrc.replace('.jpg', 'nr2.jpg');
                 lightboxImage.style.opacity = '0';
@@ -164,13 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
         lightboxOpen = true;
         document.body.classList.add('lightbox-open');
         updateZoomButton();
-        // Preload nr2 bilde fonā ja ierāmēta glezna
+        // Preload nr2 fonā
         const openedItem = galleryItems[index];
         if (openedItem?.dataset.category === 'ieramettas') {
-            const openedImg = openedItem.querySelector('img');
-            const mainSrc = openedImg.getAttribute('data-src') || openedImg.getAttribute('src');
             const preload = new Image();
-            preload.src = mainSrc.replace('.jpg', 'nr2.jpg');
+            preload.src = (img.getAttribute('data-src') || img.getAttribute('src')).replace('.jpg', 'nr2.jpg');
         }
         history.pushState({ lightbox: true }, document.title, location.href);
     }
