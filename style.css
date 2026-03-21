@@ -937,3 +937,55 @@ body.modal-open {
     overflow: hidden;
     touch-action: none;
 }
+ 
+/* ── Gallery Tabs ── */
+.gallery-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 36px;
+}
+ 
+.gallery-tab {
+    padding: 10px 28px;
+    border-radius: 30px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--text-dim);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 400;
+    cursor: pointer;
+    transition: background 0.25s, color 0.25s, box-shadow 0.25s;
+    box-shadow: var(--glass-shadow-sm);
+    position: relative;
+}
+ 
+.gallery-tab::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 12%; right: 12%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.5), transparent);
+}
+ 
+.gallery-tab.active {
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    border-color: rgba(255,255,255,0.40);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.30),
+                inset 0 1px 0 rgba(255,255,255,0.50);
+}
+ 
+.gallery-tab:hover:not(.active) {
+    background: var(--glass-bg-heavy);
+    color: #fff;
+}
+ 
+/* Hidden gallery items */
+.gallery-item.hidden {
+    display: none;
+}
+ 
