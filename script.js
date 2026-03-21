@@ -69,19 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
             item.classList.toggle('hidden', item.dataset.category !== tabName);
         });
         updateLightboxItems();
- 
-        // Rāda ziņu ja nav nevienas gleznas šajā kategorijā
-        const emptyMsg = document.getElementById('galleryEmpty');
-        const visible = Array.from(allItems).filter(i => i.dataset.category === tabName);
-        if (emptyMsg) emptyMsg.style.display = visible.length === 0 ? 'block' : 'none';
     }
  
     tabs.forEach(tab => {
         tab.addEventListener('click', () => switchTab(tab.dataset.tab));
     });
  
-    // Inicializē uzreiz lapas ielādē
-    switchTab('bez-ramja');
  
     // Auto-mark ieramettas items based on filename
     allItems.forEach(item => {
