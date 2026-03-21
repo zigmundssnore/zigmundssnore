@@ -988,3 +988,31 @@ body.modal-open {
     display: none;
 }
  
+ 
+/* ── Lightbox Zoom poga ── */
+.lightbox-zoom {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-top-color: var(--glass-border-top);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 9px 22px;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: var(--glass-shadow-sm);
+    transition: background 0.2s, transform 0.2s;
+    white-space: nowrap;
+}
+ 
+.lightbox-zoom:hover {
+    background: var(--glass-bg-heavy);
+    transform: translateX(-50%) translateY(-2px);
+}
