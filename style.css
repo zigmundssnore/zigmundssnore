@@ -1036,6 +1036,8 @@ body.modal-open {
     width: 22px;
     height: 22px;
     transition: transform 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
 }
 
 .btn-like:hover { transform: scale(1.2); }
