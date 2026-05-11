@@ -1,3 +1,51 @@
+// =========================
+// Firebase Likes
+// =========================
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, runTransaction, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+const firebaseConfig = {
+    databaseURL: 'https://zigmunds-majaslapa-default-rtdb.europe-west1.firebasedatabase.app'
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+function setupLikes(item, globalIndex) {
+    const key = 'glezna_' + (globalIndex + 1);
+    const likeRef = ref(db, 'likes/' + key);
+    const info = item.querySelector('.image-info');
+    if (!info) return;
+
+    // Wrapper
+    const likeWrapper = document.createElement('div');
+    likeWrapper.className = 'like-wrapper';
+
+    // Poga
+    const likeBtn = document.createElement('button');
+    likeBtn.className = 'btn-like';
+    likeBtn.innerHTML = '<img src="like.png" alt="like" class="like-icon">';
+
+    // Skaitlis
+    const likeCount = document.createElement('span');
+    likeCount.className = 'like-count';
+    likeCount.textContent = '0';
+
+    likeWrapper.appendChild(likeBtn);
+    likeWrapper.appendChild(likeCount);
+    info.appendChild(likeWrapper);
+
+    // Klausās Firebase reāllaikā
+    onValue(likeRef, (snapshot) => {
+        likeCount.textContent = snapshot.val() || 0;
+    });
+
+    // Klikšķis — +1
+    likeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        runTransaction(likeRef, (current) => (current || 0) + 1);
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
  
  
@@ -25,6 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
             openDeliveryModal(num);
         });
         info.appendChild(btn);
+
+        // Like poga
+        setupLikes(item, i);
     });
  
     // =========================
