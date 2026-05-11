@@ -34,7 +34,8 @@ function setupLikes(item, globalIndex) {
 
     // Pārbauda LocalStorage
     let liked = localStorage.getItem(storageKey) === 'true';
-    if (liked) likeBtn.classList.add('liked');
+    const likeImg = likeBtn.querySelector("img");
+    if (liked) { likeBtn.classList.add("liked"); likeImg.src = "like-red.png"; }
 
     // Reāllaika skaitlis no Firebase
     onValue(likeRef, (snapshot) => {
@@ -48,12 +49,12 @@ function setupLikes(item, globalIndex) {
             runTransaction(likeRef, (current) => (current || 0) + 1);
             liked = true;
             localStorage.setItem(storageKey, 'true');
-            likeBtn.classList.add('liked');
+            likeBtn.classList.add("liked"); likeImg.src = "like-red.png";
         } else {
             runTransaction(likeRef, (current) => Math.max((current || 0) - 1, 0));
             liked = false;
             localStorage.removeItem(storageKey);
-            likeBtn.classList.remove('liked');
+            likeBtn.classList.remove("liked"); likeImg.src = "like.png";
         }
     });
 }
