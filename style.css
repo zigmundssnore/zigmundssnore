@@ -1016,3 +1016,42 @@ body.modal-open {
     background: var(--glass-bg-heavy);
     transform: translateX(-50%) translateY(-2px);
 }
+
+/* ── Like poga ── */
+.like-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.btn-like {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: transform 0.15s;
+}
+
+.btn-like:hover {
+    transform: scale(1.2);
+}
+
+.btn-like:active {
+    transform: scale(0.9);
+}
+
+.like-icon {
+    width: 28px;
+    height: 28px;
+    display: block;
+}
+
+.like-count {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.75);
+}
