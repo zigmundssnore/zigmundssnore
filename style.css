@@ -1033,25 +1033,23 @@ body.modal-open {
     cursor: pointer;
     display: flex;
     align-items: center;
+    width: 22px;
+    height: 22px;
     transition: transform 0.15s;
 }
 
-.btn-like:hover {
-    transform: scale(1.2);
-}
-
-.btn-like:active {
-    transform: scale(0.9);
-}
+.btn-like:hover { transform: scale(1.2); }
+.btn-like:active { transform: scale(0.9); }
 
 .like-icon {
-    width: 28px;
-    height: 28px;
+    width: 22px;
+    height: 22px;
     display: block;
+    object-fit: contain;
 }
 
 .like-count {
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: rgba(255,255,255,0.75);
 }
