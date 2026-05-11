@@ -10,6 +10,24 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+const NTFY_TOPIC = 'zigmunds-like-gleznas';
+
+async function sendNtfyNotification(gleznaNum) {
+    try {
+        await fetch('https://ntfy.sh/' + NTFY_TOPIC, {
+            method: 'POST',
+            headers: {
+                'Title': 'Jauns like! ❤️',
+                'Priority': 'default',
+                'Content-Type': 'text/plain'
+            },
+            body: 'Kāds nolaikoja gleznu Nr. ' + gleznaNum
+        });
+    } catch (e) {
+        // klusam ignorē — notifikācija nav kritiska
+    }
+}
+
 function setupLikes(item, globalIndex) {
     const key = 'glezna_' + (globalIndex + 1);
     const likeRef = ref(db, 'likes/' + key);
@@ -49,12 +67,15 @@ function setupLikes(item, globalIndex) {
             runTransaction(likeRef, (current) => (current || 0) + 1);
             liked = true;
             localStorage.setItem(storageKey, 'true');
-            likeBtn.classList.add("liked"); likeImg.src = "like-red.png";
+            likeBtn.classList.add("liked");
+            likeImg.src = "like-red.png";
+            sendNtfyNotification(globalIndex + 1);
         } else {
             runTransaction(likeRef, (current) => Math.max((current || 0) - 1, 0));
             liked = false;
             localStorage.removeItem(storageKey);
-            likeBtn.classList.remove("liked"); likeImg.src = "like.png";
+            likeBtn.classList.remove("liked");
+            likeImg.src = "like.png";
         }
     });
 }
