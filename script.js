@@ -18,7 +18,7 @@ async function sendNtfyNotification(gleznaNum) {
         const res = await fetch('https://ntfy.sh/' + NTFY_TOPIC, {
             method: 'POST',
             headers: {
-                'Title': 'Jauns like! ❤️',
+                'Title': 'Jauns like!',
                 'Priority': 'default',
                 'Content-Type': 'text/plain'
             },
