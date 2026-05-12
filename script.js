@@ -3,18 +3,19 @@
 // =========================
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getDatabase, ref, runTransaction, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
-
+ 
 const firebaseConfig = {
     databaseURL: 'https://zigmunds-majaslapa-default-rtdb.europe-west1.firebasedatabase.app'
 };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
+ 
 const NTFY_TOPIC = 'zigmunds-like-gleznas';
-
+ 
 async function sendNtfyNotification(gleznaNum) {
+    console.log('ntfy: sūtu par gleznu', gleznaNum);
     try {
-        await fetch('https://ntfy.sh/' + NTFY_TOPIC, {
+        const res = await fetch('https://ntfy.sh/' + NTFY_TOPIC, {
             method: 'POST',
             headers: {
                 'Title': 'Jauns like! ❤️',
@@ -23,44 +24,42 @@ async function sendNtfyNotification(gleznaNum) {
             },
             body: 'Kāds nolaikoja gleznu Nr. ' + gleznaNum
         });
+        console.log('ntfy status:', res.status);
     } catch (e) {
-        // klusam ignorē — notifikācija nav kritiska
+        console.error('ntfy kļūda:', e);
     }
 }
-
+ 
 function setupLikes(item, globalIndex) {
     const key = 'glezna_' + (globalIndex + 1);
     const likeRef = ref(db, 'likes/' + key);
     const storageKey = 'liked_' + key;
     const info = item.querySelector('.image-info');
     if (!info) return;
-
+ 
     const likeWrapper = document.createElement('div');
     likeWrapper.className = 'like-wrapper';
-
+ 
     const likeBtn = document.createElement('button');
     likeBtn.className = 'btn-like';
     likeBtn.innerHTML = '<img src="like.png" alt="like" class="like-icon">';
-
+ 
     const likeCount = document.createElement('span');
     likeCount.className = 'like-count';
     likeCount.textContent = '0';
-
+ 
     likeWrapper.appendChild(likeBtn);
     likeWrapper.appendChild(likeCount);
     info.appendChild(likeWrapper);
-
-    // Pārbauda LocalStorage
+ 
     let liked = localStorage.getItem(storageKey) === 'true';
     const likeImg = likeBtn.querySelector("img");
     if (liked) { likeBtn.classList.add("liked"); likeImg.src = "like-red.png"; }
-
-    // Reāllaika skaitlis no Firebase
+ 
     onValue(likeRef, (snapshot) => {
         likeCount.textContent = snapshot.val() || 0;
     });
-
-    // Toggle like
+ 
     likeBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (!liked) {
@@ -79,9 +78,9 @@ function setupLikes(item, globalIndex) {
         }
     });
 }
-
+ 
 document.addEventListener('DOMContentLoaded', () => {
-
+ 
     // =========================
     // Gallery numuri + WhatsApp poga
     // =========================
@@ -90,12 +89,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const num = i + 1;
         const info = item.querySelector('.image-info');
         if (!info) return;
-
+ 
         const numEl = document.createElement('p');
         numEl.className = 'gallery-number';
         numEl.textContent = 'Nr. ' + num;
         info.insertBefore(numEl, info.firstChild);
-
+ 
         const btn = document.createElement('button');
         btn.className = 'btn-inquire';
         btn.textContent = 'Uzzināt vairāk';
@@ -104,23 +103,23 @@ document.addEventListener('DOMContentLoaded', () => {
             openDeliveryModal(num);
         });
         info.appendChild(btn);
-
+ 
         setupLikes(item, i);
     });
-
+ 
     // =========================
     // Delivery Modal
     // =========================
     const deliveryOverlay = document.getElementById('deliveryOverlay');
     const modalKlatiene = document.getElementById('modalKlatiene');
     const modalOmniva = document.getElementById('modalOmniva');
-
+ 
     function openDeliveryModal(num) {
         const msgKlatiene = encodeURIComponent('Sveiki, vēlos iegādāties un saņemt klātienē gleznu Nr.' + num + '. Vai tā ir pieejama?');
         const msgOmniva = encodeURIComponent('Sveiki, vēlos iegādāties un saņemt ar pakomātu gleznu Nr.' + num + '. Vai tā ir pieejama?');
         modalKlatiene.href = 'https://wa.me/' + waNumber + '?text=' + msgKlatiene;
         modalOmniva.href = 'https://wa.me/' + waNumber + '?text=' + msgOmniva;
-
+ 
         const frameNote = document.getElementById('modalFrameNote');
         const modalIeramet = document.getElementById('modalIeramet');
         const allGalleryItems = Array.from(document.querySelectorAll('.gallery-container .gallery-item'));
@@ -131,17 +130,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const msgIeramet = encodeURIComponent('Sveiki, vēlos iegādāties gleznu Nr.' + num + ' rāmī. Vai tā būtu pieejama?');
             modalIeramet.href = 'https://wa.me/' + waNumber + '?text=' + msgIeramet;
         }
-
+ 
         deliveryOverlay.classList.add('open');
         document.body.classList.add('modal-open');
         history.pushState({ modal: true }, document.title, location.href);
     }
-
+ 
     function closeDeliveryModal() {
         deliveryOverlay.classList.remove('open');
         document.body.classList.remove('modal-open');
     }
-
+ 
     document.getElementById('deliveryModalClose')?.addEventListener('click', closeDeliveryModal);
     deliveryOverlay?.addEventListener('click', (e) => {
         if (e.target === deliveryOverlay) closeDeliveryModal();
@@ -149,13 +148,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeDeliveryModal();
     });
-
+ 
     // =========================
     // Gallery Tabs
     // =========================
     const tabs = document.querySelectorAll('.gallery-tab');
     const allItems = document.querySelectorAll('.gallery-container .gallery-item');
-
+ 
     function switchTab(tabName) {
         tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
         allItems.forEach(item => {
@@ -165,11 +164,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         updateLightboxItems();
     }
-
+ 
     tabs.forEach(tab => {
         tab.addEventListener('click', () => switchTab(tab.dataset.tab));
     });
-
+ 
     // =========================
     // Smooth scroll
     // =========================
@@ -180,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (target) target.scrollIntoView({ behavior: 'smooth' });
         });
     });
-
+ 
     // =========================
     // Before/After Slider
     // =========================
@@ -191,24 +190,24 @@ document.addEventListener('DOMContentLoaded', () => {
             afterImg.style.clipPath = `inset(0 ${100 - slider.value}% 0 0)`;
         });
     }
-
+ 
     // =========================
     // Gallery Lightbox + Swipe
     // =========================
     const galleryItems = Array.from(document.querySelectorAll('.gallery-container .gallery-item'));
     const lightbox = document.getElementById('lightbox');
     const lightboxImage = document.getElementById('lightbox-image');
-
+ 
     if (!lightbox || !lightboxImage || galleryItems.length === 0) return;
-
+ 
     let currentIndex = 0;
     let lightboxOpen = false;
     let isZoomed = false;
-
+ 
     lightboxImage.style.transition = 'opacity 0.15s ease';
-
+ 
     const zoomBtn = document.getElementById('lightboxZoom');
-
+ 
     function updateZoomButton() {
         const item = galleryItems[currentIndex];
         const isFramed = item?.dataset.category === 'ieramettas';
@@ -218,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
             isZoomed = false;
         }
     }
-
+ 
     if (zoomBtn) {
         zoomBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -245,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
+ 
     function openLightbox(index) {
         currentIndex = index;
         const img = galleryItems[currentIndex].querySelector('img');
@@ -261,14 +260,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         history.pushState({ lightbox: true }, document.title, location.href);
     }
-
+ 
     function closeLightbox() {
         lightbox.style.display = 'none';
         lightboxOpen = false;
         document.body.classList.remove('lightbox-open');
         history.pushState(null, document.title, location.href);
     }
-
+ 
     function showNext() {
         currentIndex = (currentIndex + 1) % galleryItems.length;
         lightboxImage.style.opacity = '0';
@@ -279,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateZoomButton();
         }, 150);
     }
-
+ 
     function showPrev() {
         currentIndex = (currentIndex - 1 + galleryItems.length) % galleryItems.length;
         lightboxImage.style.opacity = '0';
@@ -290,28 +289,28 @@ document.addEventListener('DOMContentLoaded', () => {
             updateZoomButton();
         }, 150);
     }
-
+ 
     galleryItems.forEach((item, i) => {
         item.style.cursor = 'pointer';
         item.addEventListener('click', () => openLightbox(i));
     });
-
+ 
     document.querySelector('.lightbox .close')?.addEventListener('click', (e) => {
         e.stopPropagation();
         closeLightbox();
     });
-
+ 
     lightbox.addEventListener('click', (event) => {
         if (event.target === lightbox) closeLightbox();
     });
-
+ 
     document.addEventListener('keydown', (event) => {
         if (!lightboxOpen) return;
         if (event.key === 'Escape') closeLightbox();
         if (event.key === 'ArrowRight') showNext();
         if (event.key === 'ArrowLeft') showPrev();
     });
-
+ 
     history.pushState(null, document.title, location.href);
     window.onpopstate = () => {
         if (deliveryOverlay?.classList.contains('open')) {
@@ -322,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
             history.pushState(null, document.title, location.href);
         }
     };
-
+ 
     document.querySelector('.lightbox-prev')?.addEventListener('click', (e) => {
         e.stopPropagation();
         showPrev();
@@ -331,15 +330,15 @@ document.addEventListener('DOMContentLoaded', () => {
         e.stopPropagation();
         showNext();
     });
-
+ 
     let touchStartX = 0;
     let touchStartY = 0;
-
+ 
     lightbox.addEventListener('touchstart', (e) => {
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
     }, { passive: true });
-
+ 
     lightbox.addEventListener('touchend', (e) => {
         const dx = e.changedTouches[0].clientX - touchStartX;
         const dy = e.changedTouches[0].clientY - touchStartY;
@@ -347,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dx < 0) showNext();
         else showPrev();
     }, { passive: true });
-
+ 
     // =========================
     // Scroll Reveal
     // =========================
@@ -359,13 +358,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
-
+ 
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
+ 
     document.querySelectorAll('.gallery-item').forEach((item, i) => {
         item.classList.add('reveal');
         item.style.setProperty('--i', i % 8);
         revealObserver.observe(item);
     });
-
+ 
 });
