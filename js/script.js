@@ -443,19 +443,33 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================
     let bigHeartEl = null;
 
-    function showBigHeart() {
+    function showBigHeart(target) {
         if (!bigHeartEl) {
             bigHeartEl = document.createElement('div');
             bigHeartEl.className = 'big-heart';
             bigHeartEl.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
             document.body.appendChild(bigHeartEl);
         }
+        // sirds parādās virs konkrētās gleznas, ne ekrāna vidū
+        const svg = bigHeartEl.firstChild;
+        let cx = window.innerWidth / 2, cy = window.innerHeight / 2, size = 200;
+        if (target && target.getBoundingClientRect) {
+            const r = target.getBoundingClientRect();
+            if (r.width > 0) {
+                cx = r.left + r.width / 2;
+                cy = r.top + r.height / 2;
+                size = Math.max(70, Math.min(210, r.width * 0.55));
+            }
+        }
+        bigHeartEl.style.left = cx + 'px';
+        bigHeartEl.style.top = cy + 'px';
+        svg.style.width = size + 'px';
         bigHeartEl.classList.remove('pop');
         void bigHeartEl.offsetWidth; // restartē animāciju
         bigHeartEl.classList.add('pop');
     }
 
-    function likeGalleryItem(item) {
+    function likeGalleryItem(item, heartTarget) {
         if (!item) return;
         const btn = item.querySelector('.btn-like');
         if (btn && !btn.classList.contains('liked')) {
@@ -463,11 +477,38 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             playLikeSound(true); // jau ielaikota — tikai skaņa un lielā sirds
         }
-        showBigHeart();
+        showBigHeart(heartTarget || item);
+        updateLbLike();
     }
 
     function likeCurrentPainting() {
-        likeGalleryItem(galleryItems[currentIndex]);
+        likeGalleryItem(galleryItems[currentIndex], lightboxImage);
+    }
+
+    // like poga lightbox joslā (blakus "Uzzināt vairāk" un share)
+    let lbLikeBtn = null;
+    if (lbInfoBar) {
+        lbLikeBtn = document.createElement('button');
+        lbLikeBtn.className = 'lightbox-like';
+        lbLikeBtn.setAttribute('aria-label', 'Patīk šī glezna');
+        lbLikeBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+        lbInfoBar.insertBefore(lbLikeBtn, document.getElementById('lightboxShare'));
+        lbLikeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const item = galleryItems[currentIndex];
+            const btn = item && item.querySelector('.btn-like');
+            if (!btn) return;
+            const wasLiked = btn.classList.contains('liked');
+            btn.click(); // pilnais cikls abos virzienos (like/unlike)
+            if (!wasLiked) showBigHeart(lightboxImage);
+            updateLbLike();
+        });
+    }
+
+    function updateLbLike() {
+        if (!lbLikeBtn) return;
+        const item = galleryItems[currentIndex];
+        lbLikeBtn.classList.toggle('liked', !!(item && item.querySelector('.btn-like.liked')));
     }
 
     let lbTapTime = 0;
@@ -563,6 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('lightbox-open');
         updateZoomButton();
         updateLightboxInfo();
+        updateLbLike();
         const openedItem = galleryItems[index];
         if (openedItem?.dataset.category === 'ieramettas') {
             const preload = new Image();
@@ -592,6 +634,7 @@ document.addEventListener('DOMContentLoaded', () => {
             lightboxImage.style.opacity = '1';
             updateZoomButton();
             updateLightboxInfo();
+            updateLbLike();
         }, 150);
     }
 

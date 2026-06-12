@@ -2295,45 +2295,126 @@ input, textarea, [contenteditable] {
 /* atslēdz pārlūka dubulttapa zoom uz gleznas, lai dubultklikšķis = like */
 #lightbox-image { touch-action: manipulation; }
 
+/* konteiners ir 0×0 punkts, ko JS noliek virs gleznas centra */
 .big-heart {
     position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    left: 50vw;
+    top: 50vh;
+    width: 0;
+    height: 0;
     pointer-events: none;
     z-index: 3000;
-    opacity: 0;
 }
 
 .big-heart svg {
-    width: min(40vw, 220px);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 200px;
     height: auto;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.3);
     fill: #ff4d6d;
     filter: drop-shadow(0 0 30px rgba(255, 77, 109, 0.85))
             drop-shadow(0 0 80px rgba(255, 77, 109, 0.50));
 }
 
-.big-heart.pop {
+.big-heart.pop svg {
     animation: bigHeartPop 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes bigHeartPop {
-    0%   { opacity: 0; transform: scale(0.3); }
-    18%  { opacity: 1; transform: scale(1.15); }
-    34%  { transform: scale(0.97); }
-    55%  { opacity: 1; transform: scale(1); }
-    100% { opacity: 0; transform: scale(1.1) translateY(-34px); }
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+    18%  { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+    34%  { transform: translate(-50%, -50%) scale(0.97); }
+    55%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) translateY(-34px) scale(1.1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .big-heart.pop { animation: bigHeartFadeSimple 0.6s ease forwards; }
+    .big-heart.pop svg { animation: bigHeartFadeSimple 0.6s ease forwards; }
 
     @keyframes bigHeartFadeSimple {
         0%   { opacity: 0; }
         30%  { opacity: 1; }
         100% { opacity: 0; }
     }
+}
+
+/* ── Lightbox bultiņas savās joslās — bilde tās vairs nepārklāj ── */
+#lightbox-image { max-width: calc(100% - 150px); }
+
+@media (max-width: 767px) {
+    #lightbox-image { max-width: calc(100% - 86px); }
+    .lightbox-prev { left: 5px; }
+    .lightbox-next { right: 5px; }
+}
+
+/* ── Like poga lightbox joslā ── */
+.lightbox-like {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s, border-color 0.2s, box-shadow 0.3s;
+}
+
+.lightbox-like:hover {
+    background: rgba(255, 255, 255, 0.22);
+    transform: translateY(-1px);
+}
+
+.lightbox-like svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.9);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 0.2s, fill 0.2s;
+}
+
+.lightbox-like.liked {
+    background: rgba(255, 77, 109, 0.20);
+    border-color: rgba(255, 77, 109, 0.50);
+    box-shadow: 0 0 12px rgba(255, 77, 109, 0.35);
+}
+
+.lightbox-like.liked svg {
+    fill: #ff4d6d;
+    stroke: #ff4d6d;
+}
+
+/* ── Telefonā WhatsApp poga kļūst par apaļu ikonu — vairs neaizsedz
+      parakstu footera apakšā ── */
+@media (max-width: 640px) {
+    .whatsapp-float {
+        padding: 13px;
+        border-radius: 50%;
+        gap: 0;
+    }
+
+    .whatsapp-text { display: none; }
+}
+
+/* ── Telefonā: nost ar zilo pieskāriena iezīmējumu ── */
+* { -webkit-tap-highlight-color: transparent; }
+
+/* galerijas kartiņas nav teksta kopēšanai — dubulttaps ir like žests,
+   tāpēc atslēdzam iezīmēšanos un dubulttapa zoom */
+.gallery-item {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 /* ── Mākslinieka paraksts footera apakšā ── */
