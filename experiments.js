@@ -90,7 +90,7 @@
         var CX  = 0.540;
         var BOT = 0.595;
 
-        var overlay = null, roomArt, roomCaption, roomScene, roomPhoto;
+        var overlay = null, roomArt, roomFrame, roomCaption, roomScene, roomPhoto;
         var artW = 50, artH = 40; // gleznas izmērs cm
         var roomIdx = -1;         // atvērtās gleznas indekss (faila nosaukumam)
 
@@ -119,7 +119,7 @@
                 '<button class="room-close" aria-label="Aizvērt">×</button>' +
                 '<div class="room-scene">' +
                     '<img class="room-photo" alt="" decoding="async">' +
-                    '<img class="room-art" alt="Glezna interjerā">' +
+                    '<div class="room-frame"><img class="room-art" alt="Glezna interjerā"></div>' +
                     '<div class="room-caption"></div>' +
                     '<button class="room-dl">' +
                         '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' +
@@ -133,6 +133,7 @@
             document.body.appendChild(overlay);
 
             roomPhoto = overlay.querySelector('.room-photo');
+            roomFrame = overlay.querySelector('.room-frame');
             roomArt = overlay.querySelector('.room-art');
             roomCaption = overlay.querySelector('.room-caption');
             roomScene = overlay.querySelector('.room-scene');
@@ -166,10 +167,14 @@
 
             var aw = artW * ppc;
             var ah = artH * ppc;
+            var f = Math.max(4, 3.2 * ppc); // rāmja biezums ≈ 3,2 cm
+
+            roomFrame.style.padding = f + 'px';
+            roomFrame.style.setProperty('--f', f + 'px');
+            roomFrame.style.left = (w * CX - (aw / 2 + f)) + 'px';
+            roomFrame.style.bottom = (h * BOT - f) + 'px';
             roomArt.style.width = aw + 'px';
             roomArt.style.height = ah + 'px';
-            roomArt.style.left = (w * CX - aw / 2) + 'px';
-            roomArt.style.bottom = (h * BOT) + 'px';
         }
 
         function openRoom() {
@@ -227,6 +232,64 @@
             overlay.classList.remove('open');
         }
 
+        /* detalizēts koka rāmis ar tekstūru un zelta līniju (canvas versija) */
+        function drawFrame(ctx, x, y, aw, ah, f) {
+            var ox = x - f, oy = y - f, ow = aw + 2 * f, oh = ah + 2 * f;
+
+            /* pamatne ar piekārtas gleznas ēnu */
+            ctx.save();
+            ctx.shadowColor = 'rgba(0,0,0,0.38)';
+            ctx.shadowBlur = 34;
+            ctx.shadowOffsetY = 16;
+            ctx.fillStyle = '#57493a';
+            ctx.fillRect(ox, oy, ow, oh);
+            ctx.restore();
+
+            /* tonālā pāreja — gaisma krīt no augšas-kreisās */
+            var g = ctx.createLinearGradient(ox, oy, ox + ow, oy + oh);
+            g.addColorStop(0, 'rgba(255,255,255,0.12)');
+            g.addColorStop(0.45, 'rgba(0,0,0,0)');
+            g.addColorStop(1, 'rgba(0,0,0,0.20)');
+            ctx.fillStyle = g;
+            ctx.fillRect(ox, oy, ow, oh);
+
+            /* koka šķiedras tekstūra (tikai rāmja gredzenā) */
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(ox, oy, ow, oh);
+            ctx.rect(x, y, aw, ah);
+            ctx.clip('evenodd');
+            ctx.lineWidth = 1;
+            for (var i = -oh; i < ow; i += 5) {
+                ctx.strokeStyle = 'rgba(0,0,0,0.09)';
+                ctx.beginPath();
+                ctx.moveTo(ox + i, oy);
+                ctx.lineTo(ox + i + oh, oy + oh);
+                ctx.stroke();
+                ctx.strokeStyle = 'rgba(255,255,255,0.045)';
+                ctx.beginPath();
+                ctx.moveTo(ox + i + 2.5, oy);
+                ctx.lineTo(ox + i + 2.5 + oh, oy + oh);
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            /* skavas: gaišā ārējā un tumšā iekšējā mala */
+            ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(ox + 1, oy + 1, ow - 2, oh - 2);
+            ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+            ctx.strokeRect(x - 1.5, y - 1.5, aw + 3, ah + 3);
+
+            /* zeltītā līnija pa ārējo perimetru */
+            ctx.strokeStyle = '#cfae73';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(ox - 1.5, oy - 1.5, ow + 3, oh + 3);
+            ctx.strokeStyle = 'rgba(122, 92, 46, 0.85)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(ox - 3.5, oy - 3.5, ow + 7, oh + 7);
+        }
+
         /* uzģenerē istabas foto + gleznu vienā attēlā un lejupielādē kā JPG */
         function downloadRoomShot() {
             var canvas = document.createElement('canvas');
@@ -244,16 +307,9 @@
                     var aw = artW * ppc, ah = artH * ppc;
                     var x = 1200 * CX - aw / 2;
                     var y = 1800 - 1800 * BOT - ah;
-                    var f = 13; // rāmja biezums (atbilst 5px CSS rāmim ekrānā)
+                    var f = Math.round(3.2 * ppc); // rāmja biezums ≈ 3,2 cm
 
-                    /* rāmis ar piekārtas gleznas ēnu */
-                    ctx.save();
-                    ctx.shadowColor = 'rgba(0,0,0,0.38)';
-                    ctx.shadowBlur = 34;
-                    ctx.shadowOffsetY = 16;
-                    ctx.fillStyle = '#57493a';
-                    ctx.fillRect(x - f, y - f, aw + 2 * f, ah + 2 * f);
-                    ctx.restore();
+                    drawFrame(ctx, x, y, aw, ah, f);
 
                     /* glezna ar "cover" kadrējumu, tāpat kā ekrānā */
                     var s = Math.max(aw / art.naturalWidth, ah / art.naturalHeight);
@@ -261,6 +317,11 @@
                     var sx = (art.naturalWidth - sw) / 2;
                     var sy = (art.naturalHeight - sh) / 2;
                     ctx.drawImage(art, sx, sy, sw, sh, x, y, aw, ah);
+
+                    /* gleznas iedziļinājuma ēna gar rāmja iekšmalu */
+                    ctx.strokeStyle = 'rgba(0, 0, 0, 0.26)';
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(x + 1.5, y + 1.5, aw - 3, ah - 3);
 
                     canvas.toBlob(function (blob) {
                         if (!blob) return;
