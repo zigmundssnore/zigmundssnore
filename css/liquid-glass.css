@@ -26,6 +26,7 @@
 .lg-on .gallery-tabs,
 .lg-on .whatsapp-float,
 .lg-on .btn-inquire,
+.lg-on .bio-audio-btn,
 .lg-on .alert-pulse2 {
     backdrop-filter: url(#lg-pill);
     -webkit-backdrop-filter: url(#lg-pill);

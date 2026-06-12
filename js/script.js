@@ -115,6 +115,40 @@ function setupLikes(item, globalIndex) {
 document.addEventListener('DOMContentLoaded', () => {
  
     // =========================
+    // Biogrāfijas audio poga
+    // =========================
+    const bioBtn = document.getElementById('bioAudioBtn');
+    if (bioBtn) {
+        const bioLabel = bioBtn.querySelector('span');
+        let bioAudio = null;
+
+        const resetBioBtn = () => {
+            bioBtn.classList.remove('playing');
+            bioLabel.textContent = 'Noklausīties biogrāfiju';
+        };
+
+        bioBtn.addEventListener('click', () => {
+            if (!bioAudio) {
+                bioAudio = new Audio('audio/biografija.mp3');
+                bioAudio.addEventListener('ended', resetBioBtn);
+                bioAudio.addEventListener('error', () => {
+                    resetBioBtn();
+                    bioLabel.textContent = 'Audio nav pieejams';
+                });
+            }
+            if (bioBtn.classList.contains('playing')) {
+                bioAudio.pause();
+                bioAudio.currentTime = 0;
+                resetBioBtn();
+            } else {
+                bioAudio.play();
+                bioBtn.classList.add('playing');
+                bioLabel.textContent = 'Apturēt';
+            }
+        });
+    }
+
+    // =========================
     // Gallery numuri + WhatsApp poga
     // =========================
     const waNumber = '37122811564';
