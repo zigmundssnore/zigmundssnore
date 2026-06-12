@@ -1,0 +1,234 @@
+/* ============================================================
+   EKSPERIMENTĀLĀS IZMAIŅAS — zigmundssnore.lv
+   Šo failu var droši DZĒST, lai atgrieztos pie iepriekšējā
+   izskata (kopā ar experiments.js un atzīmētajiem blokiem
+   index.html). Galvenos failus tas neaiztiek.
+   1) Gaismas plankums zem kursora galerijā
+   2) Lightbox sīktēlu lente
+   3) "Skatīt interjerā" skats
+   ============================================================ */
+
+/* ── 1. Gaismas plankums zem kursora (tikai ar peli) ── */
+@media (pointer: fine) {
+    .gallery-item::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%),
+            rgba(255, 255, 255, 0.16),
+            rgba(255, 255, 255, 0.05) 45%,
+            transparent 65%);
+        opacity: 0;
+        transition: opacity 0.35s;
+        z-index: 2;
+    }
+
+    .gallery-item:hover::after { opacity: 1; }
+}
+
+/* ── 2. Lightbox sīktēlu lente (tikai platos ekrānos) ── */
+.lb-strip { display: none; }
+
+@media (min-width: 768px) {
+    .lb-strip {
+        display: flex;
+        gap: 8px;
+        position: absolute;
+        bottom: 84px;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: min(80vw, 900px);
+        overflow-x: auto;
+        padding: 8px;
+        border-radius: 16px;
+        background: rgba(14, 19, 36, 0.50);
+        backdrop-filter: blur(14px) saturate(160%);
+        -webkit-backdrop-filter: blur(14px) saturate(160%);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        scrollbar-width: none;
+    }
+
+    .lb-strip::-webkit-scrollbar { display: none; }
+
+    .lb-thumb {
+        height: 52px;
+        width: auto;
+        border-radius: 8px;
+        cursor: pointer;
+        opacity: 0.5;
+        border: 2px solid transparent;
+        transition: opacity 0.2s, border-color 0.2s, transform 0.2s;
+        flex: none;
+    }
+
+    .lb-thumb:hover { opacity: 0.85; transform: translateY(-2px); }
+
+    .lb-thumb.active { opacity: 1; border-color: rgba(255, 255, 255, 0.85); }
+
+    /* zoom poga pārceļas virs lentes */
+    .lightbox-zoom { bottom: 158px; }
+}
+
+/* ── 3. "Skatīt interjerā" ── */
+.lb-room-btn {
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 8px 16px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.10);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.lb-room-btn:hover { background: rgba(255, 255, 255, 0.22); transform: translateY(-1px); }
+
+.room-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 2600;
+    background: rgba(5, 8, 16, 0.85);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.room-overlay.open {
+    display: flex;
+    animation: roomFade 0.25s ease;
+}
+
+@keyframes roomFade { from { opacity: 0; } }
+
+/* aina = īsta istabas fotogrāfija (1200×1800, proporcija 2:3) */
+.room-scene {
+    position: relative;
+    height: min(84vh, 760px);
+    aspect-ratio: 2 / 3;
+    max-width: 92vw;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
+    background: #d8d2c8;
+}
+
+.room-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* glezna — smalks tumša koka rāmis ar piekārtas gleznas ēnu */
+.room-art {
+    position: absolute;
+    object-fit: cover;
+    border: 5px solid #57493a;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+                0 14px 30px rgba(0, 0, 0, 0.30),
+                0 4px 8px rgba(0, 0, 0, 0.18);
+    background: #57493a;
+}
+
+.room-caption {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+    padding: 8px 14px;
+    border-radius: 100px;
+    background: rgba(10, 14, 26, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: rgba(255, 255, 255, 0.88);
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+}
+
+.room-close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    z-index: 1;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(10, 14, 26, 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.room-close:hover { background: rgba(255, 255, 255, 0.20); }
+
+/* ── Sagatavošanās ekrāns (telefoniem/planšetēm, 3 s) ── */
+.room-loader {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 24px;
+    text-align: center;
+    background: rgba(7, 10, 20, 0.94);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.room-overlay.loading .room-loader {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.room-loader-text {
+    margin: 0;
+    color: rgba(244, 246, 251, 0.88);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-shadow: 0 0 16px rgba(255, 255, 255, 0.18);
+}
+
+.room-loader-bar {
+    width: min(260px, 70vw);
+    height: 5px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    overflow: hidden;
+}
+
+.room-loader-bar::after {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg, rgba(255,255,255,0.95), rgba(255,255,255,0.65));
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.45);
+}
+
+.room-overlay.loading .room-loader-bar::after {
+    animation: roomLoadBar 3s linear forwards;
+}
+
+@keyframes roomLoadBar {
+    from { width: 0; }
+    to   { width: 100%; }
+}
