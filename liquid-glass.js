@@ -12,6 +12,9 @@
     var isChromium = !!window.chrome && !isIOS;
     if (!isChromium || !CSS.supports('backdrop-filter', 'url(#x)')) return;
 
+    // Telefoniem SVG refrakcijas filtri ir par dārgu — efekts paliek tikai datoros.
+    if (window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 900) return;
+
     /* Build a displacement map for a rounded rectangle.
        Pixels near the edge get a vector pointing toward the centre,
        so the backdrop is sampled from further inside — this produces

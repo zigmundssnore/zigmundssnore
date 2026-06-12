@@ -57,6 +57,8 @@ function setupLikes(item, globalIndex) {
  
     onValue(likeRef, (snapshot) => {
         likeCount.textContent = snapshot.val() || 0;
+    }, (err) => {
+        console.warn('Firebase lasīšana liegta — pārbaudi datubāzes Rules:', err.message);
     });
  
     likeBtn.addEventListener('click', (e) => {
@@ -97,17 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const sizeTxt = info.querySelector('.image-name')?.textContent || '';
         if (itemImg) itemImg.alt = 'Zigmunda Šnores akvarelis Nr. ' + num + (sizeTxt ? ', ' + sizeTxt : '');
 
-        // share poga bildes stūrī
-        const shareBtn = document.createElement('button');
-        shareBtn.className = 'btn-share';
-        shareBtn.setAttribute('aria-label', 'Dalīties ar gleznu Nr. ' + num);
-        shareBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>';
-        shareBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            shareGlezna(num);
-        });
-        item.appendChild(shareBtn);
- 
         const btn = document.createElement('button');
         btn.className = 'btn-inquire';
         btn.textContent = 'Uzzināt vairāk';
