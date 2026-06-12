@@ -1519,7 +1519,7 @@ header nav ul li a:active { transform: scale(0.94); }
 .lightbox-name {
     font-family: var(--font-body);
     font-size: 0.88rem;
-    color: var(--text-dim);
+    color: #fff;
 }
 
 .lightbox-price {
@@ -1866,3 +1866,484 @@ input, textarea, [contenteditable] {
     border: 2px solid #080c17;
 }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.28); }
+
+
+/* ============================================================
+   PAPILDU FUNKCIJAS — gaismas plankums galerijā,
+   lightbox sīktēlu lente, "Skatīt interjerā" skats
+   ============================================================ */
+
+/* ── 1. Gaismas plankums zem kursora (tikai ar peli) ── */
+@media (pointer: fine) {
+    .gallery-item::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%),
+            rgba(255, 255, 255, 0.16),
+            rgba(255, 255, 255, 0.05) 45%,
+            transparent 65%);
+        opacity: 0;
+        transition: opacity 0.35s;
+        z-index: 2;
+    }
+
+    .gallery-item:hover::after { opacity: 1; }
+}
+
+/* ── 2. Lightbox sīktēlu lente (tikai platos ekrānos) ── */
+.lb-strip { display: none; }
+
+@media (min-width: 768px) {
+    .lb-strip {
+        display: flex;
+        gap: 8px;
+        position: absolute;
+        bottom: 84px;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: min(80vw, 900px);
+        overflow-x: auto;
+        padding: 8px;
+        border-radius: 16px;
+        background: rgba(14, 19, 36, 0.50);
+        backdrop-filter: blur(14px) saturate(160%);
+        -webkit-backdrop-filter: blur(14px) saturate(160%);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        scrollbar-width: none;
+    }
+
+    .lb-strip::-webkit-scrollbar { display: none; }
+
+    .lb-thumb {
+        height: 52px;
+        width: auto;
+        border-radius: 8px;
+        cursor: pointer;
+        opacity: 0.5;
+        border: 2px solid transparent;
+        transition: opacity 0.2s, border-color 0.2s, transform 0.2s;
+        flex: none;
+    }
+
+    .lb-thumb:hover { opacity: 0.85; transform: translateY(-2px); }
+
+    .lb-thumb.active { opacity: 1; border-color: rgba(255, 255, 255, 0.85); }
+
+    /* zoom poga pārceļas virs lentes */
+    .lightbox-zoom { bottom: 158px; }
+}
+
+/* ── 3. "Skatīt interjerā" ── */
+.lb-room-btn {
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 8px 16px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.10);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.lb-room-btn:hover { background: rgba(255, 255, 255, 0.22); transform: translateY(-1px); }
+
+.room-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 2600;
+    background: rgba(5, 8, 16, 0.85);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.room-overlay.open {
+    display: flex;
+    animation: roomFade 0.25s ease;
+}
+
+@keyframes roomFade { from { opacity: 0; } }
+
+/* aina = īsta istabas fotogrāfija (1200×1800, proporcija 2:3) */
+.room-scene {
+    position: relative;
+    height: min(84vh, 760px);
+    aspect-ratio: 2 / 3;
+    max-width: 92vw;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
+    background: #d8d2c8;
+}
+
+.room-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* koka rāmis ar tekstūru, skavām un zeltītu līniju pa ārējo perimetru */
+.room-frame {
+    position: absolute;
+    background:
+        /* koka šķiedras */
+        repeating-linear-gradient(115deg,
+            rgba(0, 0, 0, 0.10) 0 1px,
+            transparent 1px 4px,
+            rgba(255, 255, 255, 0.05) 4px 5px,
+            transparent 5px 7px),
+        /* tonālā pāreja — gaisma no augšas-kreisās */
+        linear-gradient(135deg, #6a5a46 0%, #57493a 45%, #463a2e 100%);
+    box-shadow:
+        0 0 0 2px #cfae73,                        /* zeltītā līnija */
+        0 0 0 3px rgba(122, 92, 46, 0.85),        /* zelta tumšā maliņa */
+        0 14px 30px rgba(0, 0, 0, 0.30),
+        0 4px 8px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.20),  /* gaismas skava augšā */
+        inset 0 -1px 0 rgba(0, 0, 0, 0.35);       /* ēnas skava apakšā */
+}
+
+/* gleznas iedziļinājuma ēna gar rāmja iekšmalu */
+.room-frame::after {
+    content: '';
+    position: absolute;
+    inset: var(--f, 7px);
+    pointer-events: none;
+    box-shadow: inset 0 2px 7px rgba(0, 0, 0, 0.40),
+                inset 0 0 2px rgba(0, 0, 0, 0.35);
+}
+
+.room-art {
+    display: block;
+    object-fit: cover;
+}
+
+.room-caption {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+    max-width: 52%;
+    padding: 8px 14px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(16px) saturate(170%);
+    -webkit-backdrop-filter: blur(16px) saturate(170%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-top-color: rgba(255, 255, 255, 0.45);
+    box-shadow: 0 6px 18px rgba(3, 6, 16, 0.35),
+                inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    color: rgba(255, 255, 255, 0.92);
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+/* lejupielādes poga — liquid glass pille */
+.room-dl {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(16px) saturate(170%);
+    -webkit-backdrop-filter: blur(16px) saturate(170%);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-top-color: rgba(255, 255, 255, 0.50);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(3, 6, 16, 0.35),
+                inset 0 1px 0 rgba(255, 255, 255, 0.40);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+    transition: transform 0.2s, background 0.2s;
+}
+
+.room-dl:hover { transform: translateY(-2px); background: rgba(255, 255, 255, 0.24); }
+
+.room-dl:active { transform: scale(0.95); }
+
+.room-dl svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@media (max-width: 480px) {
+    .room-caption { font-size: 0.68rem; }
+    .room-dl span { display: none; }      /* telefonā tikai ikona */
+    .room-dl { padding: 11px; border-radius: 50%; }
+}
+
+.room-close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    z-index: 1;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(10, 14, 26, 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.room-close:hover { background: rgba(255, 255, 255, 0.20); }
+
+/* ── Sagatavošanās ekrāns (telefoniem/planšetēm, 3 s) ──
+   Fonā redzama jau gatavā interjera aina blur režīmā; kad josla
+   piepildās, blur maigi nofokusējas. */
+.room-scene {
+    transition: filter 0.65s ease, transform 0.65s ease;
+}
+
+.room-overlay.loading .room-scene {
+    filter: blur(16px) brightness(0.78) saturate(1.1);
+    transform: scale(1.05);
+}
+
+.room-loader {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 24px;
+    text-align: center;
+    overflow: hidden;
+    background: rgba(7, 10, 20, 0.38);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+/* maigs gaismas plankums, kas lēni elpo virs blurotās ainas */
+.room-loader::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 130%;
+    height: 130%;
+    transform: translate(-50%, -50%) scale(1);
+    background: radial-gradient(42% 36% at 50% 50%,
+        rgba(255, 255, 255, 0.15),
+        rgba(255, 255, 255, 0.05) 55%,
+        transparent 75%);
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.room-overlay.loading .room-loader::before {
+    animation: roomBreathe 2.8s ease-in-out infinite;
+}
+
+@keyframes roomBreathe {
+    0%, 100% { opacity: 0.30; transform: translate(-50%, -50%) scale(1); }
+    50%      { opacity: 0.60; transform: translate(-50%, -50%) scale(1.12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .room-overlay.loading .room-loader::before,
+    .room-overlay.loading .room-loader-text { animation: none; }
+    .room-overlay.loading .room-scene { filter: none; transform: none; }
+}
+
+.room-overlay.loading .room-loader {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.room-loader-text {
+    margin: 0;
+    position: relative;
+    color: rgba(244, 246, 251, 0.88);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-shadow: 0 0 16px rgba(255, 255, 255, 0.18);
+}
+
+/* teksts viegli pulsē tajā pašā elpošanas ritmā */
+.room-overlay.loading .room-loader-text {
+    animation: roomTextPulse 2.8s ease-in-out infinite;
+}
+
+@keyframes roomTextPulse {
+    0%, 100% { opacity: 0.65; }
+    50%      { opacity: 1; }
+}
+
+.room-loader-bar {
+    width: min(260px, 70vw);
+    height: 6px;
+    position: relative;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.10);
+    box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+.room-loader-bar::after {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0.45),
+        rgba(255, 255, 255, 0.95));
+    filter: blur(0.5px); /* mīkstina malu */
+}
+
+.room-overlay.loading .room-loader-bar::after {
+    animation: roomLoadBar 2s ease-in-out forwards,
+               roomBarGlow 2s ease-in-out infinite;
+}
+
+@keyframes roomLoadBar {
+    from { width: 0; }
+    to   { width: 100%; }
+}
+
+@keyframes roomBarGlow {
+    0%, 100% { box-shadow: 0 0 8px rgba(255, 255, 255, 0.30); }
+    50%      { box-shadow: 0 0 20px rgba(255, 255, 255, 0.65); }
+}
+
+/* ── Lightbox izkārtojums: apakšā rezervēta josla UI elementiem —
+      glezna centrējas zonā VIRS tās un nekad netiek aizsegta ── */
+.lightbox { padding-bottom: 150px; }
+
+#lightbox-image {
+    max-width: 94%;
+    max-height: 96%;
+}
+
+@media (min-width: 768px) {
+    /* vieta sīktēlu lentei + info joslai */
+    .lightbox { padding-bottom: 185px; }
+}
+
+/* zoom poga ir info joslas sastāvdaļa (JS to pārvieto turp) */
+.lightbox-zoom {
+    position: static;
+    transform: none;
+    box-shadow: none;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+}
+
+.lightbox-zoom:hover { transform: translateY(-1px); }
+
+/* telefonā info josla kļūst par pilna platuma apakšējo paneli */
+@media (max-width: 640px) {
+    .lightbox-info {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        transform: none;
+        max-width: none;
+        border-radius: 18px;
+        padding: 10px 14px;
+    }
+}
+
+/* ── Telefonā WhatsApp un "Uz augšu" pogas pacełas virs apakšējā doka ── */
+@media (max-width: 640px) {
+    .whatsapp-float,
+    .to-top { bottom: 108px; }
+}
+
+/* šaurā ekrānā doks salokās 2 rindās — pogām jākāpj vēl augstāk */
+@media (max-width: 480px) {
+    .whatsapp-float,
+    .to-top { bottom: 144px; }
+
+    .site-footer { padding-bottom: 150px; }
+}
+
+/* ── Dubultklikšķa like: liela kvēlojoša sirds pār visu ekrānu ── */
+
+/* atslēdz pārlūka dubulttapa zoom uz gleznas, lai dubultklikšķis = like */
+#lightbox-image { touch-action: manipulation; }
+
+.big-heart {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 3000;
+    opacity: 0;
+}
+
+.big-heart svg {
+    width: min(40vw, 220px);
+    height: auto;
+    fill: #ff4d6d;
+    filter: drop-shadow(0 0 30px rgba(255, 77, 109, 0.85))
+            drop-shadow(0 0 80px rgba(255, 77, 109, 0.50));
+}
+
+.big-heart.pop {
+    animation: bigHeartPop 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes bigHeartPop {
+    0%   { opacity: 0; transform: scale(0.3); }
+    18%  { opacity: 1; transform: scale(1.15); }
+    34%  { transform: scale(0.97); }
+    55%  { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.1) translateY(-34px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .big-heart.pop { animation: bigHeartFadeSimple 0.6s ease forwards; }
+
+    @keyframes bigHeartFadeSimple {
+        0%   { opacity: 0; }
+        30%  { opacity: 1; }
+        100% { opacity: 0; }
+    }
+}
+
+/* ── Mākslinieka paraksts footera apakšā ── */
+.footer-signature {
+    display: block;
+    width: 170px;
+    height: auto;
+    margin: 20px auto 0;
+    opacity: 0.85;
+    filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.18));
+    user-select: none;
+    pointer-events: none;
+}
