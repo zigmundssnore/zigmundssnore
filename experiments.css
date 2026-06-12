@@ -172,7 +172,18 @@
 
 .room-close:hover { background: rgba(255, 255, 255, 0.20); }
 
-/* ── Sagatavošanās ekrāns (telefoniem/planšetēm, 3 s) ── */
+/* ── Sagatavošanās ekrāns (telefoniem/planšetēm, 3 s) ──
+   Fonā redzama jau gatavā interjera aina blur režīmā; kad josla
+   piepildās, blur maigi nofokusējas. */
+.room-scene {
+    transition: filter 0.65s ease, transform 0.65s ease;
+}
+
+.room-overlay.loading .room-scene {
+    filter: blur(16px) brightness(0.78) saturate(1.1);
+    transform: scale(1.05);
+}
+
 .room-loader {
     position: absolute;
     inset: 0;
@@ -184,10 +195,42 @@
     gap: 20px;
     padding: 24px;
     text-align: center;
-    background: rgba(7, 10, 20, 0.94);
+    overflow: hidden;
+    background: rgba(7, 10, 20, 0.38);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.4s ease;
+}
+
+/* gaismas atspīdums, kas slīd pāri blurotajai ainai */
+.room-loader::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    bottom: -20%;
+    left: 0;
+    width: 38%;
+    background: linear-gradient(100deg,
+        transparent,
+        rgba(255, 255, 255, 0.10) 40%,
+        rgba(255, 255, 255, 0.26) 50%,
+        rgba(255, 255, 255, 0.10) 60%,
+        transparent);
+    transform: translateX(-130%) skewX(-12deg);
+    pointer-events: none;
+}
+
+.room-overlay.loading .room-loader::before {
+    animation: roomShine 1.7s ease-in-out infinite;
+}
+
+@keyframes roomShine {
+    to { transform: translateX(400%) skewX(-12deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .room-overlay.loading .room-loader::before { animation: none; }
+    .room-overlay.loading .room-scene { filter: none; transform: none; }
 }
 
 .room-overlay.loading .room-loader {
