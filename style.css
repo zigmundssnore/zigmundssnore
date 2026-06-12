@@ -2,73 +2,146 @@
    LIQUID GLASS — zigmundssnore.lv
    iPhone-style glassmorphism, production-grade
    ============================================================ */
- 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
- 
+
+/* fonts are loaded via <link> in index.html — no @import here, it blocks rendering */
+
 /* ── CSS Variables ── */
 :root {
-    --glass-bg:        rgba(255, 255, 255, 0.10);
-    --glass-bg-heavy:  rgba(255, 255, 255, 0.15);
-    --glass-border:    rgba(255, 255, 255, 0.25);
-    --glass-border-top:rgba(255, 255, 255, 0.45);
-    --glass-blur:      blur(24px) saturate(180%);
-    --glass-blur-heavy:blur(40px) saturate(200%);
-    --glass-shadow:    0 8px 32px rgba(0, 0, 0, 0.35),
-                       0 2px 8px  rgba(0, 0, 0, 0.20),
-                       inset 0 1px 0 rgba(255,255,255,0.40);
-    --glass-shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.25),
-                       inset 0 1px 0 rgba(255,255,255,0.35);
-    --radius-lg: 20px;
-    --radius-md: 14px;
-    --radius-sm:  8px;
-    --text:       #ffffff;
-    --text-dim:   rgba(255,255,255,0.70);
+    --glass-bg:        rgba(255, 255, 255, 0.08);
+    --glass-bg-heavy:  rgba(255, 255, 255, 0.14);
+    --glass-border:    rgba(255, 255, 255, 0.22);
+    --glass-border-top:rgba(255, 255, 255, 0.42);
+    --glass-blur:      blur(26px) saturate(170%);
+    --glass-blur-heavy:blur(44px) saturate(190%);
+    --glass-shadow:    0 16px 48px rgba(3, 6, 16, 0.50),
+                       0 2px 10px  rgba(3, 6, 16, 0.30),
+                       inset 0 1px 0 rgba(255,255,255,0.38);
+    --glass-shadow-sm: 0 6px 20px rgba(3, 6, 16, 0.38),
+                       inset 0 1px 0 rgba(255,255,255,0.32);
+    --radius-lg: 28px;
+    --radius-md: 18px;
+    --radius-sm: 10px;
+    --text:       #f4f6fb;
+    --text-dim:   rgba(235, 240, 252, 0.72);
     --accent:     rgba(255,255,255,0.90);
+    --gold:       #e8c477;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body:    'Manrope', 'Segoe UI', sans-serif;
 }
- 
+
 /* ── Reset & Base ── */
 *, *::before, *::after { box-sizing: border-box; }
- 
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 96px;
+}
+
 body {
     margin: 0;
-    font-family: 'DM Sans', sans-serif;
-    background-image: url('background.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-attachment: fixed;
+    font-family: var(--font-body);
+    font-weight: 350;
+    caret-color: transparent; /* paslēpj mirgojošo teksta kursoru, klikšķinot uz teksta */
+    background: linear-gradient(180deg, #0c1226 0%, #0a0f1e 45%, #080c17 100%);
     color: var(--text);
     line-height: 1.7;
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
 }
- 
-/* subtle dark veil so glass pops */
+
+/* film grain over everything — kills gradient banding, adds analog texture */
 body::before {
     content: '';
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.38);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.05;
     pointer-events: none;
-    z-index: 0;
+    z-index: 9999;
 }
- 
+
+/* ── Aurora backdrop: slow drifting colour fields the glass refracts ── */
+.aurora {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.aurora span {
+    position: absolute;
+    width: 70vmax;
+    height: 70vmax;
+    border-radius: 50%;
+    will-change: transform;
+}
+
+.aurora .a1 { background: radial-gradient(circle at 40% 40%, rgba(86, 112, 255, 0.42), transparent 64%); top: -22%; left: -16%;  animation: drift-a 38s ease-in-out infinite alternate; }
+.aurora .a2 { background: radial-gradient(circle at 55% 45%, rgba(38, 178, 170, 0.34), transparent 64%); top: 6%;    right: -24%; animation: drift-b 47s ease-in-out infinite alternate; }
+.aurora .a3 { background: radial-gradient(circle at 50% 50%, rgba(228, 150, 70, 0.22), transparent 60%); bottom: -26%; left: 4%;  animation: drift-c 54s ease-in-out infinite alternate; }
+.aurora .a4 { background: radial-gradient(circle at 50% 50%, rgba(154, 104, 255, 0.26), transparent 64%); bottom: -10%; right: 2%; animation: drift-d 61s ease-in-out infinite alternate; }
+
+/* depth vignette painted over the colour fields */
+.aurora::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(130% 100% at 50% 0%, transparent 38%, rgba(4, 7, 15, 0.62) 100%);
+}
+
+@keyframes drift-a { to { transform: translate(9vw, 7vh)   scale(1.18); } }
+@keyframes drift-b { to { transform: translate(-8vw, 9vh)  scale(1.12); } }
+@keyframes drift-c { to { transform: translate(7vw, -8vh)  scale(1.22); } }
+@keyframes drift-d { to { transform: translate(-6vw, -6vh) scale(1.10); } }
+
+@media (prefers-reduced-motion: reduce) {
+    .aurora span { animation: none; }
+}
+
 main, section, header, footer { position: relative; z-index: 1; }
- 
+
 /* ── Typography ── */
 h1, h2, h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 300;
-    letter-spacing: 0.04em;
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
     margin-top: 0;
+    /* soft outer glow, like light catching the letters */
+    text-shadow: 0 0 24px rgba(255, 255, 255, 0.20),
+                 0 0 6px rgba(255, 255, 255, 0.10);
 }
- 
-h1 { font-size: clamp(2rem, 5vw, 3.2rem); }
-h2 { font-size: clamp(1.6rem, 4vw, 2.6rem); margin-bottom: 0.6em; }
-h3 { font-size: clamp(1.2rem, 3vw, 1.8rem); margin-bottom: 0.5em; }
- 
-p { font-size: 1rem; color: var(--text-dim); margin: 0.35em 0; }
-p strong { color: var(--text); font-weight: 500; }
- 
+
+h1 { font-size: clamp(2.3rem, 5vw, 3.6rem); }
+h2 { font-size: clamp(1.9rem, 4vw, 2.9rem); margin-bottom: 0.6em; }
+h3 { font-size: clamp(1.25rem, 3vw, 1.75rem); margin-bottom: 0.5em; font-weight: 500; }
+
+p { font-size: 1.02rem; color: var(--text-dim); margin: 0.4em 0; text-shadow: 0 0 14px rgba(244, 246, 251, 0.10); }
+p strong { color: var(--text); font-weight: 600; text-shadow: 0 0 16px rgba(255, 255, 255, 0.16); }
+
+/* gold hairline ornament under major headings */
+#par-makslinieku .glass-card > h2::after,
+#jaunumi > h2::after,
+#gallery > h2::after,
+#kontakti > h1::after {
+    content: '';
+    display: block;
+    width: 64px;
+    height: 2px;
+    margin: 18px auto 0;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+    transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
+}
+
+/* ornament draws itself in when the section reveals */
+#par-makslinieku.reveal:not(.visible) .glass-card > h2::after,
+#jaunumi.reveal:not(.visible) > h2::after,
+#kontakti.reveal:not(.visible) > h1::after {
+    width: 0;
+}
+
 /* ── Liquid Glass Mixin (utility class) ── */
 .glass {
     background: var(--glass-bg);
@@ -79,70 +152,80 @@ p strong { color: var(--text); font-weight: 500; }
     box-shadow: var(--glass-shadow);
     border-radius: var(--radius-lg);
 }
- 
-/* ── Header / Nav ── */
+
+/* ── Header / Nav — floating glass capsule ── */
 header {
-    background: rgba(20, 20, 20, 0.30);
+    position: fixed;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: max-content;
+    max-width: calc(100vw - 24px);
+    padding: 6px;
+    border-radius: 100px;
+    background: rgba(14, 19, 36, 0.55);
     backdrop-filter: var(--glass-blur-heavy);
     -webkit-backdrop-filter: var(--glass-blur-heavy);
-    border-bottom: 1px solid var(--glass-border);
-    box-shadow: 0 1px 0 var(--glass-border-top),
-                0 8px 24px rgba(0,0,0,0.3);
-    padding: 0 20px;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    height: 60px;
-    display: flex;
-    align-items: center;
+    border: 1px solid rgba(255,255,255,0.16);
+    border-top-color: rgba(255,255,255,0.32);
+    box-shadow: 0 14px 44px rgba(3,6,16,0.55),
+                inset 0 1px 0 rgba(255,255,255,0.18);
 }
- 
+
 header nav ul {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
     justify-content: center;
-    width: 100%;
-    gap: 8px;
+    gap: 2px;
 }
- 
+
 header nav ul li a {
-    color: var(--text);
+    color: rgba(244,246,251,0.82);
     text-decoration: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.92rem;
-    font-weight: 400;
-    letter-spacing: 0.05em;
-    padding: 7px 16px;
-    border-radius: 30px;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 9px 18px;
+    border-radius: 100px;
     transition: background 0.25s, color 0.25s;
     display: block;
+    white-space: nowrap;
 }
- 
+
 header nav ul li a:hover {
-    background: var(--glass-bg-heavy);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.14);
     color: #fff;
     text-decoration: none;
 }
- 
+
 /* ── Page Sections ── */
 section {
     padding: 60px 20px;
     text-align: center;
 }
- 
+
 /* ── Jaunumi section ── */
 #jaunumi {
     padding: 60px 20px;
 }
- 
-#jaunumi .container {
-    max-width: 780px;
+
+#jaunumi > h2 { margin-bottom: 40px; }
+
+/* bento: each news topic gets its own glass card */
+.bento-grid {
+    column-count: 2;
+    column-gap: 18px;
+    max-width: 1000px;
     margin: 0 auto;
+}
+
+.bento-card {
+    break-inside: avoid;
+    margin-bottom: 18px;
     background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
@@ -150,23 +233,23 @@ section {
     border-top-color: var(--glass-border-top);
     box-shadow: var(--glass-shadow);
     border-radius: var(--radius-lg);
-    padding: 40px 48px;
+    padding: 34px 30px;
     text-align: center;
     position: relative;
     overflow: hidden;
 }
- 
+
 /* specular top-edge highlight */
-#jaunumi .container::before {
+.bento-card::before {
     content: '';
     position: absolute;
     top: 0; left: 10%; right: 10%;
     height: 1px;
     background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
 }
- 
+
 #jaunumi .muted p { color: var(--text-dim); }
- 
+
 .news-img {
     display: block;
     margin: 24px auto;
@@ -177,27 +260,17 @@ section {
     border: 1px solid var(--glass-border);
     box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
- 
+
 .last-text { margin-bottom: 28px; }
- 
-/* ── Par mākslinieku ── */
+
+/* ── Par mākslinieku — editorial layout: text column + portrait ── */
 #par-makslinieku {
-    padding: 60px 20px;
-}
- 
-#par-makslinieku > * {
-    max-width: 720px;
-    margin-left: auto;
-    margin-right: auto;
-}
- 
-/* Glass card wrapping the bio content */
-#par-makslinieku {
+    padding: 130px 20px 60px;
     position: relative;
 }
- 
+
 #par-makslinieku .glass-card {
-    max-width: 720px;
+    max-width: 960px;
     margin: 0 auto;
     background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
@@ -206,11 +279,37 @@ section {
     border-top-color: var(--glass-border-top);
     box-shadow: var(--glass-shadow);
     border-radius: var(--radius-lg);
-    padding: 40px 48px;
+    padding: 48px 52px;
     position: relative;
     overflow: hidden;
+    text-align: left;
 }
- 
+
+#par-makslinieku .glass-card > h2 {
+    text-align: center;
+}
+
+/* bio as a timeline: vertical line + dot per life chapter */
+#par-makslinieku .glass-card > p {
+    position: relative;
+    margin: 0;
+    padding: 0.55em 0 0.55em 26px;
+    border-left: 1px solid rgba(255,255,255,0.16);
+    text-align: left;
+}
+
+#par-makslinieku .glass-card > p::before {
+    content: '';
+    position: absolute;
+    left: -4.5px;
+    top: 1.15em;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 0 8px rgba(255,255,255,0.45);
+}
+
 #par-makslinieku .glass-card::before {
     content: '';
     position: absolute;
@@ -218,7 +317,37 @@ section {
     height: 1px;
     background: linear-gradient(to right, transparent, rgba(255,255,255,0.55), transparent);
 }
- 
+
+/* desktop: magazine spread — text left, portrait fills the right column */
+@media (min-width: 900px) {
+    #par-makslinieku .glass-card {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        column-gap: 48px;
+        align-items: start;
+    }
+
+    #par-makslinieku .glass-card > h2 {
+        grid-column: 1 / -1;
+        margin-bottom: 0.8em;
+    }
+
+    #par-makslinieku .glass-card > p {
+        grid-column: 1;
+    }
+
+    #par-makslinieku .glass-card > .news-img {
+        grid-column: 2;
+        grid-row: 2 / span 9;
+        align-self: stretch;
+        width: 100%;
+        max-width: none;
+        height: 100%;
+        object-fit: cover;
+        margin: 0 !important; /* trumps the inline margin-top on the img */
+    }
+}
+
 /* ── Before-Gallery (vectēva foto) ── */
 #before-gallery {
     display: flex;
@@ -228,55 +357,102 @@ section {
     padding: 20px;
     text-align: center;
 }
- 
+
 .image-left  { width: 100%; max-width: 500px; }
 .image-right { width: 100%; max-width: 500px; }
- 
+
 .zigis-image {
     width: 80%;
     border-radius: var(--radius-lg);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-shadow);
 }
- 
-/* ── Kontakti ── */
+
+/* ── Kontakti — its own glass panel ── */
 #kontakti {
-    padding: 70px 20px;
+    max-width: 880px;
+    width: calc(100% - 32px);
+    margin: 40px auto;
+    padding: 60px 40px 64px;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-top-color: var(--glass-border-top);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative;
+    overflow: hidden;
 }
- 
+
+#kontakti::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.55), transparent);
+}
+
 #kontakti h1 {
     font-size: clamp(2rem, 5vw, 3rem);
-    margin-bottom: 32px;
+    margin-bottom: 36px;
 }
- 
-/* ── Buttons ── */
+
+/* ── Buttons ──
+   Unified liquid-glass pills. Every button shares one neutral glass
+   surface; the brand identity lives in the icon color and a tint
+   that floods in on hover (via --brand, an R,G,B triplet). */
 .buttons {
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
-    margin-top: 24px;
-    flex-wrap: wrap;
+    max-width: 760px;
+    margin: 24px auto 0;
 }
- 
+
 .button {
+    --brand: 255, 255, 255;
     position: relative;
-    padding: 11px 22px;
-    border-radius: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+    padding: 14px 24px;
+    border-radius: 100px;
     text-decoration: none;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-    font-size: 0.95rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.96rem;
     color: #fff;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
     overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.30);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.30),
-                inset 0 1px 0 rgba(255,255,255,0.40);
+    /* layer 1: light streak (parked off-canvas, sweeps on hover)
+       layer 2: curved-glass tonal gradient */
+    background:
+        linear-gradient(110deg, transparent 28%, rgba(255,255,255,0.22) 50%, transparent 72%) no-repeat,
+        linear-gradient(160deg, rgba(255,255,255,0.18), rgba(255,255,255,0.05) 55%, rgba(255,255,255,0.12));
+    background-size: 250% 100%, 100% 100%;
+    background-position: 200% 0, 0 0;
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.28);
+    border-top-color: rgba(255,255,255,0.50);
+    box-shadow: 0 4px 16px rgba(3,6,16,0.35),
+                inset 0 1px 0 rgba(255,255,255,0.40),
+                inset 0 -2px 4px rgba(0,0,0,0.16);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+                border-color 0.25s,
+                box-shadow 0.25s,
+                background-position 0.9s ease;
 }
- 
+
+/* icon + label sit above the tint layer */
+.button > * {
+    position: relative;
+    z-index: 1;
+}
+
 /* specular pill highlight */
 .button::before {
     content: '';
@@ -284,25 +460,61 @@ section {
     top: 0; left: 12%; right: 12%;
     height: 1px;
     background: linear-gradient(to right, transparent, rgba(255,255,255,0.7), transparent);
+    z-index: 2;
 }
- 
+
+/* brand tint layer — fades in on hover so the gradient animates smoothly */
+.button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(160deg,
+        rgba(var(--brand), 0.34),
+        rgba(var(--brand), 0.14));
+    opacity: 0;
+    transition: opacity 0.25s;
+}
+
+.btn-ico {
+    width: 20px;
+    height: 20px;
+    flex: none;
+    fill: rgb(var(--brand));
+    filter: drop-shadow(0 1px 5px rgba(var(--brand), 0.45));
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 .button:hover {
-    transform: translateY(-2px) scale(1.03);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.40),
-                inset 0 1px 0 rgba(255,255,255,0.50);
-    opacity: 1;
+    transform: translateY(-2px);
+    border-color: rgba(var(--brand), 0.55);
+    border-top-color: rgba(255,255,255,0.60);
+    background-position: -100% 0, 0 0; /* light streak sweeps across */
+    box-shadow: 0 8px 28px rgba(var(--brand), 0.30),
+                0 4px 12px rgba(0,0,0,0.25),
+                inset 0 1px 0 rgba(255,255,255,0.50),
+                inset 0 -2px 4px rgba(0,0,0,0.12);
 }
- 
-.button:active { transform: scale(0.97); }
- 
-.button.whatsapp  { background: rgba(37,  211, 102, 0.70); }
-.button.whatsapp2 { background: rgba(187, 187, 187, 0.50); }
-.button.facebook  { background: rgba(24,  119, 242, 0.70); }
-.button.facebook2 { background: rgba(24,  119, 242, 0.70); }
-.button.sms       { background: rgba(219, 131,  59, 0.70); }
-.button.instagram { background: linear-gradient(135deg, rgba(225,48,108,0.75), rgba(81,91,212,0.75)); }
-.button.youtube   { background: rgba(255,   0,   0, 0.70); }
- 
+
+.button:hover::after { opacity: 1; }
+
+.button:hover .btn-ico { transform: scale(1.12); }
+
+.button:active { transform: translateY(0) scale(0.96); }
+
+.button:focus-visible {
+    outline: 2px solid rgba(var(--brand), 0.85);
+    outline-offset: 3px;
+}
+
+.button.whatsapp  { --brand: 37, 211, 102; }
+.button.whatsapp2 { --brand: 187, 187, 187; }
+.button.facebook  { --brand: 24, 119, 242; }
+.button.facebook2 { --brand: 24, 119, 242; }
+.button.sms       { --brand: 255, 159, 10; }
+.button.instagram { --brand: 225, 48, 108; }
+.button.youtube   { --brand: 255, 59, 48; }
+
 .button-link {
     display: inline-block;
     background: rgba(26, 188, 156, 0.65);
@@ -320,12 +532,12 @@ section {
     transition: transform 0.2s, box-shadow 0.2s;
     margin: 20px auto;
 }
- 
+
 .button-link:hover {
     transform: translateY(-2px) scale(1.04);
     box-shadow: 0 8px 28px rgba(0,0,0,0.35);
 }
- 
+
 /* ── Before/After Slider ── */
 .slider-wrapper {
     max-width: 680px;
@@ -335,7 +547,7 @@ section {
     flex-direction: column;
     gap: 14px;
 }
- 
+
 .compare {
     position: relative;
     width: 100%;
@@ -345,7 +557,7 @@ section {
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-shadow);
 }
- 
+
 .compare img {
     position: absolute;
     inset: 0;
@@ -353,11 +565,11 @@ section {
     height: 100%;
     object-fit: cover;
 }
- 
+
 .compare .after {
     clip-path: inset(0 50% 0 0);
 }
- 
+
 #slider {
     width: 100%;
     height: 6px;
@@ -370,7 +582,7 @@ section {
     cursor: pointer;
     backdrop-filter: blur(8px);
 }
- 
+
 #slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 22px;
@@ -383,38 +595,39 @@ section {
     cursor: grab;
     transition: transform 0.15s;
 }
- 
+
 #slider::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.15); }
- 
+
 /* ── Gallery Section ── */
 #gallery {
-    padding: 60px 20px 80px;
-    background: rgba(0,0,0,0.25);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    padding: 70px 20px 90px;
+    background: rgba(4, 7, 15, 0.34);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06),
+                inset 0 -1px 0 rgba(255,255,255,0.06);
 }
- 
+
 #gallery h2 {
     color: white;
     margin-bottom: 44px;
     font-size: clamp(1.8rem, 4vw, 2.8rem);
 }
- 
+
+/* masonry: columns let every painting keep its full aspect ratio —
+   nothing gets cropped, items just stack like a gallery wall */
 .gallery-container {
-    display: grid;
-    gap: 18px;
-    justify-items: center;
-    align-items: start;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    column-count: 4;
+    column-gap: 16px;
     max-width: 1400px;
     margin: 0 auto;
 }
- 
+
 /* ── Gallery Item (liquid glass card) ── */
 .gallery-item {
     position: relative;
     overflow: hidden;
     width: 100%;
+    margin-bottom: 16px;
+    break-inside: avoid;
     border-radius: var(--radius-md);
     background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
@@ -425,7 +638,7 @@ section {
     transition: transform 0.3s, box-shadow 0.3s;
     cursor: pointer;
 }
- 
+
 .gallery-item::before {
     content: '';
     position: absolute;
@@ -435,13 +648,13 @@ section {
     z-index: 2;
     pointer-events: none;
 }
- 
+
 .gallery-item:hover {
-    transform: translateY(-4px) scale(1.015);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.45),
+    transform: translateY(-6px) scale(1.015);
+    box-shadow: 0 22px 52px rgba(3,6,16,0.55),
                 inset 0 1px 0 rgba(255,255,255,0.45);
 }
- 
+
 .gallery-item img {
     width: 100%;
     height: auto;
@@ -450,9 +663,9 @@ section {
     border: none;
     transition: transform 0.4s;
 }
- 
+
 .gallery-item:hover img { transform: scale(1.04); }
- 
+
 .gallery-container img {
     width: 100%;
     max-width: 100%;
@@ -461,27 +674,29 @@ section {
     transition: transform 0.4s;
     cursor: pointer;
 }
- 
+
 .image-info {
     padding: 10px 14px 12px;
     text-align: center;
 }
- 
+
 .image-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.05rem;
-    font-weight: 400;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
     color: var(--text-dim);
     margin: 0;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
 }
- 
+
 .image-size {
-    font-size: 0.85rem;
-    color: rgba(255,255,255,0.45);
-    margin-top: 3px;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: #fff;
+    margin-top: 4px;
 }
- 
+
 /* ── Lightbox ── */
 .lightbox {
     display: none;
@@ -494,7 +709,7 @@ section {
     align-items: center;
     z-index: 1001;
 }
- 
+
 .lightbox img {
     max-width: 88%;
     max-height: 88%;
@@ -502,7 +717,7 @@ section {
     border: 1px solid rgba(255,255,255,0.15);
     box-shadow: 0 24px 80px rgba(0,0,0,0.7);
 }
- 
+
 .lightbox .close {
     position: absolute;
     top: 22px;
@@ -523,19 +738,19 @@ section {
     transition: background 0.2s, color 0.2s;
     line-height: 1;
 }
- 
+
 .lightbox .close:hover {
     background: rgba(255,255,255,0.20);
     color: #fff;
 }
- 
+
 /* ── WhatsApp Float ── */
 @keyframes glassGlow {
     0%   { box-shadow: 0 4px 20px rgba(37,211,102,0.25), var(--glass-shadow-sm); }
     50%  { box-shadow: 0 4px 28px rgba(37,211,102,0.55), var(--glass-shadow-sm); }
     100% { box-shadow: 0 4px 20px rgba(37,211,102,0.25), var(--glass-shadow-sm); }
 }
- 
+
 .whatsapp-float {
     position: fixed;
     bottom: 50px;
@@ -554,17 +769,24 @@ section {
     border-radius: 30px;
     z-index: 999;
     text-decoration: none;
-    animation: glassGlow 2.5s ease-in-out infinite;
+    /* slides in from below the viewport edge, then keeps glowing */
+    animation: floatIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) 1.2s backwards,
+               glassGlow 2.5s ease-in-out 2s infinite;
     transition: transform 0.3s;
 }
- 
+
+@keyframes floatIn {
+    from { transform: translateY(160%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
 .whatsapp-float:hover {
     transform: scale(1.06) translateY(-2px);
     background: rgba(37, 211, 102, 0.70);
 }
- 
+
 .whatsapp-icon { width: 28px; height: 28px; object-fit: contain; }
- 
+
 .whatsapp-text {
     color: white;
     font-weight: 500;
@@ -572,19 +794,19 @@ section {
     white-space: nowrap;
     letter-spacing: 0.02em;
 }
- 
+
 /* ── Update section ── */
 #update {
-    padding: 30px 20px 60px;
-    background: rgba(0,0,0,0.25);
+    padding: 30px 20px 70px;
+    background: transparent;
 }
- 
+
 @keyframes update {
     0%   { box-shadow: 0 0 0 rgba(255,255,255,0.0);  background: rgba(255,255,255,0.06); }
     50%  { box-shadow: 0 0 28px rgba(255,255,255,0.15); background: rgba(255,255,255,0.10); }
     100% { box-shadow: 0 0 0 rgba(255,255,255,0.0);  background: rgba(255,255,255,0.06); }
 }
- 
+
 .alert-pulse2 {
     display: inline-block;
     color: var(--text-dim);
@@ -592,22 +814,22 @@ section {
     border-radius: var(--radius-md);
     font-size: 0.95rem;
     font-weight: 400;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     animation: update 4s ease-in-out infinite;
     margin-bottom: 10px;
 }
- 
+
 .alert-pulse2 strong { color: #fff; font-weight: 500; }
- 
+
 @keyframes redPulse {
     0%   { box-shadow: 0 0 0 rgba(52,152,219,0);  background: rgba(41,128,185,0.5); }
     50%  { box-shadow: 0 0 22px rgba(52,152,219,0.5); background: rgba(52,152,219,0.6); }
     100% { box-shadow: 0 0 0 rgba(52,152,219,0);  background: rgba(41,128,185,0.5); }
 }
- 
+
 .alert-pulse {
     display: inline-block;
     color: white;
@@ -621,7 +843,7 @@ section {
     animation: redPulse 3s ease-in-out infinite;
     margin-bottom: 20px;
 }
- 
+
 /* ── Events section ── */
 #events {
     background: var(--glass-bg);
@@ -635,7 +857,7 @@ section {
     max-width: 1000px;
     box-shadow: var(--glass-shadow);
 }
- 
+
 /* ── Jaunumi inline buttons ── */
 #jaunumi .whatsapp2,
 #jaunumi .facebook2 {
@@ -655,56 +877,66 @@ section {
     box-shadow: var(--glass-shadow-sm);
     transition: transform 0.2s, opacity 0.2s;
 }
- 
+
 #jaunumi .whatsapp2 { background: rgba(37, 211, 102, 0.65); }
 #jaunumi .facebook2 { background: rgba(24, 119, 242, 0.65); }
 #jaunumi .whatsapp2:hover,
 #jaunumi .facebook2:hover { transform: translateY(-2px); opacity: 0.9; }
- 
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
     .buttons {
-        flex-direction: column;
-        gap: 8px;
-        align-items: center;
-    }
- 
-    .button { width: 88%; text-align: center; }
- 
-    .gallery-container {
         grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-    }
- 
-    #before-gallery { flex-direction: column; }
- 
-    .image-left, .image-right { width: 100%; margin-bottom: 16px; }
- 
-    header nav ul { gap: 2px; }
-    header nav ul li a { font-size: 0.78rem; padding: 6px 10px; }
- 
-    #jaunumi .container { padding: 28px 20px; }
-    #par-makslinieku .glass-card { padding: 28px 20px; }
- 
-    .news-img { max-width: 80%; }
-}
- 
-@media (max-width: 480px) {
-    header nav ul { flex-wrap: wrap; justify-content: center; }
-    section { padding: 40px 12px; }
- 
-    .gallery-container {
-        grid-template-columns: 1fr 1fr;
+        max-width: 420px;
         gap: 10px;
     }
+
+    .button { padding: 13px 14px; }
+
+    .gallery-container {
+        column-count: 2;
+        column-gap: 12px;
+    }
+
+    .gallery-item { margin-bottom: 12px; }
+
+    #before-gallery { flex-direction: column; }
+
+    .image-left, .image-right { width: 100%; margin-bottom: 16px; }
+
+    header { top: 10px; }
+    header nav ul { gap: 1px; }
+    header nav ul li a { font-size: 0.76rem; padding: 7px 10px; letter-spacing: 0.02em; }
+
+    #par-makslinieku { padding-top: 104px; }
+    .bento-grid { column-count: 1; }
+    .bento-card { padding: 28px 22px; margin-bottom: 14px; }
+    #par-makslinieku .glass-card { padding: 32px 24px; }
+    #kontakti { padding: 44px 24px 48px; }
+
+    .news-img { max-width: 80%; }
 }
- 
+
+@media (max-width: 480px) {
+    header { border-radius: 24px; }
+    header nav ul { flex-wrap: wrap; justify-content: center; }
+    section { padding: 40px 12px; }
+    #par-makslinieku { padding-top: 110px; }
+
+    .gallery-container {
+        column-count: 2;
+        column-gap: 10px;
+    }
+
+    .gallery-item { margin-bottom: 10px; }
+}
+
 @media (min-width: 769px) {
     .gallery-container {
-        grid-template-columns: repeat(4, 1fr);
+        column-count: 4;
     }
 }
- 
+
 /* ── Lightbox nav bultiņas ── */
 .lightbox-prev,
 .lightbox-next {
@@ -729,16 +961,16 @@ section {
     line-height: 1;
     padding: 0;
 }
- 
+
 .lightbox-prev { left: 20px; }
 .lightbox-next { right: 20px; }
- 
+
 .lightbox-prev:hover,
 .lightbox-next:hover {
     background: var(--glass-bg-heavy);
     transform: translateY(-50%) scale(1.1);
 }
- 
+
 /* Bultiņas redzamas arī mobilajā */
 @media (max-width: 768px) {
     .lightbox-prev { left: 8px; }
@@ -750,82 +982,87 @@ section {
         font-size: 1.6rem;
     }
 }
- 
+
 /* ── Scroll Reveal ── */
 .reveal {
     opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    transform: translateY(34px) scale(0.985);
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .reveal.visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
 }
 .gallery-item.reveal { transition-delay: calc(var(--i, 0) * 0.06s); }
- 
+
 /* ── Scroll lock kad lightbox atvērts ── */
 body.lightbox-open {
     overflow: hidden;
     touch-action: none;
 }
- 
+
 /* ── Gallery item numbering + WA poga ── */
 .gallery-number {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font-display);
     font-size: 0.8rem;
     color: rgba(255,255,255,0.4);
     letter-spacing: 0.08em;
     margin-bottom: 6px;
 }
- 
+
+/* tāda pati stikla nokrāsa kā like/share/download aplīšiem */
 .btn-inquire {
     display: inline-block;
     margin: 8px auto 4px;
     padding: 7px 18px;
     border-radius: 30px;
-    background: rgba(180, 180, 180, 0.25);
+    background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.25);
-    box-shadow: 0 3px 12px rgba(0,0,0,0.25),
-                inset 0 1px 0 rgba(255,255,255,0.35);
+    border: 1px solid rgba(255,255,255,0.20);
+    border-top-color: rgba(255,255,255,0.34);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.14);
     color: white;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.82rem;
     font-weight: 500;
     text-decoration: none;
     letter-spacing: 0.03em;
     transition: transform 0.2s, background 0.2s;
 }
- 
+
 .btn-inquire:hover {
     transform: translateY(-2px) scale(1.04);
-    background: rgba(180, 180, 180, 0.40);
+    background: rgba(255, 255, 255, 0.20);
 }
- 
- 
+
+.btn-inquire:active { transform: scale(0.95); }
+
+
 /* ── Delivery Modal ── */
+/* NB: the overlay must NOT have backdrop-filter — it would become the
+   "backdrop root" and the modal's glass could no longer see the page
+   behind it (it would blur only the black tint = solid dark look) */
 .delivery-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.70);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.58);
     z-index: 2000;
     justify-content: center;
     align-items: center;
     padding: 20px;
 }
- 
+
 .delivery-overlay.open {
     display: flex;
 }
- 
+
 .delivery-modal {
-    background: rgba(255, 255, 255, 0.10);
-    backdrop-filter: blur(40px) saturate(180%);
-    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    background: rgba(13, 18, 34, 0.35);
+    backdrop-filter: blur(52px) saturate(170%);
+    -webkit-backdrop-filter: blur(52px) saturate(170%);
     border: 1px solid rgba(255, 255, 255, 0.25);
     border-top-color: rgba(255, 255, 255, 0.45);
     box-shadow: 0 24px 60px rgba(0,0,0,0.5),
@@ -838,12 +1075,12 @@ body.lightbox-open {
     position: relative;
     animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
- 
+
 @keyframes modalIn {
     from { opacity: 0; transform: scale(0.88) translateY(20px); }
     to   { opacity: 1; transform: scale(1)    translateY(0); }
 }
- 
+
 .delivery-modal::before {
     content: '';
     position: absolute;
@@ -851,38 +1088,38 @@ body.lightbox-open {
     height: 1px;
     background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
 }
- 
+
 .delivery-modal h3 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--font-display);
     font-size: 1.4rem;
     font-weight: 400;
     color: white;
     margin: 0 0 14px;
 }
- 
+
 .delivery-modal p {
     font-size: 0.92rem;
     color: rgba(255,255,255,0.70);
     line-height: 1.6;
     margin-bottom: 28px;
 }
- 
+
 .delivery-modal p strong {
     color: white;
 }
- 
+
 .delivery-buttons {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
- 
+
 .delivery-btn {
     display: block;
     padding: 12px 20px;
     border-radius: 30px;
     text-decoration: none;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body);
     font-weight: 500;
     font-size: 0.95rem;
     color: white;
@@ -892,7 +1129,7 @@ body.lightbox-open {
     transition: transform 0.2s, box-shadow 0.2s;
     position: relative;
 }
- 
+
 .delivery-btn::before {
     content: '';
     position: absolute;
@@ -900,21 +1137,22 @@ body.lightbox-open {
     height: 1px;
     background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
 }
- 
+
 .delivery-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(0,0,0,0.35),
                 inset 0 1px 0 rgba(255,255,255,0.45);
 }
- 
+
 .delivery-btn.klatiene {
-    background: rgba(37, 211, 102, 0.55);
+    background: linear-gradient(160deg, rgba(37, 211, 102, 0.42), rgba(37, 211, 102, 0.20));
+    border-color: rgba(37, 211, 102, 0.40);
 }
- 
+
 .delivery-btn.omniva {
-    background: rgba(255, 255, 255, 0.12);
+    background: linear-gradient(160deg, rgba(255,255,255,0.16), rgba(255,255,255,0.07));
 }
- 
+
 .delivery-modal-close {
     position: absolute;
     top: 14px;
@@ -928,71 +1166,67 @@ body.lightbox-open {
     border: none;
     padding: 0;
 }
- 
+
 .delivery-modal-close:hover {
     color: white;
 }
- 
+
 body.modal-open {
     overflow: hidden;
     touch-action: none;
 }
- 
-/* ── Gallery Tabs ── */
+
+/* ── Gallery Tabs — glass segmented control ── */
 .gallery-tabs {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 36px;
+    display: inline-flex;
+    margin: 0 auto 42px;
+    padding: 5px;
+    gap: 4px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-top-color: rgba(255,255,255,0.30);
+    border-radius: 100px;
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    box-shadow: 0 8px 24px rgba(3,6,16,0.35),
+                inset 0 1px 0 rgba(255,255,255,0.14);
 }
- 
+
 .gallery-tab {
-    padding: 10px 28px;
-    border-radius: 30px;
-    border: 1px solid var(--glass-border);
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    padding: 9px 26px;
+    border-radius: 100px;
+    border: none;
+    background: transparent;
     color: var(--text-dim);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 400;
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
     cursor: pointer;
     transition: background 0.25s, color 0.25s, box-shadow 0.25s;
-    box-shadow: var(--glass-shadow-sm);
-    position: relative;
 }
- 
-.gallery-tab::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 12%; right: 12%;
-    height: 1px;
-    background: linear-gradient(to right, transparent, rgba(255,255,255,0.5), transparent);
-}
- 
+
 .gallery-tab.active {
-    background: rgba(255,255,255,0.18);
-    color: #fff;
-    border-color: rgba(255,255,255,0.40);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.30),
-                inset 0 1px 0 rgba(255,255,255,0.50);
+    background: rgba(244,246,251,0.92);
+    color: #101527;
+    box-shadow: 0 2px 10px rgba(3,6,16,0.40),
+                inset 0 1px 0 rgba(255,255,255,0.9);
 }
- 
+
 .gallery-tab:hover:not(.active) {
-    background: var(--glass-bg-heavy);
+    background: rgba(255,255,255,0.10);
     color: #fff;
 }
- 
+
 .gallery-item.hidden {
     display: none;
 }
- 
- 
+
+
 /* ── Lightbox Zoom poga ── */
 .lightbox-zoom {
     position: absolute;
-    bottom: 60px;
+    bottom: 96px;
     left: 50%;
     transform: translateX(-50%);
     background: var(--glass-bg);
@@ -1001,7 +1235,7 @@ body.modal-open {
     border: 1px solid var(--glass-border);
     border-top-color: var(--glass-border-top);
     color: white;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.9rem;
     font-weight: 500;
     padding: 9px 22px;
@@ -1011,7 +1245,7 @@ body.modal-open {
     transition: background 0.2s, transform 0.2s;
     white-space: nowrap;
 }
- 
+
 .lightbox-zoom:hover {
     background: var(--glass-bg-heavy);
     transform: translateX(-50%) translateY(-2px);
@@ -1022,36 +1256,632 @@ body.modal-open {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 7px;
     margin-top: 8px;
 }
 
-.btn-like {
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
+/* mazās apaļās pogas (share, download) like rindā */
+.btn-mini {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    width: 22px;
-    height: 22px;
-    transition: transform 0.15s;
+    justify-content: center;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.20);
+    border-top-color: rgba(255,255,255,0.34);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.14);
+    padding: 0;
+    cursor: pointer;
+    text-decoration: none;
+    line-height: 0;
+    transition: background 0.2s, transform 0.2s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.like-wrapper .btn-mini:first-of-type { margin-left: 8px; }
+
+.btn-mini:hover {
+    background: rgba(255,255,255,0.20);
+    transform: scale(1.1);
+}
+
+.btn-mini:active { transform: scale(0.92); }
+
+.btn-mini svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: rgba(255,255,255,0.85);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* like poga — tāds pats stikla aplītis kā share/download */
+.btn-like {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.20);
+    border-top-color: rgba(255,255,255,0.34);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.14);
+    padding: 0;
+    cursor: pointer;
+    line-height: 0;
+    transition: background 0.2s, transform 0.2s, border-color 0.2s, box-shadow 0.3s;
     -webkit-tap-highlight-color: transparent;
     outline: none;
 }
 
-.btn-like:hover { transform: scale(1.2); }
-.btn-like:active { transform: scale(0.9); }
+.btn-like:hover { background: rgba(255,255,255,0.20); transform: scale(1.1); }
+.btn-like:active { transform: scale(0.92); }
 
 .like-icon {
-    width: 22px;
-    height: 22px;
+    width: 15px;
+    height: 15px;
     display: block;
-    object-fit: contain;
+    fill: none;
+    stroke: rgba(255,255,255,0.85);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 0.2s, fill 0.2s, filter 0.3s;
+}
+
+.btn-like:hover .like-icon { stroke: #fff; }
+
+/* nospiestā stāvoklī: sarkana sirds + glow gan ikonai, gan aplītim */
+.btn-like.liked {
+    background: rgba(255, 77, 109, 0.16);
+    border-color: rgba(255, 77, 109, 0.45);
+    box-shadow: 0 0 14px rgba(255, 77, 109, 0.35),
+                inset 0 1px 0 rgba(255,255,255,0.16);
+}
+
+.btn-like.liked .like-icon {
+    fill: #ff4d6d;
+    stroke: #ff4d6d;
+    filter: drop-shadow(0 0 6px rgba(255, 77, 109, 0.55));
+    animation: heartPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes heartPop {
+    0%   { transform: scale(0.55); }
+    55%  { transform: scale(1.3); }
+    100% { transform: scale(1); }
 }
 
 .like-count {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.85rem;
     color: rgba(255,255,255,0.75);
 }
+
+/* ── Animations ── */
+
+/* nav capsule drops in from the top on page load */
+header {
+    animation: navDrop 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s backwards;
+}
+
+@keyframes navDrop {
+    from { transform: translate(-50%, -160%); opacity: 0; }
+    to   { transform: translate(-50%, 0);     opacity: 1; }
+}
+
+/* nav links give a little press feedback */
+header nav ul li a { transition: background 0.25s, color 0.25s, transform 0.15s; }
+header nav ul li a:active { transform: scale(0.94); }
+
+/* shared rise-in for staggered children */
+@keyframes riseIn {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* bio card content cascades in line by line once the section reveals */
+#par-makslinieku.reveal.visible .glass-card > * {
+    animation: riseIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+#par-makslinieku.reveal.visible .glass-card > *:nth-child(1)  { animation-delay: 0.05s; }
+#par-makslinieku.reveal.visible .glass-card > *:nth-child(2)  { animation-delay: 0.11s; }
+#par-makslinieku.reveal.visible .glass-card > *:nth-child(3)  { animation-delay: 0.17s; }
+#par-makslinieku.reveal.visible .glass-card > *:nth-child(4)  { animation-delay: 0.23s; }
+#par-makslinieku.reveal.visible .glass-card > *:nth-child(5)  { animation-delay: 0.29s; }
+#par-makslinieku.reveal.visible .glass-card > *:nth-child(6)  { animation-delay: 0.35s; }
+#par-makslinieku.reveal.visible .glass-card > *:nth-child(7)  { animation-delay: 0.41s; }
+#par-makslinieku.reveal.visible .glass-card > *:nth-child(8)  { animation-delay: 0.47s; }
+#par-makslinieku.reveal.visible .glass-card > *:nth-child(9)  { animation-delay: 0.53s; }
+#par-makslinieku.reveal.visible .glass-card > *:nth-child(10) { animation-delay: 0.59s; }
+#par-makslinieku.reveal.visible .glass-card > *:nth-child(11) { animation-delay: 0.65s; }
+
+/* contact buttons pop in one after another */
+#kontakti.reveal.visible .buttons .button {
+    animation: riseIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+#kontakti.reveal.visible .buttons .button:nth-child(1) { animation-delay: 0.10s; }
+#kontakti.reveal.visible .buttons .button:nth-child(2) { animation-delay: 0.18s; }
+#kontakti.reveal.visible .buttons .button:nth-child(3) { animation-delay: 0.26s; }
+#kontakti.reveal.visible .buttons .button:nth-child(4) { animation-delay: 0.34s; }
+
+/* lightbox: backdrop fades, artwork zooms in softly */
+.lightbox { animation: lbFade 0.3s ease; }
+
+#lightbox-image { animation: lbImg 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+
+@keyframes lbFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes lbImg {
+    from { opacity: 0; transform: scale(0.94); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* hover micro-motion */
+.news-img { transition: transform 0.4s ease; }
+.news-img:hover { transform: scale(1.02); }
+
+.gallery-item .image-info { transition: transform 0.35s ease; }
+.gallery-item:hover .image-info { transform: translateY(-3px); }
+
+/* ── Scroll-driven effects (Chromium progressive enhancement) ── */
+@supports (animation-timeline: scroll()) {
+    /* thin gold reading-progress line at the very top */
+    body::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--gold), rgba(232, 196, 119, 0.35));
+        transform-origin: 0 50%;
+        transform: scaleX(0);
+        z-index: 10000;
+        pointer-events: none;
+        animation: progressGrow linear;
+        animation-timeline: scroll(root);
+    }
+
+    /* aurora colours slowly shift hue as you travel down the page */
+    .aurora {
+        animation: auroraHue linear;
+        animation-timeline: scroll(root);
+    }
+}
+
+@keyframes progressGrow {
+    to { transform: scaleX(1); }
+}
+
+@keyframes auroraHue {
+    to { filter: hue-rotate(45deg); }
+}
+
+/* ── Reduced motion: keep it calm ── */
+@media (prefers-reduced-motion: reduce) {
+    header,
+    .whatsapp-float,
+    .lightbox,
+    #lightbox-image,
+    .aurora,
+    #par-makslinieku.reveal.visible .glass-card > *,
+    #kontakti.reveal.visible .buttons .button {
+        animation: none !important;
+    }
+
+    .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
+/* ── Lightbox info bar ── */
+.lightbox-info {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    padding: 10px 18px;
+    border-radius: 26px;
+    background: rgba(14, 19, 36, 0.55);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-top-color: rgba(255,255,255,0.32);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.45),
+                inset 0 1px 0 rgba(255,255,255,0.16);
+    max-width: calc(100vw - 24px);
+}
+
+.lightbox-counter {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgba(235, 240, 252, 0.55);
+}
+
+.lightbox-name {
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    color: var(--text-dim);
+}
+
+.lightbox-price {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: #fff;
+}
+
+.lightbox-inquire {
+    border: none;
+    padding: 8px 18px;
+    border-radius: 100px;
+    background: rgba(244, 246, 251, 0.92);
+    color: #101527;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.lightbox-inquire:hover {
+    transform: translateY(-1px);
+    background: #fff;
+}
+
+/* ── Footer ── */
+.site-footer {
+    position: relative;
+    z-index: 1;
+    margin-top: 20px;
+    padding: 48px 20px 36px;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.10);
+    background: rgba(4, 7, 15, 0.45);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+.footer-name {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    color: var(--text);
+    margin: 0;
+}
+
+.footer-icons {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin: 20px 0 18px;
+}
+
+.footer-icons a {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-top-color: rgba(255,255,255,0.32);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.14);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.25s;
+}
+
+.footer-icons a:hover {
+    transform: translateY(-3px);
+    background: rgba(255,255,255,0.16);
+}
+
+.footer-icons svg {
+    width: 18px;
+    height: 18px;
+    fill: rgba(244, 246, 251, 0.85);
+}
+
+.footer-copy {
+    font-size: 0.8rem;
+    color: rgba(235, 240, 252, 0.45);
+    margin: 0;
+}
+
+/* ── Nav: active section (scrollspy) ── */
+header nav ul li a.active {
+    background: rgba(244, 246, 251, 0.92);
+    color: #101527;
+    box-shadow: 0 2px 10px rgba(3, 6, 16, 0.35);
+}
+
+/* ── Gallery image fade-in on load ── */
+.gallery-container .gallery-item img {
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.4s;
+}
+
+.gallery-container .gallery-item img.img-loaded {
+    opacity: 1;
+}
+
+/* ── Before/After: divider line + glass handle ── */
+.compare::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--pos, 50%);
+    width: 2px;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 0 14px rgba(0,0,0,0.55);
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+#slider::-webkit-slider-thumb {
+    width: 32px;
+    height: 32px;
+    background: rgba(255,255,255,0.95) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 6l-4 6 4 6M15 6l4 6-4 6' stroke='%23101527' stroke-width='2.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat;
+    border: 1px solid rgba(255,255,255,0.6);
+    box-shadow: 0 3px 14px rgba(0,0,0,0.45),
+                inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+/* ── Watercolor stains behind major headings ── */
+#par-makslinieku .glass-card > h2,
+#jaunumi > h2,
+#gallery > h2,
+#kontakti > h1 {
+    position: relative;
+}
+
+#par-makslinieku .glass-card > h2::before,
+#jaunumi > h2::before,
+#gallery > h2::before,
+#kontakti > h1::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 260px;
+    height: 110px;
+    transform: translate(-50%, -50%) rotate(-4deg);
+    background:
+        radial-gradient(58% 70% at 36% 42%, rgba(232, 196, 119, 0.14), transparent 70%),
+        radial-gradient(48% 62% at 66% 58%, rgba(86, 112, 255, 0.10), transparent 70%),
+        radial-gradient(36% 50% at 52% 36%, rgba(38, 178, 170, 0.08), transparent 70%);
+    filter: blur(3px);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* ── Share poga bildes stūrī ── */
+.btn-share {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 3;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-top-color: rgba(255,255,255,0.40);
+    background: rgba(14, 19, 36, 0.50);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 14px rgba(3,6,16,0.40),
+                inset 0 1px 0 rgba(255,255,255,0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.25s, transform 0.2s, background 0.2s;
+}
+
+.gallery-item:hover .btn-share,
+.btn-share:focus-visible {
+    opacity: 1;
+}
+
+/* skārienekrānos nav hover — poga redzama vienmēr */
+@media (hover: none) {
+    .btn-share { opacity: 0.9; }
+}
+
+.btn-share:hover {
+    background: rgba(255,255,255,0.22);
+    transform: scale(1.1);
+}
+
+.btn-share svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* share poga lightbox joslā */
+.lightbox-share {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.lightbox-share:hover {
+    background: rgba(255,255,255,0.22);
+    transform: translateY(-1px);
+}
+
+.lightbox-share svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* "Saite nokopēta!" paziņojums */
+.share-toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: rgba(14, 19, 36, 0.85);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.22);
+    border-top-color: rgba(255,255,255,0.38);
+    box-shadow: 0 12px 32px rgba(3,6,16,0.50),
+                inset 0 1px 0 rgba(255,255,255,0.18);
+    padding: 11px 22px;
+    border-radius: 100px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    z-index: 3000;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    max-width: calc(100vw - 32px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.share-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ── Sticky gallery tabs: stay reachable while scrolling 60+ works ── */
+.gallery-tabs {
+    position: sticky;
+    top: 78px;
+    z-index: 60;
+}
+
+/* ── Back-to-top button ── */
+.to-top {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: rgba(14, 19, 36, 0.55);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.20);
+    border-top-color: rgba(255,255,255,0.36);
+    box-shadow: 0 10px 26px rgba(3,6,16,0.45),
+                inset 0 1px 0 rgba(255,255,255,0.20);
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px);
+    transition: opacity 0.3s, transform 0.3s, visibility 0.3s, background 0.2s;
+    z-index: 998;
+}
+
+.to-top.show {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+}
+
+.to-top:hover { background: rgba(255,255,255,0.18); }
+
+.to-top svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ── Mobile: nav becomes a bottom dock, app-style ── */
+@media (max-width: 640px) {
+    header {
+        top: auto;
+        bottom: 12px;
+        animation: dockUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s backwards;
+    }
+
+    html { scroll-padding-top: 20px; }
+
+    #par-makslinieku { padding-top: 72px; }
+
+    .whatsapp-float { bottom: 92px; }
+
+    .to-top { bottom: 92px; right: 14px; }
+
+    .site-footer { padding-bottom: 110px; }
+
+    .gallery-tabs { top: 10px; }
+}
+
+@keyframes dockUp {
+    from { transform: translate(-50%, 200%); opacity: 0; }
+    to   { transform: translate(-50%, 0); opacity: 1; }
+}
+
+/* ── Finishing touches ── */
+/* ja nākotnē parādīsies ievades lauki, tajos kursoram jābūt redzamam */
+input, textarea, [contenteditable] {
+    caret-color: auto;
+}
+
+::selection {
+    background: rgba(232, 196, 119, 0.30);
+    color: #fff;
+}
+
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #080c17; }
+::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.16);
+    border-radius: 10px;
+    border: 2px solid #080c17;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.28); }

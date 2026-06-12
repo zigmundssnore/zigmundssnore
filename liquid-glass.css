@@ -1,0 +1,92 @@
+/* ============================================================
+   LIQUID GLASS — refraction layer
+   Applied only when liquid-glass.js confirms SVG backdrop-filter
+   support and adds .lg-on to <html>. Everyone else keeps the
+   plain blur defined in style.css.
+   ============================================================ */
+
+/* ── Card-shaped glass: bio card, jaunumi container, kontakti, delivery modal ── */
+.lg-on #par-makslinieku .glass-card,
+.lg-on .bento-card,
+.lg-on #kontakti,
+.lg-on .delivery-modal {
+    backdrop-filter: url(#lg-card);
+    -webkit-backdrop-filter: url(#lg-card);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.38),
+        0 2px 8px rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.22),
+        inset 1px 0 0 rgba(255, 255, 255, 0.10),
+        inset -1px 0 0 rgba(255, 255, 255, 0.10);
+}
+
+/* ── Pill-shaped glass: buttons, tab capsule, floating WhatsApp ── */
+.lg-on .gallery-tabs,
+.lg-on .whatsapp-float,
+.lg-on .btn-inquire,
+.lg-on .alert-pulse2 {
+    backdrop-filter: url(#lg-pill);
+    -webkit-backdrop-filter: url(#lg-pill);
+}
+
+.lg-on .button {
+    backdrop-filter: url(#lg-pill);
+    -webkit-backdrop-filter: url(#lg-pill);
+}
+
+/* ── Glass surface sheen: diagonal glare across the top, like a
+      light source reflecting off a curved pane ── */
+.lg-on #par-makslinieku .glass-card::after,
+.lg-on .bento-card::after,
+.lg-on #kontakti::after,
+.lg-on .delivery-modal::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+        linear-gradient(115deg,
+            rgba(255, 255, 255, 0.14) 0%,
+            rgba(255, 255, 255, 0.05) 18%,
+            transparent 32%,
+            transparent 78%,
+            rgba(255, 255, 255, 0.05) 100%);
+    z-index: 0;
+}
+
+/* keep card content above the sheen */
+.lg-on #par-makslinieku .glass-card > *,
+.lg-on .bento-card > *,
+.lg-on #kontakti > *,
+.lg-on .delivery-modal > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* the close button must stay pinned to the modal's top-right corner —
+   the rule above would otherwise knock it out of absolute positioning */
+.lg-on .delivery-modal > .delivery-modal-close {
+    position: absolute;
+    z-index: 3;
+}
+
+/* modal: refraction + extra frost on top, slightly darkened glass */
+.lg-on .delivery-modal {
+    background: rgba(13, 18, 34, 0.32);
+    backdrop-filter: url(#lg-card) blur(14px);
+    -webkit-backdrop-filter: url(#lg-card) blur(14px);
+}
+
+/* ── Inner curvature shadow on pills: bottom edge darkens, like
+      looking through the thick lower rim of a glass capsule
+      (.button defines its own shadows in style.css, including
+      brand-colored hover glow — don't override it here) ── */
+.lg-on .whatsapp-float {
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.32),
+        inset 0 1px 1px rgba(255, 255, 255, 0.50),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.20);
+}
