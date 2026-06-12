@@ -92,6 +92,7 @@
 
         var overlay = null, roomArt, roomCaption, roomScene, roomPhoto;
         var artW = 50, artH = 40; // gleznas izmērs cm
+        var roomIdx = -1;         // atvērtās gleznas indekss (faila nosaukumam)
 
         /* telefoniem/planšetēm — 3 s sagatavošanās ekrāns, kas noslēpj
            renderēšanas raustīšanos, kamēr foto un glezna ielādējas */
@@ -120,6 +121,10 @@
                     '<img class="room-photo" alt="" decoding="async">' +
                     '<img class="room-art" alt="Glezna interjerā">' +
                     '<div class="room-caption"></div>' +
+                    '<button class="room-dl">' +
+                        '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' +
+                        '<span>Lejupielādēt foto</span>' +
+                    '</button>' +
                 '</div>' +
                 '<div class="room-loader">' +
                     '<p class="room-loader-text">Mēs sagatavojam interjera priekšskatījumu…</p>' +
@@ -134,6 +139,11 @@
 
             overlay.addEventListener('click', function (e) {
                 if (e.target === overlay || e.target.classList.contains('room-close')) closeRoom();
+            });
+
+            overlay.querySelector('.room-dl').addEventListener('click', function (e) {
+                e.stopPropagation();
+                downloadRoomShot();
             });
 
             /* Esc aizver tikai interjera skatu, ne lightboxu apakšā */
@@ -165,6 +175,7 @@
         function openRoom() {
             var idx = currentIndex();
             if (idx < 0) return;
+            roomIdx = idx;
             if (!overlay) buildOverlay();
 
             /* foto ielādējam tikai pirmajā atvēršanas reizē */
@@ -214,6 +225,55 @@
             clearTimeout(loadTimer);
             overlay.classList.remove('loading');
             overlay.classList.remove('open');
+        }
+
+        /* uzģenerē istabas foto + gleznu vienā attēlā un lejupielādē kā JPG */
+        function downloadRoomShot() {
+            var canvas = document.createElement('canvas');
+            canvas.width = 1200;
+            canvas.height = 1800;
+            var ctx = canvas.getContext('2d');
+
+            var bg = new Image();
+            bg.onload = function () {
+                ctx.drawImage(bg, 0, 0, 1200, 1800);
+
+                var art = new Image();
+                art.onload = function () {
+                    var ppc = 1200 * PPC;
+                    var aw = artW * ppc, ah = artH * ppc;
+                    var x = 1200 * CX - aw / 2;
+                    var y = 1800 - 1800 * BOT - ah;
+                    var f = 13; // rāmja biezums (atbilst 5px CSS rāmim ekrānā)
+
+                    /* rāmis ar piekārtas gleznas ēnu */
+                    ctx.save();
+                    ctx.shadowColor = 'rgba(0,0,0,0.38)';
+                    ctx.shadowBlur = 34;
+                    ctx.shadowOffsetY = 16;
+                    ctx.fillStyle = '#57493a';
+                    ctx.fillRect(x - f, y - f, aw + 2 * f, ah + 2 * f);
+                    ctx.restore();
+
+                    /* glezna ar "cover" kadrējumu, tāpat kā ekrānā */
+                    var s = Math.max(aw / art.naturalWidth, ah / art.naturalHeight);
+                    var sw = aw / s, sh = ah / s;
+                    var sx = (art.naturalWidth - sw) / 2;
+                    var sy = (art.naturalHeight - sh) / 2;
+                    ctx.drawImage(art, sx, sy, sw, sh, x, y, aw, ah);
+
+                    canvas.toBlob(function (blob) {
+                        if (!blob) return;
+                        var a = document.createElement('a');
+                        a.href = URL.createObjectURL(blob);
+                        a.download = 'Zigmunds-Snore-glezna-Nr' + (roomIdx + 1) + '-interjera.jpg';
+                        a.click();
+                        setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+                    }, 'image/jpeg', 0.9);
+                };
+                art.src = roomArt.getAttribute('src');
+            };
+            bg.src = 'room-interior.webp';
         }
     });
 })();
