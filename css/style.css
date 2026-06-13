@@ -619,11 +619,21 @@ section {
 
 /* masonry: columns let every painting keep its full aspect ratio —
    nothing gets cropped, items just stack like a gallery wall */
+/* flex masonry — JS sadala bildes pa rindām (lasīšanas secībā) */
 .gallery-container {
-    column-count: 4;
-    column-gap: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
     max-width: 1400px;
     margin: 0 auto;
+}
+
+.gallery-col {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 /* ── Gallery Item (liquid glass card) ── */
@@ -631,8 +641,6 @@ section {
     position: relative;
     overflow: hidden;
     width: 100%;
-    margin-bottom: 16px;
-    break-inside: avoid;
     border-radius: var(--radius-md);
     background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
@@ -963,12 +971,8 @@ section {
 
     .button { padding: 13px 14px; }
 
-    .gallery-container {
-        column-count: 2;
-        column-gap: 12px;
-    }
-
-    .gallery-item { margin-bottom: 12px; }
+    .gallery-container { gap: 12px; }
+    .gallery-col { gap: 12px; }
 
     #before-gallery { flex-direction: column; }
 
@@ -993,18 +997,8 @@ section {
     section { padding: 40px 12px; }
     #par-makslinieku { padding-top: 110px; }
 
-    .gallery-container {
-        column-count: 2;
-        column-gap: 10px;
-    }
-
-    .gallery-item { margin-bottom: 10px; }
-}
-
-@media (min-width: 769px) {
-    .gallery-container {
-        column-count: 4;
-    }
+    .gallery-container { gap: 10px; }
+    .gallery-col { gap: 10px; }
 }
 
 /* ── Lightbox nav bultiņas ── */
@@ -1356,6 +1350,24 @@ body.modal-open {
 .sort-menu button.active {
     background: rgba(255,255,255,0.14);
     color: #fff;
+}
+
+/* telefonā izvēlne ir četrstūrains vertikāls saraksts (nevis apaļa pille) */
+@media (max-width: 640px) {
+    .sort-menu {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        gap: 2px;
+        padding: 6px;
+        border-radius: 14px;
+        max-width: min(80vw, 280px);
+    }
+
+    .sort-menu button {
+        width: 100%;
+        border-radius: 8px;
+        padding: 11px 16px;
+    }
 }
 
 .gallery-tab {

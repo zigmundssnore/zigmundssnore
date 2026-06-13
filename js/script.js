@@ -321,11 +321,44 @@ document.addEventListener('DOMContentLoaded', () => {
             item.classList.toggle('hidden', hide);
             if (!hide) item.classList.add('visible');
         });
+        if (typeof layoutMasonry === 'function') layoutMasonry();
         updateLightboxItems();
     }
  
     tabs.forEach(tab => {
         tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+    });
+
+    // =========================
+    // Masonry izkārtojums — bildes plūst pa RINDĀM (lasīšanas secībā):
+    // 1. bilde augšā pa kreisi, 2. tai pa labi utt. (round-robin pa kolonnām)
+    // =========================
+    const galleryEl = document.querySelector('.gallery-container');
+    const originalOrder = Array.from(allItems);  // sākotnējā secība (priekš "Nekārtot")
+    let currentOrder = originalOrder.slice();
+
+    const columnCount = () => (window.innerWidth >= 769 ? 4 : 2);
+
+    function layoutMasonry() {
+        if (!galleryEl) return;
+        const cols = columnCount();
+        galleryEl.textContent = '';
+        const colEls = [];
+        for (let i = 0; i < cols; i++) {
+            const c = document.createElement('div');
+            c.className = 'gallery-col';
+            colEls.push(c);
+            galleryEl.appendChild(c);
+        }
+        currentOrder
+            .filter(it => !it.classList.contains('hidden'))
+            .forEach((it, i) => colEls[i % cols].appendChild(it));
+    }
+
+    let lastCols = columnCount();
+    window.addEventListener('resize', () => {
+        const c = columnCount();
+        if (c !== lastCols) { lastCols = c; layoutMasonry(); }
     });
 
     // =========================
@@ -379,14 +412,17 @@ document.addEventListener('DOMContentLoaded', () => {
         sortMenu.querySelectorAll('button[data-sort]').forEach(opt => {
             opt.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const cmp = comparators[opt.dataset.sort];
-                if (!cmp) return;
-                const items = Array.from(galleryContainer.querySelectorAll('.gallery-item'));
-                items.sort(cmp);
-                const frag = document.createDocumentFragment();
-                items.forEach(it => frag.appendChild(it)); // appendChild pārvieto, nedublē
-                galleryContainer.appendChild(frag);
-                sortLabel.textContent = 'Kārtot: ' + labels[opt.dataset.sort];
+                const mode = opt.dataset.sort;
+                if (mode === 'none') {
+                    currentOrder = originalOrder.slice();   // atjauno sākotnējo secību
+                    sortLabel.textContent = 'Kārtot';
+                } else {
+                    const cmp = comparators[mode];
+                    if (!cmp) return;
+                    currentOrder.sort(cmp);                 // sakārto galveno secību
+                    sortLabel.textContent = 'Kārtot: ' + labels[mode];
+                }
+                layoutMasonry();          // pārzīmē pa rindām
                 sortMenu.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === opt));
                 closeMenu();
             });
@@ -401,6 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
             item.classList.toggle('hidden', item.dataset.category !== startTab.dataset.tab);
         });
     }
+    layoutMasonry(); // sākotnējais sadalījums pa kolonnām
  
     // =========================
     // Smooth scroll
@@ -548,7 +585,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================
     // Gallery Lightbox + Swipe
     // =========================
-    const galleryItems = Array.from(document.querySelectorAll('.gallery-container .gallery-item'));
+    // ORIĢINĀLĀ secība (nevis masonry kolonnu secība) — lai "Nr. X",
+    // #glezna-N saites un numerācija paliek pareizas pēc kārtošanas
+    const galleryItems = Array.from(allItems);
     const lightbox = document.getElementById('lightbox');
     const lightboxImage = document.getElementById('lightbox-image');
  
