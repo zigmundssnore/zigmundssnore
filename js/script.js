@@ -201,7 +201,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const btn = document.createElement('button');
         btn.className = 'btn-inquire';
-        btn.textContent = 'Saņemšana & ierāmēšana';
+        // ierāmētajām gleznām nav ko ierāmēt — tikai "Saņemšana"
+        btn.textContent = item.dataset.category === 'ieramettas'
+            ? 'Saņemšana'
+            : 'Saņemšana & ierāmēšana';
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             openDeliveryModal(num);
