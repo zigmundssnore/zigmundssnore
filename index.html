@@ -205,6 +205,18 @@
     <button class="gallery-tab active" data-tab="bez-ramja">Gleznas</button>
     <button class="gallery-tab" data-tab="ieramettas">Ierāmētas gleznas</button>
 </div>
+<div class="gallery-sort">
+    <button class="sort-btn" id="sortBtn" aria-haspopup="true" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6h13M3 12h9M3 18h5M17 8l4 4-4 4"/></svg>
+        <span id="sortLabel">Kārtot</span>
+    </button>
+    <div class="sort-menu" id="sortMenu" role="menu">
+        <button data-sort="price-asc" role="menuitem">Lētākās vispirms</button>
+        <button data-sort="price-desc" role="menuitem">Dārgākās vispirms</button>
+        <button data-sort="size-asc" role="menuitem">Mazākās vispirms</button>
+        <button data-sort="size-desc" role="menuitem">Lielākās vispirms</button>
+    </div>
+</div>
 <div class="gallery-container">
  
 
@@ -478,7 +490,7 @@
 <div class="gallery-item" data-category="bez-ramja">
 <img loading="lazy" decoding="async" alt="Gallery Photo -24" data-src="img/photo-24.webp" src="img/thumb-photo-24.webp"/>
 <div class="image-info">
-<p class="image-name">67x50</p>
+<p class="image-name">67 x 50 cm</p>
 <p class="image-size">150 €</p>
 <p class="image-name" style="font-size:0.8rem; color:rgba(255,255,255,0.45); margin-top:4px;">Akvarelis uz papīra</p>
 </div>
@@ -607,7 +619,7 @@
 <div class="gallery-item" data-category="bez-ramja">
 <img loading="lazy" decoding="async" alt="Gallery Photo -40" data-src="img/photo-40.webp" src="img/thumb-photo-40.webp"/>
 <div class="image-info">
-<p class="image-name">40x60</p>
+<p class="image-name">40 x 60 cm</p>
 <p class="image-size">140 €</p>
 <p class="image-name" style="font-size:0.8rem; color:rgba(255,255,255,0.45); margin-top:4px;">Akvarelis uz papīra</p>
 </div>
@@ -960,13 +972,17 @@
         <button class="lightbox-next">&#8250;</button>
         <button id="lightboxZoom" class="lightbox-zoom" style="display:none;">🔍 Pietuvināt</button>
         <div class="lightbox-info">
-            <span id="lightboxCounter" class="lightbox-counter"></span>
-            <span id="lightboxName" class="lightbox-name"></span>
-            <span id="lightboxPrice" class="lightbox-price"></span>
-            <button id="lightboxInquire" class="lightbox-inquire">Uzzināt vairāk</button>
-            <button id="lightboxShare" class="lightbox-share" aria-label="Dalīties ar gleznu">
-                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-            </button>
+            <div class="lb-info-text">
+                <span id="lightboxCounter" class="lightbox-counter"></span>
+                <span id="lightboxName" class="lightbox-name"></span>
+                <span id="lightboxPrice" class="lightbox-price"></span>
+            </div>
+            <div class="lb-info-actions">
+                <button id="lightboxInquire" class="lightbox-inquire">Saņemšana &amp; ierāmēšana</button>
+                <button id="lightboxShare" class="lightbox-share" aria-label="Dalīties ar gleznu">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                </button>
+            </div>
         </div>
     </div>
  

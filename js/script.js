@@ -62,6 +62,20 @@ function playLikeSound(up) {
     } catch (e) { /* skaņa nav kritiska — klusējam */ }
 }
 
+// =========================
+// "TOP" nozīmītes — gleznas ar visvairāk like
+// =========================
+const likeCounts = new Map();   // item -> like skaits
+const TOP_MIN_LIKES = 15;       // TOP nozīmīti saņem gleznas ar VAIRĀK kā tik like
+
+function recomputeTop() {
+    likeCounts.forEach((c, item) => {
+        const isTop = c > TOP_MIN_LIKES;
+        if (isTop === item.classList.contains('is-top')) return;
+        item.classList.toggle('is-top', isTop);
+    });
+}
+
 function setupLikes(item, globalIndex) {
     const key = 'glezna_' + (globalIndex + 1);
     const likeRef = ref(db, 'likes/' + key);
@@ -88,7 +102,10 @@ function setupLikes(item, globalIndex) {
     if (liked) likeBtn.classList.add("liked");
  
     onValue(likeRef, (snapshot) => {
-        likeCount.textContent = snapshot.val() || 0;
+        const n = snapshot.val() || 0;
+        likeCount.textContent = n;
+        likeCounts.set(item, n);
+        recomputeTop();
     }, (err) => {
         console.warn('Firebase lasīšana liegta — pārbaudi datubāzes Rules:', err.message);
     });
@@ -114,6 +131,15 @@ function setupLikes(item, globalIndex) {
  
 document.addEventListener('DOMContentLoaded', () => {
  
+    // =========================
+    // WhatsApp poga: pirmās 3 sek izvērsta ar tekstu, tad sakļaujas (mobilajā)
+    // =========================
+    const waFloat = document.querySelector('.whatsapp-float');
+    if (waFloat) {
+        waFloat.classList.add('intro');
+        setTimeout(() => waFloat.classList.remove('intro'), 3000);
+    }
+
     // =========================
     // Biogrāfijas audio poga
     // =========================
@@ -162,6 +188,12 @@ document.addEventListener('DOMContentLoaded', () => {
         numEl.textContent = 'Nr. ' + num;
         info.insertBefore(numEl, info.firstChild);
 
+        // TOP nozīmīte (info joslā, lai neaizsedz gleznu) — JS to ieslēdz pēc like
+        const topBadge = document.createElement('span');
+        topBadge.className = 'top-badge';
+        topBadge.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2l2.6 6.9L22 9.2l-5.5 4.8L18.2 22 12 17.8 5.8 22l1.7-8L2 9.2l7.4-.3z"/></svg>TOP';
+        info.insertBefore(topBadge, info.firstChild);
+
         // jēgpilns alt teksts Google Attēliem un ekrāna lasītājiem
         const itemImg = item.querySelector('img');
         const sizeTxt = info.querySelector('.image-name')?.textContent || '';
@@ -169,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const btn = document.createElement('button');
         btn.className = 'btn-inquire';
-        btn.textContent = 'Uzzināt vairāk';
+        btn.textContent = 'Saņemšana & ierāmēšana';
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             openDeliveryModal(num);
@@ -295,6 +327,71 @@ document.addEventListener('DOMContentLoaded', () => {
     tabs.forEach(tab => {
         tab.addEventListener('click', () => switchTab(tab.dataset.tab));
     });
+
+    // =========================
+    // Kārtošana (cena / izmērs)
+    // =========================
+    const sortBtn = document.getElementById('sortBtn');
+    const sortMenu = document.getElementById('sortMenu');
+    const sortLabel = document.getElementById('sortLabel');
+    const galleryContainer = document.querySelector('.gallery-container');
+
+    if (sortBtn && sortMenu && galleryContainer) {
+        const priceOf = el => {
+            const t = (el.querySelector('.image-size')?.textContent || '').replace(/[^\d]/g, '');
+            return t ? parseInt(t, 10) : null;
+        };
+        const areaOf = el => {
+            const m = (el.querySelector('.image-name')?.textContent || '').match(/(\d+)\s*[x×]\s*(\d+)/i);
+            return m ? parseInt(m[1], 10) * parseInt(m[2], 10) : null;
+        };
+        // gleznas bez vērtības (piem., bez cenas) vienmēr nonāk beigās
+        const byNum = (getVal, dir) => (a, b) => {
+            const va = getVal(a), vb = getVal(b);
+            if (va == null && vb == null) return 0;
+            if (va == null) return 1;
+            if (vb == null) return -1;
+            return dir === 'asc' ? va - vb : vb - va;
+        };
+        const comparators = {
+            'price-asc': byNum(priceOf, 'asc'),
+            'price-desc': byNum(priceOf, 'desc'),
+            'size-asc': byNum(areaOf, 'asc'),
+            'size-desc': byNum(areaOf, 'desc')
+        };
+        const labels = {
+            'price-asc': 'Lētākās', 'price-desc': 'Dārgākās',
+            'size-asc': 'Mazākās', 'size-desc': 'Lielākās'
+        };
+
+        const closeMenu = () => {
+            sortMenu.classList.remove('open');
+            sortBtn.setAttribute('aria-expanded', 'false');
+        };
+
+        sortBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const open = sortMenu.classList.toggle('open');
+            sortBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', closeMenu);
+
+        sortMenu.querySelectorAll('button[data-sort]').forEach(opt => {
+            opt.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const cmp = comparators[opt.dataset.sort];
+                if (!cmp) return;
+                const items = Array.from(galleryContainer.querySelectorAll('.gallery-item'));
+                items.sort(cmp);
+                const frag = document.createDocumentFragment();
+                items.forEach(it => frag.appendChild(it)); // appendChild pārvieto, nedublē
+                galleryContainer.appendChild(frag);
+                sortLabel.textContent = 'Kārtot: ' + labels[opt.dataset.sort];
+                sortMenu.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === opt));
+                closeMenu();
+            });
+        });
+    }
 
     // sākuma stāvoklis: rādām tikai aktīvās cilnes gleznas (ierāmētās
     // neparādās "Gleznas" sadaļas apakšā). Reveal animāciju neaiztiekam.
@@ -468,8 +565,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // zoom poga dzīvo apakšējā info joslā kopā ar pārējām pogām —
     // tur tā vienmēr ir redzama gan telefonā, gan datorā
     const lbInfoBar = document.querySelector('.lightbox-info');
-    if (zoomBtn && lbInfoBar) {
-        lbInfoBar.insertBefore(zoomBtn, document.getElementById('lightboxInquire'));
+    const lbActions = document.querySelector('.lb-info-actions') || lbInfoBar;
+    if (zoomBtn && lbActions) {
+        lbActions.insertBefore(zoomBtn, document.getElementById('lightboxInquire'));
     }
 
     // =========================
@@ -526,7 +624,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lbLikeBtn.className = 'lightbox-like';
         lbLikeBtn.setAttribute('aria-label', 'Patīk šī glezna');
         lbLikeBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
-        lbInfoBar.insertBefore(lbLikeBtn, document.getElementById('lightboxShare'));
+        lbActions.insertBefore(lbLikeBtn, document.getElementById('lightboxShare'));
         lbLikeBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             const item = galleryItems[currentIndex];
@@ -677,7 +775,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function showPrev() { stepLightbox(-1); }
  
     // viens klikšķis (pēc 280 ms nogaides) = atvērt; dubultklikšķis = like
-    galleryItems.forEach((item, i) => {
+    // indeksu rēķinām dinamiski, lai kārtošana (DOM pārkārtošana) nesalūst
+    galleryItems.forEach((item) => {
         item.style.cursor = 'pointer';
         let pressTimer = null;
         item.addEventListener('click', () => {
@@ -688,7 +787,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 pressTimer = setTimeout(() => {
                     pressTimer = null;
-                    openLightbox(i);
+                    openLightbox(galleryItems.indexOf(item));
                 }, 280);
             }
         });
@@ -881,7 +980,7 @@ document.addEventListener('DOMContentLoaded', () => {
         var LOAD_MS = 2000;
         var loadTimer = null;
 
-        var infoBar = lightbox.querySelector('.lightbox-info');
+        var infoBar = lightbox.querySelector('.lb-info-actions') || lightbox.querySelector('.lightbox-info');
         if (infoBar) {
             var roomBtn = document.createElement('button');
             roomBtn.className = 'lb-room-btn';
@@ -956,6 +1055,17 @@ document.addEventListener('DOMContentLoaded', () => {
             roomFrame.style.bottom = (h * BOT - f) + 'px';
             roomArt.style.width = aw + 'px';
             roomArt.style.height = ah + 'px';
+
+            /* sienas ēna, kas pielāgojas gleznas izmēram un orientācijai:
+               gaisma no augšas-kreisās → ēna krīt pa labi un uz leju;
+               platāka glezna → platāka ēna, augstāka → garāka ēna */
+            var fw = aw + 2 * f, fh = ah + 2 * f;
+            var offX = fw * 0.045;
+            var offY = fh * 0.075;
+            var blur = Math.max(fw, fh) * 0.12;
+            roomFrame.style.filter =
+                'drop-shadow(' + offX.toFixed(1) + 'px ' + offY.toFixed(1) + 'px ' +
+                blur.toFixed(1) + 'px rgba(0,0,0,0.45))';
         }
 
         function openRoom() {
@@ -1014,45 +1124,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         /* detalizēts koka rāmis ar tekstūru un zelta līniju (canvas versija) */
+        /* īsta koka tekstūra rāmim (priekšielādēta) */
+        var woodImg = new Image();
+        woodImg.src = 'img/wood-frame.webp';
+
         function drawFrame(ctx, x, y, aw, ah, f) {
             var ox = x - f, oy = y - f, ow = aw + 2 * f, oh = ah + 2 * f;
 
-            /* pamatne ar piekārtas gleznas ēnu */
+            /* pamatne ar sienas ēnu, kas mērogojas pēc gleznas izmēra
+               un orientācijas (tās pašas proporcijas kā ekrānā) */
             ctx.save();
-            ctx.shadowColor = 'rgba(0,0,0,0.38)';
-            ctx.shadowBlur = 34;
-            ctx.shadowOffsetY = 16;
+            ctx.shadowColor = 'rgba(0,0,0,0.45)';
+            ctx.shadowBlur = Math.max(ow, oh) * 0.12;
+            ctx.shadowOffsetX = ow * 0.045;
+            ctx.shadowOffsetY = oh * 0.075;
             ctx.fillStyle = '#57493a';
             ctx.fillRect(ox, oy, ow, oh);
             ctx.restore();
 
-            /* tonālā pāreja — gaisma krīt no augšas-kreisās */
-            var g = ctx.createLinearGradient(ox, oy, ox + ow, oy + oh);
-            g.addColorStop(0, 'rgba(255,255,255,0.12)');
-            g.addColorStop(0.45, 'rgba(0,0,0,0)');
-            g.addColorStop(1, 'rgba(0,0,0,0.20)');
-            ctx.fillStyle = g;
-            ctx.fillRect(ox, oy, ow, oh);
-
-            /* koka šķiedras tekstūra (tikai rāmja gredzenā) */
+            /* īsta koka tekstūra (aizpilda rāmja gredzenu) */
             ctx.save();
             ctx.beginPath();
             ctx.rect(ox, oy, ow, oh);
             ctx.rect(x, y, aw, ah);
             ctx.clip('evenodd');
-            ctx.lineWidth = 1;
-            for (var i = -oh; i < ow; i += 5) {
-                ctx.strokeStyle = 'rgba(0,0,0,0.09)';
-                ctx.beginPath();
-                ctx.moveTo(ox + i, oy);
-                ctx.lineTo(ox + i + oh, oy + oh);
-                ctx.stroke();
-                ctx.strokeStyle = 'rgba(255,255,255,0.045)';
-                ctx.beginPath();
-                ctx.moveTo(ox + i + 2.5, oy);
-                ctx.lineTo(ox + i + 2.5 + oh, oy + oh);
-                ctx.stroke();
+            if (woodImg.complete && woodImg.naturalWidth) {
+                var pat = ctx.createPattern(woodImg, 'repeat');
+                ctx.fillStyle = pat;
+                ctx.fillRect(ox, oy, ow, oh);
             }
+            /* tonālā pāreja — gaisma krīt no augšas-kreisās */
+            var g = ctx.createLinearGradient(ox, oy, ox + ow, oy + oh);
+            g.addColorStop(0, 'rgba(255,255,255,0.16)');
+            g.addColorStop(0.45, 'rgba(0,0,0,0)');
+            g.addColorStop(1, 'rgba(0,0,0,0.30)');
+            ctx.fillStyle = g;
+            ctx.fillRect(ox, oy, ow, oh);
             ctx.restore();
 
             /* skavas: gaišā ārējā un tumšā iekšējā mala */
