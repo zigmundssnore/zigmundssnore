@@ -194,6 +194,14 @@ document.addEventListener('DOMContentLoaded', () => {
         topBadge.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2l2.6 6.9L22 9.2l-5.5 4.8L18.2 22 12 17.8 5.8 22l1.7-8L2 9.2l7.4-.3z"/></svg>TOP';
         info.insertBefore(topBadge, info.firstChild);
 
+        // JAUNUMS nozīmīte (jaunajām gleznām) — info joslā, kreisajā pusē
+        if (item.dataset.new === 'true') {
+            const newBadge = document.createElement('span');
+            newBadge.className = 'new-badge';
+            newBadge.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l1.9 5.2L19 9l-4 3.6L16 18l-4-2.6L8 18l1-5.4L5 9l5.1-.8z"/></svg>JAUNUMS';
+            info.insertBefore(newBadge, info.firstChild);
+        }
+
         // jēgpilns alt teksts Google Attēliem un ekrāna lasītājiem
         const itemImg = item.querySelector('img');
         const sizeTxt = info.querySelector('.image-name')?.textContent || '';
