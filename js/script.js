@@ -340,6 +340,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const originalOrder = Array.from(allItems);  // sākotnējā secība (priekš "Nekārtot")
     let currentOrder = originalOrder.slice();
 
+    // atklājam pašreizējo secību lentei (cits scope) — pieaug pēc katras kārtošanas
+    let orderVersion = 0;
+    window.__galleryOrder = () => currentOrder;
+    window.__galleryOrderVersion = () => orderVersion;
+
     const columnCount = () => (window.innerWidth >= 769 ? 4 : 2);
 
     function layoutMasonry() {
@@ -425,6 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     currentOrder.sort(cmp);                 // sakārto galveno secību
                     sortLabel.textContent = 'Kārtot: ' + labels[mode];
                 }
+                orderVersion++;           // signāls lentei pārkārtoties
                 layoutMasonry();          // pārzīmē pa rindām
                 sortMenu.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === opt));
                 closeMenu();
@@ -701,7 +707,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const lbInquire = document.getElementById('lightboxInquire');
 
     function visibleGalleryItems() {
-        return galleryItems.filter(it => !it.classList.contains('hidden'));
+        // seko pašreizējai kārtošanas/masonry secībai (currentOrder),
+        // nevis oriģinālajai — lai bultiņas iet sakārtotā secībā
+        return currentOrder.filter(it => !it.classList.contains('hidden'));
     }
 
     function updateLightboxInfo() {
@@ -965,6 +973,7 @@ document.addEventListener('DOMContentLoaded', () => {
         /* ── 2. Sīktēlu lente ── */
         var strip = document.createElement('div');
         strip.className = 'lb-strip';
+        var thumbByItem = new Map();
         galleryItems.forEach(function (item) {
             var t = document.createElement('img');
             t.src = item.querySelector('img').getAttribute('src'); // mazais sīktēls
@@ -972,23 +981,39 @@ document.addEventListener('DOMContentLoaded', () => {
             t.decoding = 'async';
             t.className = 'lb-thumb';
             t.alt = '';
+            t._item = item;
             t.addEventListener('click', function (e) {
                 e.stopPropagation();
                 item.click(); // atver lightboxu tieši uz šo gleznu
             });
             strip.appendChild(t);
+            thumbByItem.set(item, t);
         });
         lightbox.appendChild(strip);
 
+        // pārkārto lenti tādā pašā secībā kā galerija (tikai kad mainās kārtošana)
+        var lastOrderVersion = -1;
+        function reorderStrip() {
+            if (!window.__galleryOrder) return;
+            var v = window.__galleryOrderVersion ? window.__galleryOrderVersion() : 0;
+            if (v === lastOrderVersion) return;
+            lastOrderVersion = v;
+            window.__galleryOrder().forEach(function (item) {
+                var t = thumbByItem.get(item);
+                if (t) strip.appendChild(t); // pārvieto esošo sīktēlu pareizajā vietā
+            });
+        }
+
         function syncStrip() {
-            var idx = currentIndex();
+            reorderStrip();
+            var curItem = galleryItems[currentIndex()];
             var thumbs = strip.children;
             for (var i = 0; i < thumbs.length; i++) {
-                thumbs[i].classList.toggle('active', i === idx);
-                thumbs[i].style.display =
-                    galleryItems[i].classList.contains('hidden') ? 'none' : '';
+                var t = thumbs[i];
+                t.classList.toggle('active', t._item === curItem);
+                t.style.display = t._item.classList.contains('hidden') ? 'none' : '';
             }
-            var act = thumbs[idx];
+            var act = thumbByItem.get(curItem);
             if (act) {
                 strip.scrollTo({
                     left: act.offsetLeft - strip.clientWidth / 2 + act.clientWidth / 2,
