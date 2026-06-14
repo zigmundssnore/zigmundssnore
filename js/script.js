@@ -1130,7 +1130,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             var aw = artW * ppc;
             var ah = artH * ppc;
-            var f = Math.max(4, 3.2 * ppc); // rāmja biezums ≈ 3,2 cm
+            var f = Math.max(3, 1.6 * ppc); // koka rāmja biezums ≈ 1,6 cm (šaurāks)
 
             roomFrame.style.padding = f + 'px';
             roomFrame.style.setProperty('--f', f + 'px');
@@ -1278,7 +1278,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     var aw = artW * ppc, ah = artH * ppc;
                     var x = 1200 * CX - aw / 2;
                     var y = 1800 - 1800 * BOT - ah;
-                    var f = Math.round(3.2 * ppc); // rāmja biezums ≈ 3,2 cm
+                    var f = Math.round(1.6 * ppc); // koka rāmja biezums ≈ 1,6 cm (šaurāks)
 
                     drawFrame(ctx, x, y, aw, ah, f);
 
