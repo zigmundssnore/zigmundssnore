@@ -2463,9 +2463,91 @@ input, textarea, [contenteditable] {
     max-height: 96%;
 }
 
+/* ── DATORĀ: info + pogas ir vertikāls panelis pa labi (lielākas pogas),
+      sīktēlu lente lielāka apakšā zem attēla ── */
 @media (min-width: 768px) {
-    /* vieta sīktēlu lentei + info joslai */
-    .lightbox { padding-bottom: 185px; }
+    .lightbox {
+        padding: 40px 360px 170px 40px;
+    }
+
+    #lightbox-image {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    /* sānu panelis */
+    .lightbox-info {
+        left: auto;
+        right: 36px;
+        bottom: auto;
+        top: 50%;
+        transform: translateY(-50%);
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+        flex-wrap: nowrap;
+        width: 300px;
+        max-width: 300px;
+        gap: 20px;
+        padding: 26px 22px;
+        border-radius: 24px;
+    }
+
+    .lightbox-info .lb-info-text {
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .lightbox-info .lightbox-name { font-size: 1rem; }
+    .lightbox-info .lightbox-price { font-size: 1.5rem; }
+
+    .lightbox-info .lb-info-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        width: 100%;
+    }
+
+    /* teksta pogas — katra savā rindā, pa visu paneļa platumu, lielākas */
+    .lightbox-info .lightbox-inquire,
+    .lightbox-info .lb-room-btn,
+    .lightbox-info .lightbox-zoom {
+        order: 1;
+        flex: 0 0 100%;
+        width: 100%;
+        padding: 15px 18px;
+        font-size: 1rem;
+        border-radius: 14px;
+    }
+
+    /* like + share pēdējie un blakus vienā rindā, lielāki */
+    .lightbox-info .lightbox-like,
+    .lightbox-info .lightbox-share {
+        order: 2;
+        width: 50px;
+        height: 50px;
+    }
+    .lightbox-info .lightbox-like svg,
+    .lightbox-info .lightbox-share svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* lielāka sīktēlu lente apakšā zem attēla (ne zem paneļa) */
+    .lb-strip {
+        bottom: 28px;
+        left: 40px;
+        right: 360px;
+        transform: none;
+        max-width: none;
+    }
+
+    .lb-thumb { height: 72px; }
+
+    /* labā bultiņa tieši pirms paneļa */
+    .lightbox-next { right: 372px; }
+    .lightbox-prev { left: 24px; }
 }
 
 /* zoom poga ir info joslas sastāvdaļa (JS to pārvieto turp) */
@@ -2495,20 +2577,21 @@ input, textarea, [contenteditable] {
         gap: 9px;
     }
 
-    /* pogu rinda vienmēr vienā līnijā (var pavilkt sāniski),
-       lai augstums nemainās starp ierāmētajām un parastajām */
+    /* pogas ielaužas rindās — VISAS redzamas uzreiz, nav jāscrollo */
     .lb-info-actions {
         width: 100%;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        justify-content: flex-start;
-        scrollbar-width: none;
-        -webkit-overflow-scrolling: touch;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 7px;
     }
 
-    .lb-info-actions::-webkit-scrollbar { display: none; }
-
-    .lb-info-actions > * { flex: none; }
+    /* kompaktākas pogas, lai labāk satilpst */
+    .lb-info-actions .lightbox-inquire,
+    .lb-info-actions .lb-room-btn,
+    .lb-info-actions .lightbox-zoom {
+        padding: 8px 14px;
+        font-size: 0.82rem;
+    }
 }
 
 /* ── Telefonā WhatsApp un "Uz augšu" pogas pacełas virs apakšējā doka ── */

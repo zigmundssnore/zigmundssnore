@@ -719,6 +719,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const price = item.querySelector('.image-size')?.textContent || '';
         if (lbName) lbName.textContent = 'Nr. ' + (currentIndex + 1) + ' · ' + name;
         if (lbPrice) lbPrice.textContent = price;
+        // ierāmētajām gleznām nav ko ierāmēt — tikai "Saņemšana"
+        const lbInq = document.getElementById('lightboxInquire');
+        if (lbInq) lbInq.textContent = item.dataset.category === 'ieramettas'
+            ? 'Saņemšana'
+            : 'Saņemšana & ierāmēšana';
         const vis = visibleGalleryItems();
         const pos = vis.indexOf(item);
         if (lbCounter) lbCounter.textContent = (pos >= 0 ? pos + 1 : 1) + ' / ' + vis.length;
@@ -941,8 +946,11 @@ document.addEventListener('DOMContentLoaded', () => {
     'use strict';
 
     document.addEventListener('DOMContentLoaded', function () {
-        var galleryItems = Array.prototype.slice.call(
-            document.querySelectorAll('.gallery-container .gallery-item'));
+        // VISI darbi (arī uz brīdi atvienotie/paslēptie) — masonry citādi
+        // izlaiž paslēptās gleznas no DOM, un lentē/interjerā pazustu ierāmētās
+        var galleryItems = (window.__galleryOrder
+            ? window.__galleryOrder().slice()
+            : Array.prototype.slice.call(document.querySelectorAll('.gallery-container .gallery-item')));
         var lightbox = document.getElementById('lightbox');
         var lightboxImage = document.getElementById('lightbox-image');
         if (!galleryItems.length || !lightbox || !lightboxImage) return;
