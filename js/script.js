@@ -1143,12 +1143,15 @@ document.addEventListener('DOMContentLoaded', () => {
                gaisma no augšas-kreisās → ēna krīt pa labi un uz leju;
                platāka glezna → platāka ēna, augstāka → garāka ēna */
             var fw = aw + 2 * f, fh = ah + 2 * f;
-            var offX = fw * 0.045;
-            var offY = fh * 0.075;
-            var blur = Math.max(fw, fh) * 0.12;
+            var offX = fw * 0.05;
+            var offY = fh * 0.085;
+            var blur = Math.max(fw, fh) * 0.13;
+            // divas kārtas: liela mīksta ēna + tumšāka kontakta ēna tuvāk rāmim → reālistiskāk
             roomFrame.style.filter =
                 'drop-shadow(' + offX.toFixed(1) + 'px ' + offY.toFixed(1) + 'px ' +
-                blur.toFixed(1) + 'px rgba(0,0,0,0.45))';
+                blur.toFixed(1) + 'px rgba(0,0,0,0.6)) ' +
+                'drop-shadow(' + (offX * 0.35).toFixed(1) + 'px ' + (offY * 0.4).toFixed(1) + 'px ' +
+                (blur * 0.32).toFixed(1) + 'px rgba(0,0,0,0.55))';
         }
 
         function openRoom() {
@@ -1214,14 +1217,21 @@ document.addEventListener('DOMContentLoaded', () => {
         function drawFrame(ctx, x, y, aw, ah, f) {
             var ox = x - f, oy = y - f, ow = aw + 2 * f, oh = ah + 2 * f;
 
-            /* pamatne ar sienas ēnu, kas mērogojas pēc gleznas izmēra
-               un orientācijas (tās pašas proporcijas kā ekrānā) */
-            ctx.save();
-            ctx.shadowColor = 'rgba(0,0,0,0.45)';
-            ctx.shadowBlur = Math.max(ow, oh) * 0.12;
-            ctx.shadowOffsetX = ow * 0.045;
-            ctx.shadowOffsetY = oh * 0.075;
+            /* pamatne ar sienas ēnu, kas mērogojas pēc gleznas izmēra un
+               orientācijas — divas kārtas (mīksta + tumšāka kontakta ēna) */
             ctx.fillStyle = '#57493a';
+            ctx.save();
+            ctx.shadowColor = 'rgba(0,0,0,0.6)';
+            ctx.shadowBlur = Math.max(ow, oh) * 0.13;
+            ctx.shadowOffsetX = ow * 0.05;
+            ctx.shadowOffsetY = oh * 0.085;
+            ctx.fillRect(ox, oy, ow, oh);
+            ctx.restore();
+            ctx.save();
+            ctx.shadowColor = 'rgba(0,0,0,0.55)';
+            ctx.shadowBlur = Math.max(ow, oh) * 0.042;
+            ctx.shadowOffsetX = ow * 0.018;
+            ctx.shadowOffsetY = oh * 0.034;
             ctx.fillRect(ox, oy, ow, oh);
             ctx.restore();
 
