@@ -77,7 +77,12 @@ function recomputeTop() {
 }
 
 function setupLikes(item, globalIndex) {
-    const key = 'glezna_' + (globalIndex + 1);
+    // STABILS ID no bildes faila nosaukuma (nemainās, mainoties pozīcijai) —
+    // tā like vienmēr paliek pie savas gleznas, nevis pie pozīcijas
+    const _img = item.querySelector('img');
+    const _src = (_img && (_img.getAttribute('data-src') || _img.getAttribute('src'))) || ('poz-' + (globalIndex + 1));
+    const id = _src.split('/').pop().replace(/^thumb-/, '').replace(/\.(webp|jpe?g|png)$/i, '');
+    const key = 'glezna_' + id;
     const likeRef = ref(db, 'likes/' + key);
     const storageKey = 'liked_' + key;
     const info = item.querySelector('.image-info');
