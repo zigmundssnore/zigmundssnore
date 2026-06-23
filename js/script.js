@@ -351,7 +351,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================
     const galleryEl = document.querySelector('.gallery-container');
     const originalOrder = Array.from(allItems);  // sākotnējā secība (priekš "Nekārtot")
-    let currentOrder = originalOrder.slice();
+
+    // gleznas ar JAUNUMS ("data-new") vienmēr pirmās (stabili — saglabā secību grupās)
+    const applyNewFirst = arr => {
+        const isNew = it => it.dataset.new === 'true';
+        return [...arr.filter(isNew), ...arr.filter(it => !isNew(it))];
+    };
+    let currentOrder = applyNewFirst(originalOrder.slice());
 
     // atklājam pašreizējo secību lentei (cits scope) — pieaug pēc katras kārtošanas
     let orderVersion = 0;
@@ -443,6 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     currentOrder.sort(cmp);                 // sakārto galveno secību
                     sortLabel.textContent = 'Kārtot: ' + labels[mode];
                 }
+                currentOrder = applyNewFirst(currentOrder); // JAUNUMS gleznas vienmēr pirmās
                 orderVersion++;           // signāls lentei pārkārtoties
                 layoutMasonry();          // pārzīmē pa rindām
                 sortMenu.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === opt));
