@@ -2881,3 +2881,143 @@ input, textarea, [contenteditable] {
     user-select: none;
     pointer-events: none;
 }
+
+/* ── Valodas pārslēgs (LV / EN) — desktopā augšējā labajā stūrī ── */
+.lang-switch {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 1200;
+    display: flex;
+    gap: 3px;
+    padding: 4px;
+    border-radius: 999px;
+    background: rgba(12, 18, 34, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
+    opacity: 0.78;
+    transition: opacity 0.25s ease;
+}
+.lang-switch:hover { opacity: 1; }
+.lang-opt {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: inherit;
+    font-size: 0.86rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+.lang-opt:hover { color: #fff; }
+.lang-opt.active {
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+}
+.lang-opt svg {
+    width: 24px;
+    height: auto;
+    border-radius: 2px;
+    display: block;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+/* ── Telefonā — pa vidu pašā augšā, nedaudz lielāks ── */
+@media (max-width: 600px) {
+    .lang-switch {
+        top: 10px;
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0.92;
+    }
+    .lang-opt { padding: 7px 13px; font-size: 0.8rem; gap: 6px; }
+    .lang-opt svg { width: 21px; }
+}
+
+/* ── Liquid-glass paziņojuma logs (piem. EN biogrāfija nav pieejama) ── */
+.glass-dialog-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 2500;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    background: rgba(5, 8, 18, 0.45);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+.glass-dialog-overlay.open {
+    display: flex;
+    animation: glassFadeIn 0.3s ease;
+}
+@keyframes glassFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.glass-dialog {
+    background: rgba(13, 18, 34, 0.35);
+    backdrop-filter: blur(52px) saturate(170%);
+    -webkit-backdrop-filter: blur(52px) saturate(170%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-top-color: rgba(255, 255, 255, 0.45);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.40);
+    border-radius: 22px;
+    padding: 40px 34px 34px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    animation: modalIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.glass-dialog::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
+}
+.glass-dialog-text {
+    font-family: var(--font-display);
+    font-size: 1.32rem;
+    font-weight: 400;
+    line-height: 1.45;
+    color: #fff;
+    margin: 0 0 8px;
+}
+.glass-dialog-sub {
+    font-size: 0.92rem;
+    color: rgba(255,255,255,0.62);
+    line-height: 1.55;
+    margin: 0 0 28px;
+}
+.glass-dialog-ok {
+    display: inline-block;
+    min-width: 130px;
+    padding: 12px 30px;
+    border: 1px solid rgba(255,255,255,0.30);
+    border-top-color: rgba(255,255,255,0.50);
+    border-radius: 999px;
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+.glass-dialog-ok:hover { background: rgba(255,255,255,0.22); }
+.glass-dialog-ok:active { transform: scale(0.96); }
+
+@media (max-width: 600px) {
+    .glass-dialog { padding: 34px 24px 28px; }
+    .glass-dialog-text { font-size: 1.18rem; }
+}

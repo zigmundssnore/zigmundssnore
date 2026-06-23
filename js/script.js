@@ -155,16 +155,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const resetBioBtn = () => {
             bioBtn.classList.remove('playing');
-            bioLabel.textContent = 'Noklausīties biogrāfiju';
+            bioLabel.textContent = window.T('Noklausīties biogrāfiju');
         };
 
+        // angļu valodā audio nav — parādām liquid-glass paziņojuma logu
+        const bioLangOverlay = document.getElementById('bioLangOverlay');
+        const closeBioLang = () => {
+            if (bioLangOverlay) bioLangOverlay.classList.remove('open');
+        };
+        if (bioLangOverlay) {
+            const okBtn = document.getElementById('bioLangOk');
+            if (okBtn) okBtn.addEventListener('click', closeBioLang);
+            bioLangOverlay.addEventListener('click', (e) => {
+                if (e.target === bioLangOverlay) closeBioLang();   // klikšķis ārpus loga
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeBioLang();
+            });
+        }
+
         bioBtn.addEventListener('click', () => {
+            if (window.SITE_LANG === 'en') {
+                if (bioLangOverlay) bioLangOverlay.classList.add('open');
+                return;
+            }
             if (!bioAudio) {
                 bioAudio = new Audio('audio/biografija.mp3');
                 bioAudio.addEventListener('ended', resetBioBtn);
                 bioAudio.addEventListener('error', () => {
                     resetBioBtn();
-                    bioLabel.textContent = 'Audio nav pieejams';
+                    bioLabel.textContent = window.T('Audio nav pieejams');
                 });
             }
             if (bioBtn.classList.contains('playing')) {
@@ -174,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 bioAudio.play();
                 bioBtn.classList.add('playing');
-                bioLabel.textContent = 'Apturēt';
+                bioLabel.textContent = window.T('Apturēt');
             }
         });
     }
@@ -190,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
  
         const numEl = document.createElement('p');
         numEl.className = 'gallery-number';
-        numEl.textContent = 'Nr. ' + num;
+        numEl.textContent = window.T('Nr. ') + num;
         info.insertBefore(numEl, info.firstChild);
 
         // TOP nozīmīte (info joslā, lai neaizsedz gleznu) — JS to ieslēdz pēc like
@@ -203,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (item.dataset.new === 'true') {
             const newBadge = document.createElement('span');
             newBadge.className = 'new-badge';
-            newBadge.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l1.9 5.2L19 9l-4 3.6L16 18l-4-2.6L8 18l1-5.4L5 9l5.1-.8z"/></svg>JAUNUMS';
+            newBadge.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l1.9 5.2L19 9l-4 3.6L16 18l-4-2.6L8 18l1-5.4L5 9l5.1-.8z"/></svg>' + window.T('JAUNUMS');
             info.insertBefore(newBadge, info.firstChild);
         }
 
@@ -216,8 +236,8 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.className = 'btn-inquire';
         // ierāmētajām gleznām nav ko ierāmēt — tikai "Saņemšana"
         btn.textContent = item.dataset.category === 'ieramettas'
-            ? 'Saņemšana'
-            : 'Saņemšana & ierāmēšana';
+            ? window.T('Saņemšana')
+            : window.T('Saņemšana & ierāmēšana');
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             openDeliveryModal(num);
@@ -275,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (navigator.clipboard) {
             try {
                 await navigator.clipboard.writeText(url);
-                showToast('Saite nokopēta!');
+                showToast(window.T('Saite nokopēta!'));
             } catch (e) {
                 showToast(url);
             }
@@ -442,12 +462,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const mode = opt.dataset.sort;
                 if (mode === 'none') {
                     currentOrder = originalOrder.slice();   // atjauno sākotnējo secību
-                    sortLabel.textContent = 'Kārtot';
+                    sortLabel.textContent = window.T('Kārtot');
                 } else {
                     const cmp = comparators[mode];
                     if (!cmp) return;
                     currentOrder.sort(cmp);                 // sakārto galveno secību
-                    sortLabel.textContent = 'Kārtot: ' + labels[mode];
+                    sortLabel.textContent = window.T('Kārtot: ') + window.T(labels[mode]);
                 }
                 currentOrder = applyNewFirst(currentOrder); // JAUNUMS gleznas vienmēr pirmās
                 orderVersion++;           // signāls lentei pārkārtoties
@@ -737,13 +757,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!item) return;
         const name = item.querySelector('.image-name')?.textContent || '';
         const price = item.querySelector('.image-size')?.textContent || '';
-        if (lbName) lbName.textContent = 'Nr. ' + (currentIndex + 1) + ' · ' + name;
+        if (lbName) lbName.textContent = window.T('Nr. ') + (currentIndex + 1) + ' · ' + name;
         if (lbPrice) lbPrice.textContent = price;
         // ierāmētajām gleznām nav ko ierāmēt — tikai "Saņemšana"
         const lbInq = document.getElementById('lightboxInquire');
         if (lbInq) lbInq.textContent = item.dataset.category === 'ieramettas'
-            ? 'Saņemšana'
-            : 'Saņemšana & ierāmēšana';
+            ? window.T('Saņemšana')
+            : window.T('Saņemšana & ierāmēšana');
         const vis = visibleGalleryItems();
         const pos = vis.indexOf(item);
         if (lbCounter) lbCounter.textContent = (pos >= 0 ? pos + 1 : 1) + ' / ' + vis.length;
@@ -769,7 +789,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const isFramed = item?.dataset.category === 'ieramettas';
         if (zoomBtn) {
             zoomBtn.style.display = isFramed ? 'block' : 'none';
-            zoomBtn.textContent = '🔍 Pietuvināt';
+            zoomBtn.textContent = window.T('🔍 Pietuvināt');
             isZoomed = false;
         }
     }
@@ -787,7 +807,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     lightboxImage.src = zoomSrc;
                     lightboxImage.style.opacity = '1';
                 }, 150);
-                zoomBtn.textContent = '← Atpakaļ';
+                zoomBtn.textContent = window.T('← Atpakaļ');
                 isZoomed = true;
             } else {
                 lightboxImage.style.opacity = '0';
@@ -795,7 +815,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     lightboxImage.src = mainSrc;
                     lightboxImage.style.opacity = '1';
                 }, 150);
-                zoomBtn.textContent = '🔍 Pietuvināt';
+                zoomBtn.textContent = window.T('🔍 Pietuvināt');
                 isZoomed = false;
             }
         });
@@ -1079,7 +1099,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (infoBar) {
             var roomBtn = document.createElement('button');
             roomBtn.className = 'lb-room-btn';
-            roomBtn.textContent = '🛋️ Skatīt interjerā';
+            roomBtn.textContent = window.T('🛋️ Skatīt interjerā');
             infoBar.insertBefore(roomBtn, document.getElementById('lightboxShare'));
             roomBtn.addEventListener('click', function (e) {
                 e.stopPropagation();
@@ -1098,11 +1118,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     '<div class="room-caption"></div>' +
                     '<button class="room-dl">' +
                         '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' +
-                        '<span>Lejupielādēt foto</span>' +
+                        '<span>' + window.T('Lejupielādēt foto') + '</span>' +
                     '</button>' +
                 '</div>' +
                 '<div class="room-loader">' +
-                    '<p class="room-loader-text">Mēs sagatavojam interjera priekšskatījumu…</p>' +
+                    '<p class="room-loader-text">' + window.T('Mēs sagatavojam interjera priekšskatījumu…') + '</p>' +
                     '<div class="room-loader-bar"></div>' +
                 '</div>';
             document.body.appendChild(overlay);
@@ -1196,12 +1216,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 var iw = roomArt.naturalWidth, ih = roomArt.naturalHeight;
                 if (iw && ih && ((iw >= ih) !== (artW >= artH))) {
                     var t = artW; artW = artH; artH = t;
-                    roomCaption.textContent = 'Glezna ' + artW + ' × ' + artH + ' cm · dīvāns ≈ 170 cm (reāls mērogs)';
+                    roomCaption.textContent = window.T('Glezna') + ' ' + artW + ' × ' + artH + ' cm · ' + window.T('dīvāns ≈ 170 cm') + ' (' + window.T('reāls mērogs') + ')';
                 }
                 layoutRoom();
             };
             roomArt.src = artSrc;
-            roomCaption.textContent = 'Glezna ' + artW + ' × ' + artH + ' cm · dīvāns ≈ 170 cm (reāls mērogs)';
+            roomCaption.textContent = window.T('Glezna') + ' ' + artW + ' × ' + artH + ' cm · ' + window.T('dīvāns ≈ 170 cm') + ' (' + window.T('reāls mērogs') + ')';
             overlay.classList.add('open');
 
             if (IS_TOUCH) {
