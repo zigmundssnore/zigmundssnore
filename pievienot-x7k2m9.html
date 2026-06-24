@@ -191,30 +191,6 @@
         <p class="sub">Aizpildi, spied pogu — glezna automātiski nonāk lapā (~1 min).</p>
     </div>
 
-    <div class="card" id="settings">
-        <p class="card-title">⚙️ Iestatījumi</p>
-        <p class="small" style="margin-top:0">Jāaizpilda vienreiz — saglabājas tikai šajā datorā.</p>
-        <label>GitHub token</label>
-        <input type="password" id="token" placeholder="github_pat_...">
-        <div class="help-box">
-            <p class="help-title">❓ Kā iegūt GitHub token (vienreiz):</p>
-            <ol class="help-steps">
-                <li>Atver token lapu un pieslēdzies (ja prasa):<br><a class="help-link" href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener">Atvērt GitHub token lapu ↗</a></li>
-                <li>Spied <b>Generate new token</b>. Nosaukums brīvs; Expiration piem. <b>90 days</b>.</li>
-                <li><b>Repository access</b> → <b>Only select repositories</b> → izvēlies <b>zigmundssnore</b>.</li>
-                <li><b>Permissions</b> → <b>Repository permissions</b> → atrodi <b>Contents</b> → iestati <b>Read and write</b>.</li>
-                <li>Lejā spied <b>Generate token</b> un nokopē to (sākas ar <code>github_pat_…</code>). ⚠️ Parāda tikai 1×!</li>
-                <li>Ielīmē to augšā laukā <b>GitHub token</b>. Saglabājas tikai šajā pārlūkā.</li>
-            </ol>
-        </div>
-        <div class="row">
-            <div><label>Repo īpašnieks</label><input type="text" id="owner" value="zigmundssnore"></div>
-            <div><label>Repo nosaukums</label><input type="text" id="repo" value="zigmundssnore"></div>
-        </div>
-        <label>Zars (branch)</label>
-        <input type="text" id="branch" value="main">
-    </div>
-
     <div class="grid">
     <div class="grid-col">
 
@@ -293,6 +269,30 @@
     </div>
 
     </div>
+    </div>
+
+    <div class="card" id="settings">
+        <p class="card-title">⚙️ Iestatījumi</p>
+        <p class="small" style="margin-top:0">Jāaizpilda vienreiz — saglabājas tikai šajā datorā.</p>
+        <label>GitHub token</label>
+        <input type="password" id="token" placeholder="github_pat_...">
+        <div class="help-box">
+            <p class="help-title">❓ Kā iegūt GitHub token (vienreiz):</p>
+            <ol class="help-steps">
+                <li>Atver token lapu un pieslēdzies (ja prasa):<br><a class="help-link" href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener">Atvērt GitHub token lapu ↗</a></li>
+                <li>Spied <b>Generate new token</b>. Nosaukums brīvs; Expiration piem. <b>90 days</b>.</li>
+                <li><b>Repository access</b> → <b>Only select repositories</b> → izvēlies <b>zigmundssnore</b>.</li>
+                <li><b>Permissions</b> → <b>Repository permissions</b> → atrodi <b>Contents</b> → iestati <b>Read and write</b>.</li>
+                <li>Lejā spied <b>Generate token</b> un nokopē to (sākas ar <code>github_pat_…</code>). ⚠️ Parāda tikai 1×!</li>
+                <li>Ielīmē to augšā laukā <b>GitHub token</b>. Saglabājas tikai šajā pārlūkā.</li>
+            </ol>
+        </div>
+        <div class="row">
+            <div><label>Repo īpašnieks</label><input type="text" id="owner" value="zigmundssnore"></div>
+            <div><label>Repo nosaukums</label><input type="text" id="repo" value="zigmundssnore"></div>
+        </div>
+        <label>Zars (branch)</label>
+        <input type="text" id="branch" value="main">
     </div>
 </div>
 
