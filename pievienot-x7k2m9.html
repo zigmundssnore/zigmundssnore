@@ -165,6 +165,16 @@
     .edit-bar { display: none; margin-top: 14px; height: 9px; border-radius: 999px; background: rgba(255,255,255,0.09); overflow: hidden; border: 1px solid rgba(255,255,255,0.12); }
     .edit-bar-fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, #e8b760, #c98f2f); box-shadow: 0 0 12px rgba(232,183,96,0.55); }
 
+    /* ── Token instrukciju bloks ── */
+    .help-box { margin: 8px 0 10px; padding: 15px 17px; border-radius: 14px; background: rgba(232,196,119,0.07); border: 1px solid rgba(232,196,119,0.28); }
+    .help-title { margin: 0 0 9px; font-weight: 700; font-size: 0.88rem; color: #f0d9a6; }
+    .help-steps { margin: 0; padding-left: 20px; font-size: 0.82rem; line-height: 1.7; color: rgba(235,240,252,0.80); }
+    .help-steps li { margin-bottom: 6px; }
+    .help-steps b { color: #fff; font-weight: 600; }
+    .help-steps code { background: rgba(255,255,255,0.1); padding: 1px 6px; border-radius: 6px; font-size: 0.78rem; }
+    .help-link { display: inline-block; margin-top: 2px; padding: 7px 14px; border-radius: 999px; background: rgba(232,196,119,0.18); border: 1px solid rgba(232,196,119,0.5); color: #f6e4bb; font-weight: 700; text-decoration: none; transition: background 0.2s; }
+    .help-link:hover { background: rgba(232,196,119,0.3); }
+
     @media (max-width: 480px) {
         h1 { font-size: 1.75rem; }
         .card { padding: 22px 18px; }
@@ -186,7 +196,17 @@
         <p class="small" style="margin-top:0">Jāaizpilda vienreiz — saglabājas tikai šajā datorā.</p>
         <label>GitHub token</label>
         <input type="password" id="token" placeholder="github_pat_...">
-        <p class="small">Kā iegūt: skat. <b>instrukcija.txt</b> mapē Documents/gleznas.</p>
+        <div class="help-box">
+            <p class="help-title">❓ Kā iegūt GitHub token (vienreiz):</p>
+            <ol class="help-steps">
+                <li>Atver token lapu un pieslēdzies (ja prasa):<br><a class="help-link" href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener">Atvērt GitHub token lapu ↗</a></li>
+                <li>Spied <b>Generate new token</b>. Nosaukums brīvs; Expiration piem. <b>90 days</b>.</li>
+                <li><b>Repository access</b> → <b>Only select repositories</b> → izvēlies <b>zigmundssnore</b>.</li>
+                <li><b>Permissions</b> → <b>Repository permissions</b> → atrodi <b>Contents</b> → iestati <b>Read and write</b>.</li>
+                <li>Lejā spied <b>Generate token</b> un nokopē to (sākas ar <code>github_pat_…</code>). ⚠️ Parāda tikai 1×!</li>
+                <li>Ielīmē to augšā laukā <b>GitHub token</b>. Saglabājas tikai šajā pārlūkā.</li>
+            </ol>
+        </div>
         <div class="row">
             <div><label>Repo īpašnieks</label><input type="text" id="owner" value="zigmundssnore"></div>
             <div><label>Repo nosaukums</label><input type="text" id="repo" value="zigmundssnore"></div>
