@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Pievienot gleznu — zigmundssnore.lv</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234b63d6'/%3E%3Cpath d='M16 8.5v15M8.5 16h15' stroke='%23ffffff' stroke-width='3.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400..600&family=Manrope:wght@300..700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --glass-bg:         rgba(255,255,255,0.07);
+        --glass-bg-heavy:   rgba(255,255,255,0.12);
+        --glass-border:     rgba(255,255,255,0.22);
+        --glass-border-top: rgba(255,255,255,0.45);
+        --glass-blur:       blur(26px) saturate(170%);
+        --shadow: 0 16px 48px rgba(3,6,16,0.50),
+                  0 2px 10px rgba(3,6,16,0.30),
+                  inset 0 1px 0 rgba(255,255,255,0.32);
+        --text:  #f4f6fb;
+        --dim:   rgba(235,240,252,0.62);
+        --gold:  #e8c477;
+        --radius: 24px;
+        --font-display: 'Playfair Display', Georgia, serif;
+        --font-body: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0; min-height: 100vh; padding: 46px 16px 70px;
+        font-family: var(--font-body); color: var(--text);
+        background:
+            radial-gradient(900px 600px at 50% -10%, rgba(60,90,200,0.22), transparent 70%),
+            linear-gradient(180deg, #0c1226 0%, #0a0f1e 45%, #080c17 100%);
+        position: relative; overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Aurora fons (kā galvenajā lapā) ── */
+    .aurora { position: fixed; inset: 0; z-index: -2; overflow: hidden; filter: blur(70px); opacity: 0.5; pointer-events: none; }
+    .aurora span { position: absolute; display: block; border-radius: 50%; mix-blend-mode: screen; animation: floatBlob 22s ease-in-out infinite; }
+    .aurora span:nth-child(1) { width: 46vw; height: 46vw; left: -10vw; top: -8vw; background: radial-gradient(circle, #3a5bd0, transparent 68%); }
+    .aurora span:nth-child(2) { width: 40vw; height: 40vw; right: -12vw; top: 8vh; background: radial-gradient(circle, #9248d6, transparent 68%); animation-delay: -7s; }
+    .aurora span:nth-child(3) { width: 38vw; height: 38vw; left: 18vw; bottom: -16vw; background: radial-gradient(circle, #2ba6bf, transparent 68%); animation-delay: -14s; }
+    @keyframes floatBlob { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(4vw,3vh) scale(1.12); } }
+
+    .wrap { max-width: 1240px; margin: 0 auto; position: relative; z-index: 1; }
+
+    /* ── Desktop 2-kolonnu izkārtojums (izmanto visu platekrānu) ── */
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+    .grid-col { min-width: 0; }
+    .grid-col > .card:last-child { margin-bottom: 0; }
+    @media (max-width: 900px) {
+        .grid { grid-template-columns: 1fr; gap: 0; }
+        .grid-col > .card:last-child { margin-bottom: 18px; }
+    }
+
+    .head { text-align: center; margin-bottom: 26px; }
+    h1 {
+        font-family: var(--font-display); font-weight: 500;
+        font-size: 2.1rem; margin: 0 0 8px; letter-spacing: 0.01em;
+    }
+    h1 .em { font-size: 1.7rem; vertical-align: -2px; }
+    .head .sub { color: var(--dim); font-size: 0.92rem; margin: 0; }
+    .head::after {
+        content: ''; display: block; width: 64px; height: 2px; margin: 16px auto 0;
+        border-radius: 2px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        opacity: 0.85;
+    }
+
+    .card {
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--glass-border); border-top-color: var(--glass-border-top);
+        box-shadow: var(--shadow); border-radius: var(--radius);
+        padding: 26px 24px; margin-bottom: 18px; position: relative; overflow: hidden;
+    }
+    .card::before {
+        content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.55), transparent);
+    }
+    .card-title {
+        font-family: var(--font-display); font-size: 1.18rem; font-weight: 500;
+        margin: 0 0 4px;
+    }
+
+    label { display: block; font-size: 0.82rem; font-weight: 600; margin: 16px 0 7px; color: rgba(235,240,252,0.88); letter-spacing: 0.01em; }
+    label.tight { margin-top: 0; }
+
+    input[type=text], input[type=number], input[type=password], select {
+        width: 100%; padding: 12px 14px; border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.06);
+        color: #fff; font-size: 0.95rem; font-family: inherit;
+        transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+    input::placeholder { color: rgba(235,240,252,0.38); }
+    input:focus, select:focus {
+        outline: none; border-color: rgba(232,196,119,0.7);
+        background: rgba(255,255,255,0.10);
+        box-shadow: 0 0 0 3px rgba(232,196,119,0.15);
+    }
+    select { appearance: none; -webkit-appearance: none; cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23cdd6ee' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat; background-position: right 14px center; padding-right: 38px;
+    }
+    select option { background: #121829; color: #fff; }
+
+    .row { display: flex; gap: 12px; }
+    .row > div { flex: 1; }
+
+    .check { display: flex; align-items: center; gap: 10px; margin-top: 16px; cursor: pointer; font-weight: 600; font-size: 0.92rem; }
+    .check input { width: 20px; height: 20px; accent-color: var(--gold); flex: none; }
+
+    .drop {
+        border: 1.5px dashed rgba(255,255,255,0.28); border-radius: 16px; padding: 30px 16px;
+        text-align: center; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+        color: rgba(235,240,252,0.7); background: rgba(255,255,255,0.03);
+    }
+    .drop:hover, .drop.over { background: rgba(232,196,119,0.08); border-color: rgba(232,196,119,0.7); color: #fff; }
+    .drop img { max-width: 100%; max-height: 260px; border-radius: 12px; margin-top: 14px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+
+    .btn {
+        width: 100%; padding: 15px; border-radius: 14px; cursor: pointer;
+        color: #fff; font-family: var(--font-body); font-size: 1.02rem; font-weight: 700;
+        letter-spacing: 0.02em; margin-top: 18px;
+        border: 1px solid rgba(255,255,255,0.28); border-top-color: rgba(255,255,255,0.5);
+        background: linear-gradient(135deg, #6e8bff, #4b63d6);
+        box-shadow: 0 12px 30px rgba(75,99,214,0.4), inset 0 1px 0 rgba(255,255,255,0.4);
+        transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 38px rgba(75,99,214,0.5), inset 0 1px 0 rgba(255,255,255,0.45); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn.violet {
+        background: linear-gradient(135deg, #b06ed6, #7a4bd6);
+        box-shadow: 0 12px 30px rgba(122,75,214,0.4), inset 0 1px 0 rgba(255,255,255,0.4);
+    }
+    .btn.violet:hover { box-shadow: 0 16px 38px rgba(122,75,214,0.5), inset 0 1px 0 rgba(255,255,255,0.45); }
+
+    .small { font-size: 0.8rem; color: rgba(235,240,252,0.55); margin-top: 8px; line-height: 1.55; }
+    .small a, .small b { color: #f0d9a6; }
+
+    details.card summary {
+        cursor: pointer; font-weight: 700; color: rgba(235,240,252,0.9);
+        font-size: 0.95rem; list-style: none; display: flex; align-items: center; gap: 8px;
+    }
+    details.card summary::-webkit-details-marker { display: none; }
+    details.card summary::after { content: '⌄'; margin-left: auto; font-size: 1.1rem; opacity: 0.6; transition: transform 0.2s; }
+    details.card[open] summary::after { transform: rotate(180deg); }
+
+    #log, #log2 {
+        margin-top: 16px; font-family: ui-monospace, 'Cascadia Code', monospace; font-size: 0.82rem;
+        white-space: pre-wrap; line-height: 1.65; max-height: 260px; overflow-y: auto;
+    }
+    #log:empty, #log2:empty { margin-top: 0; }
+    .ok { color: #6fe7ac; } .err { color: #ff8a98; } .muted { color: rgba(235,240,252,0.55); }
+    .pill { display:inline-block; background:rgba(232,196,119,0.16); border:1px solid rgba(232,196,119,0.4); color:#f0d9a6; padding:2px 10px; border-radius:100px; font-size:0.75rem; }
+
+    .edit-head { display: flex; align-items: center; gap: 12px; margin: 16px 0 4px; }
+    .edit-preview { width: 60px; height: 60px; object-fit: cover; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); display: none; background: rgba(255,255,255,0.05); flex: none; }
+    select:disabled { opacity: 0.5; cursor: not-allowed; }
+    .edit-bar { display: none; margin-top: 14px; height: 9px; border-radius: 999px; background: rgba(255,255,255,0.09); overflow: hidden; border: 1px solid rgba(255,255,255,0.12); }
+    .edit-bar-fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, #e8b760, #c98f2f); box-shadow: 0 0 12px rgba(232,183,96,0.55); }
+
+    @media (max-width: 480px) {
+        h1 { font-size: 1.75rem; }
+        .card { padding: 22px 18px; }
+        .row { flex-direction: column; gap: 0; }
+    }
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+
+<div class="wrap">
+    <div class="head">
+        <h1><span class="em">🎨</span> Pievienot gleznu</h1>
+        <p class="sub">Aizpildi, spied pogu — glezna automātiski nonāk lapā (~1 min).</p>
+    </div>
+
+    <div class="card" id="settings">
+        <p class="card-title">⚙️ Iestatījumi</p>
+        <p class="small" style="margin-top:0">Jāaizpilda vienreiz — saglabājas tikai šajā datorā.</p>
+        <label>GitHub token</label>
+        <input type="password" id="token" placeholder="github_pat_...">
+        <p class="small">Kā iegūt: skat. <b>instrukcija.txt</b> mapē Documents/gleznas.</p>
+        <div class="row">
+            <div><label>Repo īpašnieks</label><input type="text" id="owner" value="zigmundssnore"></div>
+            <div><label>Repo nosaukums</label><input type="text" id="repo" value="zigmundssnore"></div>
+        </div>
+        <label>Zars (branch)</label>
+        <input type="text" id="branch" value="main">
+    </div>
+
+    <div class="grid">
+    <div class="grid-col">
+
+    <div class="card">
+        <p class="card-title">Jauna glezna</p>
+        <label class="tight">Gleznas bilde</label>
+        <div class="drop" id="drop">
+            <span id="dropText">Ievelc bildi šeit vai klikšķini, lai izvēlētos</span>
+            <img id="preview" alt="">
+        </div>
+        <input type="file" id="file" accept="image/*" style="display:none">
+
+        <div class="row">
+            <div><label>Izmērs</label><input type="text" id="size" placeholder="60 x 42"></div>
+            <div><label>Cena (€)</label><input type="number" id="price" placeholder="130"></div>
+        </div>
+
+        <label>Tips</label>
+        <input type="text" id="type" list="types" value="Akvarelis uz papīra">
+        <datalist id="types">
+            <option value="Akvarelis uz papīra">
+            <option value="Eļļa uz audekla">
+            <option value="Akrils uz audekla">
+            <option value="Guaša uz papīra">
+        </datalist>
+
+        <label class="check"><input type="checkbox" id="framed"> Ierāmēta glezna <span class="muted">(liek pie “Ierāmētās gleznas”)</span></label>
+        <label class="check"><input type="checkbox" id="isnew" checked> Jauns <span class="muted">(JAUNUMS nozīmīte)</span></label>
+
+        <label>Novietojums galerijā</label>
+        <select id="placement">
+            <option value="first">Pirmā (sākumā)</option>
+            <option value="random">Nejauša vieta</option>
+        </select>
+
+        <button class="btn" id="go">Pievienot un publicēt</button>
+        <div id="log"></div>
+    </div>
+
+    </div>
+    <div class="grid-col">
+
+    <div class="card">
+        <p class="card-title">Rediģēt gleznas datus</p>
+        <p class="small" style="margin-top:0">Maini esošas gleznas cenu, izmēru vai JAUNUMS nozīmīti.</p>
+        <button class="btn" id="editLoad" style="background:linear-gradient(135deg,#e8b760,#c98f2f); box-shadow:0 12px 30px rgba(201,143,47,0.4), inset 0 1px 0 rgba(255,255,255,0.4)">📋 Ielādēt gleznu sarakstu</button>
+        <div class="edit-bar" id="editBar"><div class="edit-bar-fill" id="editBarFill"></div></div>
+
+        <div id="editPick" style="display:none">
+            <label>🖼️ Gleznas bez rāmja</label>
+            <select id="editSelectBez"></select>
+            <label>🪟 Ierāmētās gleznas</label>
+            <select id="editSelectRam"></select>
+
+            <div id="editFields" style="display:none">
+                <div class="edit-head">
+                    <img id="editPreview" class="edit-preview" alt="">
+                    <span id="editNum" class="pill"></span>
+                </div>
+                <div class="row">
+                    <div><label>Izmērs</label><input type="text" id="editSize" placeholder="60 x 42 cm"></div>
+                    <div><label>Cena (€)</label><input type="number" id="editPrice" placeholder="130"></div>
+                </div>
+                <label class="check"><input type="checkbox" id="editNew"> JAUNUMS nozīmīte <span class="muted">(rāda “JAUNUMS”)</span></label>
+                <button class="btn" id="editSave">💾 Saglabāt izmaiņas</button>
+            </div>
+        </div>
+        <div id="editLog"></div>
+    </div>
+
+    <div class="card">
+        <p class="card-title">Pārkārtot visu galeriju</p>
+        <p class="small" style="margin-top:0">Sajauc visas gleznas nejaušā secībā (bildes nemainās, tikai secība). Strādā arī ar ierāmētajām atsevišķi.</p>
+        <button class="btn violet" id="shuffle">🔀 Sajaukt visas gleznas</button>
+        <div id="log2"></div>
+    </div>
+
+    </div>
+    </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const logEl = $('log');
+function log(msg, cls) { const s = document.createElement('span'); if (cls) s.className = cls; s.textContent = msg + '\n'; logEl.appendChild(s); logEl.scrollTop = logEl.scrollHeight; }
+
+// saglabā iestatījumus
+['token','owner','repo','branch'].forEach(id => {
+    $(id).value = localStorage.getItem('ag_'+id) || $(id).value;
+    $(id).addEventListener('input', () => localStorage.setItem('ag_'+id, $(id).value));
+});
+
+// bildes izvēle
+let pickedFile = null;
+const drop = $('drop'), preview = $('preview');
+$('file').addEventListener('change', e => setFile(e.target.files[0]));
+drop.addEventListener('click', () => $('file').click());
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]); });
+function setFile(f) {
+    if (!f || !f.type.startsWith('image/')) { log('Tas nav attēls.', 'err'); return; }
+    pickedFile = f;
+    preview.src = URL.createObjectURL(f); preview.style.display = 'block';
+    $('dropText').textContent = f.name;
+}
+
+// attēla mainīšana ar canvas (ievēro EXIF orientāciju)
+async function resize(file, maxW, mime, quality) {
+    const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+    const scale = Math.min(1, maxW / Math.max(bmp.width, bmp.height));
+    const w = Math.round(bmp.width * scale), h = Math.round(bmp.height * scale);
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    c.getContext('2d').drawImage(bmp, 0, 0, w, h);
+    const blob = await new Promise(r => c.toBlob(r, mime, quality));
+    const b64 = await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result.split(',')[1]); fr.readAsDataURL(blob); });
+    return { b64, kb: Math.round(blob.size/1024) };
+}
+
+// GitHub API
+function api(path, opts={}) {
+    return fetch('https://api.github.com/repos/'+$('owner').value+'/'+$('repo').value+path, {
+        ...opts,
+        headers: { 'Authorization': 'Bearer '+$('token').value.trim(), 'Accept': 'application/vnd.github+json', ...(opts.headers||{}) }
+    });
+}
+async function putFile(path, b64, message, sha) {
+    const body = { message, content: b64, branch: $('branch').value };
+    if (sha) body.sha = sha;
+    const r = await api('/contents/'+encodeURIComponent(path).replace(/%2F/g,'/'), { method:'PUT', body: JSON.stringify(body) });
+    if (!r.ok) throw new Error(path + ' → ' + r.status + ' ' + (await r.text()).slice(0,200));
+    return r.json();
+}
+async function getFile(path) {
+    const r = await api('/contents/'+encodeURIComponent(path).replace(/%2F/g,'/')+'?ref='+$('branch').value);
+    if (!r.ok) throw new Error('GET '+path+' → '+r.status);
+    return r.json();
+}
+const utf8ToB64 = s => btoa(unescape(encodeURIComponent(s)));
+const b64ToUtf8 = s => decodeURIComponent(escape(atob(s.replace(/\n/g,''))));
+
+// atrod DZĪVOS gallery-item (ne komentāros) — atgriež match objektus ar .index
+function liveItems(h) {
+    const cr = [...h.matchAll(/<!--[\s\S]*?-->/g)].map(m => [m.index, m.index + m[0].length]);
+    const inC = i => cr.some(([a, b]) => i >= a && i < b);
+    return [...h.matchAll(/<div class="gallery-item"[\s\S]*?<\/div>\s*<\/div>/g)].filter(m => !inC(m.index));
+}
+function shuffleArr(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+$('go').addEventListener('click', async () => {
+    logEl.innerHTML = '';
+    const token = $('token').value.trim();
+    const size = $('size').value.trim();
+    const price = $('price').value.trim();
+    const type = $('type').value.trim();
+    const framed = $('framed').checked;
+    const isnew = $('isnew').checked;
+    if (!token) return log('⚠️ Ievadi GitHub token (Iestatījumi).', 'err');
+    if (!pickedFile) return log('⚠️ Izvēlies bildi.', 'err');
+    if (!size || !price) return log('⚠️ Aizpildi izmēru un cenu.', 'err');
+
+    $('go').disabled = true;
+    try {
+        const id = 'g' + Date.now().toString(36);
+        log('Apstrādā bildi…', 'muted');
+        const full  = await resize(pickedFile, 1600, 'image/webp', 0.82);
+        const thumb = await resize(pickedFile, 500,  'image/webp', 0.78);
+        const jpg   = await resize(pickedFile, 1600, 'image/jpeg', 0.85);
+        log('  pilnā ' + full.kb + 'KB · sīktēls ' + thumb.kb + 'KB · jpg ' + jpg.kb + 'KB', 'muted');
+
+        log('Augšupielādē bildes…', 'muted');
+        await putFile('img/'+id+'.webp', full.b64, 'glezna '+id+' (pilnā)');
+        await putFile('img/thumb-'+id+'.webp', thumb.b64, 'glezna '+id+' (sīktēls)');
+        await putFile('img/'+id+'.jpg', jpg.b64, 'glezna '+id+' (jpg)');
+        if (framed) await putFile('img/'+id+'nr2.webp', full.b64, 'glezna '+id+' (nr2)');
+
+        log('Atjauno galeriju…', 'muted');
+        const idx = await getFile('index.html');
+        let html = b64ToUtf8(idx.content);
+        const cat = framed ? 'ieramettas' : 'bez-ramja';
+        const item =
+'\n<div class="gallery-item" data-category="'+cat+'"'+(isnew?' data-new="true"':'')+'>\n'+
+'<img loading="lazy" decoding="async" alt="Glezna" data-src="img/'+id+'.webp" src="img/thumb-'+id+'.webp"/>\n'+
+'<div class="image-info">\n'+
+'<p class="image-name">'+size+' cm</p>\n'+
+'<p class="image-size">'+price+' €</p>\n'+
+'<p class="image-name" style="font-size:0.8rem; color:rgba(255,255,255,0.45); margin-top:4px;">'+type+'</p>\n'+
+'</div>\n</div>\n';
+        const marker = '<div class="gallery-container">';
+        const pos = html.indexOf(marker);
+        if (pos < 0) throw new Error('Neatrada galerijas sākumu index.html');
+        if ($('placement').value === 'random') {
+            const live = liveItems(html);
+            if (live.length) {
+                const m = live[Math.floor(Math.random() * live.length)];
+                html = html.slice(0, m.index) + item + html.slice(m.index);
+                log('  novietojums: nejauša vieta', 'muted');
+            } else {
+                const at = pos + marker.length;
+                html = html.slice(0, at) + item + html.slice(at);
+            }
+        } else {
+            const at = pos + marker.length;
+            html = html.slice(0, at) + item + html.slice(at);
+            log('  novietojums: pirmā', 'muted');
+        }
+        await putFile('index.html', utf8ToB64(html), 'pievienota glezna '+id, idx.sha);
+
+        log('✓ Gatavs! Glezna pievienota.', 'ok');
+        log('Pēc ~1 min būs redzama: https://'+$('owner').value+'.github.io/'+$('repo').value+'/', 'ok');
+        log('(Ja neredzi — atver privātajā cilnē, keša dēļ.)', 'muted');
+        // notīra formu nākamajai
+        pickedFile = null; preview.style.display='none'; $('dropText').textContent='Ievelc bildi šeit vai klikšķini';
+        $('size').value=''; $('price').value='';
+    } catch (e) {
+        log('✗ Kļūda: ' + e.message, 'err');
+        log('Pārbaudi token un interneta savienojumu.', 'muted');
+    } finally {
+        $('go').disabled = false;
+    }
+});
+
+// ── Sajaukt visas gleznas ──
+function log2(msg, cls) { const e = $('log2'); const s = document.createElement('span'); if (cls) s.className = cls; s.textContent = msg + '\n'; e.appendChild(s); e.scrollTop = e.scrollHeight; }
+$('shuffle').addEventListener('click', async () => {
+    $('log2').innerHTML = '';
+    if (!$('token').value.trim()) return log2('⚠️ Ievadi GitHub token (Iestatījumi).', 'err');
+    if (!confirm('⚠️ SAJAUKT VISAS GLEZNAS?\n\nVisu gleznu secība tiks mainīta uz nejaušu un publicēta lapā.\nBildes un dati nemainās — tikai secība.\n\nSpied OK, lai turpinātu, vai Atcelt.')) return;
+    $('shuffle').disabled = true;
+    try {
+        log2('Nolasa galeriju…', 'muted');
+        const idx = await getFile('index.html');
+        let html = b64ToUtf8(idx.content);
+        const items = liveItems(html);
+        log2('Gleznas: ' + items.length, 'muted');
+        if (items.length < 2) throw new Error('Par maz gleznu, ko jaukt');
+        const sh = shuffleArr(items.map(m => m[0]));
+        for (let k = items.length - 1; k >= 0; k--) { const m = items[k]; html = html.slice(0, m.index) + sh[k] + html.slice(m.index + m[0].length); }
+        log2('Augšupielādē…', 'muted');
+        await putFile('index.html', utf8ToB64(html), 'sajauktas gleznas (random seciba)', idx.sha);
+        log2('✓ Gatavs! Gleznas sajauktas nejaušā secībā.', 'ok');
+        log2('Pēc ~1 min redzams lapā (privātajā cilnē, keša dēļ).', 'muted');
+    } catch (e) {
+        log2('✗ Kļūda: ' + e.message, 'err');
+    } finally {
+        $('shuffle').disabled = false;
+    }
+});
+
+// ── Rediģēt gleznas datus ──
+function log3(msg, cls) { const e = $('editLog'); const s = document.createElement('span'); if (cls) s.className = cls; s.textContent = msg + '\n'; e.appendChild(s); e.scrollTop = e.scrollHeight; }
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+let editItems = [];
+let editCurrent = '';   // pašlaik izvēlētās gleznas data-src
+
+function parseItem(str) {
+    const g = re => { const m = str.match(re); return m ? m[1].trim() : ''; };
+    return {
+        dataSrc:  g(/data-src="([^"]+)"/),
+        thumb:    g(/\ssrc="([^"]+)"/),
+        size:     g(/<p class="image-name">([\s\S]*?)<\/p>/),
+        price:    g(/<p class="image-size">([\s\S]*?)<\/p>/),
+        isNew:    /data-new="true"/.test(str),
+        category: g(/data-category="([^"]+)"/)
+    };
+}
+
+const optionRow = it => '<option value="' + it.dataSrc + '">Nr. ' + it.num + ' · ' + (it.size || '?') + ' · ' + (it.price || '?') + (it.isNew ? ' · ⭐JAUNUMS' : '') + '</option>';
+
+$('editLoad').addEventListener('click', async () => {
+    $('editLog').innerHTML = '';
+    if (!$('token').value.trim()) return log3('⚠️ Ievadi GitHub token (Iestatījumi).', 'err');
+    $('editLoad').disabled = true;
+    // progress josla — aizpildās ~4 sekundēs neatkarīgi no ielādes ātruma
+    const bar = $('editBar'), fill = $('editBarFill');
+    bar.style.display = 'block';
+    fill.style.transition = 'none'; fill.style.width = '0%';
+    void fill.offsetWidth;                               // piespiež pārzīmēt
+    fill.style.transition = 'width 4s linear'; fill.style.width = '100%';
+    const minDelay = new Promise(r => setTimeout(r, 4000));
+    try {
+        log3('Nolasa galeriju…', 'muted');
+        const idx = await getFile('index.html');
+        const html = b64ToUtf8(idx.content);
+        editItems = liveItems(html).map((m, i) => ({ num: i + 1, ...parseItem(m[0]) }));
+        await minDelay;                                  // nogaida līdz pilniem ~4 s
+        const bez = editItems.filter(it => it.category !== 'ieramettas');
+        const ar  = editItems.filter(it => it.category === 'ieramettas');
+        $('editSelectBez').innerHTML = '<option value="">— izvēlies gleznu bez rāmja —</option>' + bez.map(optionRow).join('');
+        $('editSelectRam').innerHTML = '<option value="">— izvēlies ierāmēto gleznu —</option>' + ar.map(optionRow).join('');
+        editCurrent = '';
+        $('editPick').style.display = 'block';
+        $('editFields').style.display = 'none';
+        $('editLoad').style.display = 'none';            // paslēpj pogu — jau ielādēts
+        $('editLog').innerHTML = '';
+        log3('✓ Ielādētas ' + editItems.length + ' gleznas. Izvēlies vienu sarakstā.', 'ok');
+    } catch (e) {
+        log3('✗ Kļūda: ' + e.message, 'err');
+        $('editLoad').disabled = false;                  // ļauj mēģināt vēlreiz
+    } finally {
+        bar.style.display = 'none';
+        fill.style.width = '0%';
+    }
+});
+
+function onEditPick(which) {
+    const sel = $(which);
+    const other = $(which === 'editSelectBez' ? 'editSelectRam' : 'editSelectBez');
+    if (sel.value) other.value = '';            // aktīva tikai viena izvēlne
+    editCurrent = sel.value;
+    const it = editItems.find(x => x.dataSrc === editCurrent);
+    if (!it) { $('editFields').style.display = 'none'; return; }
+    $('editFields').style.display = 'block';
+    $('editSize').value = it.size;
+    $('editPrice').value = (it.price.match(/[\d.,]+/) || [''])[0];
+    $('editNew').checked = it.isNew;
+    $('editNum').textContent = 'Nr. ' + it.num + (it.category === 'ieramettas' ? ' · ierāmēta' : '');
+    const prev = $('editPreview');
+    if (it.thumb) { prev.src = 'https://' + $('owner').value + '.github.io/' + $('repo').value + '/' + it.thumb; prev.style.display = 'block'; }
+    else prev.style.display = 'none';
+}
+$('editSelectBez').addEventListener('change', () => onEditPick('editSelectBez'));
+$('editSelectRam').addEventListener('change', () => onEditPick('editSelectRam'));
+
+$('editSave').addEventListener('click', async () => {
+    $('editLog').innerHTML = '';
+    const dataSrc = editCurrent;
+    if (!dataSrc) return log3('⚠️ Izvēlies gleznu.', 'err');
+    const newSize = $('editSize').value.trim();
+    const newPrice = $('editPrice').value.trim();
+    const newIsNew = $('editNew').checked;
+    if (!newSize || !newPrice) return log3('⚠️ Aizpildi izmēru un cenu.', 'err');
+    $('editSave').disabled = true;
+    try {
+        log3('Nolasa galeriju…', 'muted');
+        const idx = await getFile('index.html');
+        let html = b64ToUtf8(idx.content);
+        // atrod tieši šo gleznu pēc data-src (droši arī pēc pārkārtošanas)
+        const target = liveItems(html).find(m => m[0].includes('data-src="' + dataSrc + '"'));
+        if (!target) throw new Error('Neatradu gleznu (data-src). Ielādē sarakstu vēlreiz.');
+        let s = target[0];
+        // izmērs = pirmais <p class="image-name"> (tipa/rāmja rindiņām ir style=, tāpēc tās neaiztiek)
+        s = s.replace(/(<p class="image-name">)[\s\S]*?(<\/p>)/, '$1' + esc(newSize) + '$2');
+        // cena
+        s = s.replace(/(<p class="image-size">)[\s\S]*?(<\/p>)/, '$1' + esc(newPrice) + ' €$2');
+        // JAUNUMS — vispirms noņem, tad pieliek, ja vajag
+        s = s.replace(/\s+data-new="true"/g, '');
+        if (newIsNew) s = s.replace(/(<div class="gallery-item"[^>]*?)>/, '$1 data-new="true">');
+        html = html.slice(0, target.index) + s + html.slice(target.index + target[0].length);
+
+        log3('Saglabā…', 'muted');
+        await putFile('index.html', utf8ToB64(html), 'rediģēti gleznas dati (' + dataSrc + ')', idx.sha);
+        log3('✓ Gatavs! Izmaiņas saglabātas.', 'ok');
+        log3('Pēc ~1 min redzams lapā (privātajā cilnē, keša dēļ).', 'muted');
+        // atjauno lokālo sarakstu, lai dropdown rāda jaunos datus
+        const cached = editItems.find(x => x.dataSrc === dataSrc);
+        if (cached) {
+            cached.size = newSize; cached.price = newPrice + ' €'; cached.isNew = newIsNew;
+            const opt = [...$('editSelectBez').options, ...$('editSelectRam').options].find(o => o.value === dataSrc);
+            if (opt) opt.textContent = 'Nr. ' + cached.num + ' · ' + cached.size + ' · ' + cached.price + (cached.isNew ? ' · ⭐JAUNUMS' : '');
+        }
+    } catch (e) {
+        log3('✗ Kļūda: ' + e.message, 'err');
+    } finally {
+        $('editSave').disabled = false;
+    }
+});
+</script>
+</body>
+</html>
