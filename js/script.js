@@ -384,7 +384,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.__galleryOrder = () => currentOrder;
     window.__galleryOrderVersion = () => orderVersion;
 
-    const columnCount = () => (window.innerWidth >= 769 ? 4 : 2);
+    const columnCount = () => {
+        // telefoni (arī ainavā) vienmēr 2 kolonnas — īsākā ekrāna mala < 550px
+        if (Math.min(window.innerWidth, window.innerHeight) < 550) return 2;
+        return window.innerWidth >= 769 ? 4 : 2;
+    };
 
     function layoutMasonry() {
         if (!galleryEl) return;
