@@ -110,6 +110,9 @@
 
     .row { display: flex; gap: 12px; }
     .row > div { flex: 1; }
+    .size-row { display: flex; align-items: center; gap: 12px; }
+    .size-row input { flex: 1; min-width: 0; text-align: center; font-size: 1.1rem; font-weight: 600; }
+    .size-x { font-size: 1.35rem; font-weight: 700; color: var(--dim); flex: none; }
 
     .check { display: flex; align-items: center; gap: 10px; margin-top: 16px; cursor: pointer; font-weight: 600; font-size: 0.92rem; }
     .check input { width: 20px; height: 20px; accent-color: var(--gold); flex: none; }
@@ -209,10 +212,15 @@
         </div>
         <input type="file" id="file" accept="image/*" style="display:none">
 
-        <div class="row">
-            <div><label>Izmērs</label><input type="text" id="size" placeholder="60 x 42"></div>
-            <div><label>Cena (€)</label><input type="number" id="price" placeholder="130"></div>
+        <label>Izmērs — cm (garums × platums)</label>
+        <div class="size-row">
+            <input type="number" id="sizeLen" placeholder="45" min="1" inputmode="numeric">
+            <span class="size-x">×</span>
+            <input type="number" id="sizeWid" placeholder="25" min="1" inputmode="numeric">
         </div>
+
+        <label>Cena (€)</label>
+        <input type="number" id="price" placeholder="130">
 
         <label>Tips</label>
         <input type="text" id="type" list="types" value="Akvarelis uz papīra">
@@ -374,14 +382,16 @@ function shuffleArr(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) {
 $('go').addEventListener('click', async () => {
     logEl.innerHTML = '';
     const token = $('token').value.trim();
-    const size = $('size').value.trim();
+    const sizeLen = $('sizeLen').value.trim();
+    const sizeWid = $('sizeWid').value.trim();
+    const size = (sizeLen && sizeWid) ? (sizeLen + ' x ' + sizeWid) : '';
     const price = $('price').value.trim();
     const type = $('type').value.trim();
     const framed = $('framed').checked;
     const isnew = $('isnew').checked;
     if (!token) return log('⚠️ Ievadi GitHub token (Iestatījumi).', 'err');
     if (!pickedFile) return log('⚠️ Izvēlies bildi.', 'err');
-    if (!size || !price) return log('⚠️ Aizpildi izmēru un cenu.', 'err');
+    if (!sizeLen || !sizeWid || !price) return log('⚠️ Aizpildi izmēru (garumu un platumu) un cenu.', 'err');
 
     $('go').disabled = true;
     try {
@@ -435,7 +445,7 @@ $('go').addEventListener('click', async () => {
         log('(Ja neredzi — atver privātajā cilnē, keša dēļ.)', 'muted');
         // notīra formu nākamajai
         pickedFile = null; preview.style.display='none'; $('dropText').textContent='Ievelc bildi šeit vai klikšķini';
-        $('size').value=''; $('price').value='';
+        $('sizeLen').value=''; $('sizeWid').value=''; $('price').value='';
     } catch (e) {
         log('✗ Kļūda: ' + e.message, 'err');
         log('Pārbaudi token un interneta savienojumu.', 'muted');
