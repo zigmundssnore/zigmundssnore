@@ -139,6 +139,12 @@
         box-shadow: 0 12px 30px rgba(122,75,214,0.4), inset 0 1px 0 rgba(255,255,255,0.4);
     }
     .btn.violet:hover { box-shadow: 0 16px 38px rgba(122,75,214,0.5), inset 0 1px 0 rgba(255,255,255,0.45); }
+    .btn.danger {
+        background: linear-gradient(135deg, #e0596a, #c0392b);
+        box-shadow: 0 12px 30px rgba(192,57,43,0.4), inset 0 1px 0 rgba(255,255,255,0.4);
+        margin-top: 10px;
+    }
+    .btn.danger:hover { box-shadow: 0 16px 38px rgba(192,57,43,0.5), inset 0 1px 0 rgba(255,255,255,0.45); }
 
     .small { font-size: 0.8rem; color: rgba(235,240,252,0.55); margin-top: 8px; line-height: 1.55; }
     .small a, .small b { color: #f0d9a6; }
@@ -256,6 +262,7 @@
                 </div>
                 <label class="check"><input type="checkbox" id="editNew"> JAUNUMS nozīmīte <span class="muted">(rāda “JAUNUMS”)</span></label>
                 <button class="btn" id="editSave">💾 Saglabāt izmaiņas</button>
+                <button class="btn danger" id="editDelete">🗑️ Dzēst gleznu</button>
             </div>
         </div>
         <div id="editLog"></div>
@@ -580,6 +587,41 @@ $('editSave').addEventListener('click', async () => {
         log3('✗ Kļūda: ' + e.message, 'err');
     } finally {
         $('editSave').disabled = false;
+    }
+});
+
+// ── Dzēst gleznu ──
+$('editDelete').addEventListener('click', async () => {
+    $('editLog').innerHTML = '';
+    const dataSrc = editCurrent;
+    if (!dataSrc) return log3('⚠️ Izvēlies gleznu.', 'err');
+    const it = editItems.find(x => x.dataSrc === dataSrc);
+    const num = it ? it.num : '?';
+    if (!confirm('⚠️ DZĒST gleznu Nr. ' + num + '?\n\nGlezna tiks NEATGRIEZENISKI noņemta no lapas.\n(Bilžu faili paliek serverī, bet galerijā tās vairs nebūs.)\n\nSpied OK, lai dzēstu, vai Atcelt.')) return;
+    $('editDelete').disabled = true; $('editSave').disabled = true;
+    try {
+        log3('Nolasa galeriju…', 'muted');
+        const idx = await getFile('index.html');
+        let html = b64ToUtf8(idx.content);
+        const target = liveItems(html).find(m => m[0].includes('data-src="' + dataSrc + '"'));
+        if (!target) throw new Error('Neatradu gleznu (data-src). Ielādē sarakstu vēlreiz.');
+        let end = target.index + target[0].length;
+        if (html[end] === '\n') end++;                 // paņem līdzi vienu sekojošo jaunrindu
+        html = html.slice(0, target.index) + html.slice(end);
+        log3('Dzēš…', 'muted');
+        await putFile('index.html', utf8ToB64(html), 'dzēsta glezna (' + dataSrc + ')', idx.sha);
+        log3('✓ Gatavs! Glezna izdzēsta.', 'ok');
+        log3('Pēc ~1 min pazudīs no lapas (privātajā cilnē, keša dēļ).', 'muted');
+        // atjauno UI: izņem no abām izvēlnēm + saraksta, paslēpj laukus
+        editItems = editItems.filter(x => x.dataSrc !== dataSrc);
+        [...$('editSelectBez').options, ...$('editSelectRam').options].forEach(o => { if (o.value === dataSrc) o.remove(); });
+        editCurrent = '';
+        $('editSelectBez').value = ''; $('editSelectRam').value = '';
+        $('editFields').style.display = 'none';
+    } catch (e) {
+        log3('✗ Kļūda: ' + e.message, 'err');
+    } finally {
+        $('editDelete').disabled = false; $('editSave').disabled = false;
     }
 });
 </script>
