@@ -84,6 +84,7 @@
         'gallery.title': 'Available works',
         'gallery.tab1': 'Paintings',
         'gallery.tab2': 'Framed paintings',
+        'gallery.tab3': 'Small paintings',
         'sort.label': 'Sort',
         'sort.none': 'No sorting',
         'sort.priceAsc': 'Cheapest first',

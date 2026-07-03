@@ -232,6 +232,7 @@
         </datalist>
 
         <label class="check"><input type="checkbox" id="framed"> Ierāmēta glezna <span class="muted">(liek pie “Ierāmētās gleznas”)</span></label>
+        <label class="check"><input type="checkbox" id="small"> Mazā glezna <span class="muted">(liek pie “Mazās gleznas”)</span></label>
         <label class="check"><input type="checkbox" id="isnew" checked> Jauns <span class="muted">(JAUNUMS nozīmīte)</span></label>
 
         <label>Novietojums galerijā</label>
@@ -258,6 +259,8 @@
             <select id="editSelectBez"></select>
             <label>🪟 Ierāmētās gleznas</label>
             <select id="editSelectRam"></select>
+            <label>🔸 Mazās gleznas</label>
+            <select id="editSelectMaz"></select>
 
             <div id="editFields" style="display:none">
                 <div class="edit-head">
@@ -379,6 +382,10 @@ function liveItems(h) {
 }
 function shuffleArr(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
+// Ierāmēta / Mazā glezna — savstarpēji izslēdzoši (viena kategorija katrai gleznai)
+$('framed').addEventListener('change', () => { if ($('framed').checked) $('small').checked = false; });
+$('small').addEventListener('change', () => { if ($('small').checked) $('framed').checked = false; });
+
 $('go').addEventListener('click', async () => {
     logEl.innerHTML = '';
     const token = $('token').value.trim();
@@ -388,6 +395,7 @@ $('go').addEventListener('click', async () => {
     const price = $('price').value.trim();
     const type = $('type').value.trim();
     const framed = $('framed').checked;
+    const small = $('small').checked;
     const isnew = $('isnew').checked;
     if (!token) return log('⚠️ Ievadi GitHub token (Iestatījumi).', 'err');
     if (!pickedFile) return log('⚠️ Izvēlies bildi.', 'err');
@@ -411,7 +419,7 @@ $('go').addEventListener('click', async () => {
         log('Atjauno galeriju…', 'muted');
         const idx = await getFile('index.html');
         let html = b64ToUtf8(idx.content);
-        const cat = framed ? 'ieramettas' : 'bez-ramja';
+        const cat = framed ? 'ieramettas' : (small ? 'mazas' : 'bez-ramja');
         const item =
 '\n<div class="gallery-item" data-category="'+cat+'"'+(isnew?' data-new="true"':'')+'>\n'+
 '<img loading="lazy" decoding="async" alt="Glezna" data-src="img/'+id+'.webp" src="img/thumb-'+id+'.webp"/>\n'+
@@ -518,10 +526,12 @@ $('editLoad').addEventListener('click', async () => {
         const html = b64ToUtf8(idx.content);
         editItems = liveItems(html).map((m, i) => ({ num: i + 1, ...parseItem(m[0]) }));
         await minDelay;                                  // nogaida līdz pilniem ~4 s
-        const bez = editItems.filter(it => it.category !== 'ieramettas');
+        const bez = editItems.filter(it => it.category !== 'ieramettas' && it.category !== 'mazas');
         const ar  = editItems.filter(it => it.category === 'ieramettas');
+        const maz = editItems.filter(it => it.category === 'mazas');
         $('editSelectBez').innerHTML = '<option value="">— izvēlies gleznu bez rāmja —</option>' + bez.map(optionRow).join('');
         $('editSelectRam').innerHTML = '<option value="">— izvēlies ierāmēto gleznu —</option>' + ar.map(optionRow).join('');
+        $('editSelectMaz').innerHTML = '<option value="">— izvēlies mazo gleznu —</option>' + maz.map(optionRow).join('');
         editCurrent = '';
         $('editPick').style.display = 'block';
         $('editFields').style.display = 'none';
@@ -539,8 +549,8 @@ $('editLoad').addEventListener('click', async () => {
 
 function onEditPick(which) {
     const sel = $(which);
-    const other = $(which === 'editSelectBez' ? 'editSelectRam' : 'editSelectBez');
-    if (sel.value) other.value = '';            // aktīva tikai viena izvēlne
+    // aktīva tikai viena izvēlne — pārējās nullējam
+    if (sel.value) ['editSelectBez', 'editSelectRam', 'editSelectMaz'].forEach(x => { if (x !== which) $(x).value = ''; });
     editCurrent = sel.value;
     const it = editItems.find(x => x.dataSrc === editCurrent);
     if (!it) { $('editFields').style.display = 'none'; return; }
@@ -548,13 +558,14 @@ function onEditPick(which) {
     $('editSize').value = it.size;
     $('editPrice').value = (it.price.match(/[\d.,]+/) || [''])[0];
     $('editNew').checked = it.isNew;
-    $('editNum').textContent = 'Nr. ' + it.num + (it.category === 'ieramettas' ? ' · ierāmēta' : '');
+    $('editNum').textContent = 'Nr. ' + it.num + (it.category === 'ieramettas' ? ' · ierāmēta' : (it.category === 'mazas' ? ' · mazā' : ''));
     const prev = $('editPreview');
     if (it.thumb) { prev.src = 'https://' + $('owner').value + '.github.io/' + $('repo').value + '/' + it.thumb; prev.style.display = 'block'; }
     else prev.style.display = 'none';
 }
 $('editSelectBez').addEventListener('change', () => onEditPick('editSelectBez'));
 $('editSelectRam').addEventListener('change', () => onEditPick('editSelectRam'));
+$('editSelectMaz').addEventListener('change', () => onEditPick('editSelectMaz'));
 
 $('editSave').addEventListener('click', async () => {
     $('editLog').innerHTML = '';
@@ -590,7 +601,7 @@ $('editSave').addEventListener('click', async () => {
         const cached = editItems.find(x => x.dataSrc === dataSrc);
         if (cached) {
             cached.size = newSize; cached.price = newPrice + ' €'; cached.isNew = newIsNew;
-            const opt = [...$('editSelectBez').options, ...$('editSelectRam').options].find(o => o.value === dataSrc);
+            const opt = [...$('editSelectBez').options, ...$('editSelectRam').options, ...$('editSelectMaz').options].find(o => o.value === dataSrc);
             if (opt) opt.textContent = 'Nr. ' + cached.num + ' · ' + cached.size + ' · ' + cached.price + (cached.isNew ? ' · ⭐JAUNUMS' : '');
         }
     } catch (e) {
@@ -624,9 +635,9 @@ $('editDelete').addEventListener('click', async () => {
         log3('Pēc ~1 min pazudīs no lapas (privātajā cilnē, keša dēļ).', 'muted');
         // atjauno UI: izņem no abām izvēlnēm + saraksta, paslēpj laukus
         editItems = editItems.filter(x => x.dataSrc !== dataSrc);
-        [...$('editSelectBez').options, ...$('editSelectRam').options].forEach(o => { if (o.value === dataSrc) o.remove(); });
+        [...$('editSelectBez').options, ...$('editSelectRam').options, ...$('editSelectMaz').options].forEach(o => { if (o.value === dataSrc) o.remove(); });
         editCurrent = '';
-        $('editSelectBez').value = ''; $('editSelectRam').value = '';
+        $('editSelectBez').value = ''; $('editSelectRam').value = ''; $('editSelectMaz').value = '';
         $('editFields').style.display = 'none';
     } catch (e) {
         log3('✗ Kļūda: ' + e.message, 'err');
