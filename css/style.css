@@ -2901,6 +2901,9 @@ input, textarea, [contenteditable] {
     transition: opacity 0.25s ease;
 }
 .lang-switch:hover { opacity: 1; }
+/* atverot bildi (lightbox) vai logu (modāli) — paslēpj pārslēgu, lai tas neaizsedz aizvēršanas krustiņu */
+body.lightbox-open .lang-switch,
+body.modal-open .lang-switch { opacity: 0; pointer-events: none; }
 .lang-opt {
     display: inline-flex;
     align-items: center;
