@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /zigmundssnore/pievienot-x7k2m9.html
 
-Sitemap: https://zigmundssnore.lv/sitemap.xml
+Sitemap: https://zigmundssnore.github.io/zigmundssnore/sitemap.xml
