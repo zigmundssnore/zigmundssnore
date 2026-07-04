@@ -103,6 +103,8 @@
         'modal.deliveryP': 'This painting can be <strong>picked up free of charge in Jūrmala and Riga</strong>, or shipped via <strong>DPD / Omniva</strong> to any parcel locker in the Baltics. For shipping outside the Baltics, please contact us.',
         'modal.pickup': '📍 Pick up in person',
         'modal.ship': '📦 Ship via Omniva / DPD',
+        'modal.soldH': 'This painting is sold',
+        'modal.soldP': 'It can no longer be delivered or framed.',
 
         'lightboxInquire': 'Delivery & framing',
         'lightboxZoom': '🔍 Zoom'

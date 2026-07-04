@@ -1080,17 +1080,23 @@
     <div id="deliveryOverlay" class="delivery-overlay">
         <div class="delivery-modal">
             <button class="delivery-modal-close" id="deliveryModalClose">×</button>
+            <div id="modalSoldNote" style="display:none">
+                <h3 data-i18n="modal.soldH">Šī glezna ir pārdota</h3>
+                <p data-i18n="modal.soldP">To saņemt vai ierāmēt nav iespējams.</p>
+            </div>
             <div id="modalFrameNote">
                 <h3 data-i18n="modal.frameH">Pēc jūsu pasūtījuma varam šo gleznu ierāmēt</h3>
                 <p data-i18n="modal.frameP">Sazinieties ar mums un <strong>ierāmēsim šo gleznu</strong> jums vēlamajā rāmī vai izvēlēsimies to pēc mākslinieka ieskatiem.</p>
                 <a id="modalIeramet" class="delivery-btn omniva" href="#" target="_blank" rel="noopener" style="margin-bottom: 20px;" data-i18n="modal.frameBtn">🖼️ Ierāmēt</a>
                 <hr style="border:none; border-top:1px solid rgba(255,255,255,0.12); margin: 18px 0;">
             </div>
-            <h3 data-i18n="modal.deliveryH">Piegāde un saņemšana</h3>
-            <p data-i18n="modal.deliveryP">Šo gleznu ir iespējams saņemt <strong>bez maksas Jūrmalā un Rīgā</strong>, vai nosūtīt ar <strong>DPD / Omniva</strong> uz jebkuru pakomātu Baltijā. Par sūtījumiem ārpus Baltijas lūdzam sazināties ar mums.</p>
-            <div class="delivery-buttons">
-                <a id="modalKlatiene" class="delivery-btn klatiene" href="#" target="_blank" rel="noopener" data-i18n="modal.pickup">📍 Saņemt klātienē</a>
-                <a id="modalOmniva" class="delivery-btn omniva" href="#" target="_blank" rel="noopener" data-i18n="modal.ship">📦 Sūtīt ar Omniva / DPD</a>
+            <div id="modalDelivery">
+                <h3 data-i18n="modal.deliveryH">Piegāde un saņemšana</h3>
+                <p data-i18n="modal.deliveryP">Šo gleznu ir iespējams saņemt <strong>bez maksas Jūrmalā un Rīgā</strong>, vai nosūtīt ar <strong>DPD / Omniva</strong> uz jebkuru pakomātu Baltijā. Par sūtījumiem ārpus Baltijas lūdzam sazināties ar mums.</p>
+                <div class="delivery-buttons">
+                    <a id="modalKlatiene" class="delivery-btn klatiene" href="#" target="_blank" rel="noopener" data-i18n="modal.pickup">📍 Saņemt klātienē</a>
+                    <a id="modalOmniva" class="delivery-btn omniva" href="#" target="_blank" rel="noopener" data-i18n="modal.ship">📦 Sūtīt ar Omniva / DPD</a>
+                </div>
             </div>
         </div>
     </div>

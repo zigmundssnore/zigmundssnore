@@ -329,7 +329,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const allGalleryItems = Array.from(document.querySelectorAll('.gallery-container .gallery-item'));
         const clickedItem = allGalleryItems[num - 1];
         const isFramed = clickedItem?.dataset.category === 'ieramettas';
-        if (frameNote) frameNote.style.display = isFramed ? 'none' : 'block';
+        const isSold = clickedItem?.dataset.sold === 'true';
+        const soldNote = document.getElementById('modalSoldNote');
+        const deliverySection = document.getElementById('modalDelivery');
+        if (isSold) {
+            // pārdota — rādām tikai paziņojumu, slēpjam ierāmēšanu un piegādi
+            if (soldNote) soldNote.style.display = 'block';
+            if (frameNote) frameNote.style.display = 'none';
+            if (deliverySection) deliverySection.style.display = 'none';
+        } else {
+            if (soldNote) soldNote.style.display = 'none';
+            if (frameNote) frameNote.style.display = isFramed ? 'none' : 'block';
+            if (deliverySection) deliverySection.style.display = 'block';
+        }
         if (modalIeramet) {
             const msgIeramet = encodeURIComponent('Sveiki, vēlos iegādāties gleznu Nr.' + num + ' rāmī. Vai tā būtu pieejama?');
             modalIeramet.href = 'https://wa.me/' + waNumber + '?text=' + msgIeramet;
