@@ -3089,3 +3089,93 @@ body.modal-open .lang-switch { opacity: 0; pointer-events: none; }
     .glass-dialog { padding: 34px 24px 28px; }
     .glass-dialog-text { font-size: 1.18rem; }
 }
+
+/* ============================================================
+   GAIŠAIS REŽĪMS — silts "galerijas sienas" (PAGAIDU PRIEKŠSKATĪJUMS)
+   Aktivējas TIKAI ar ?light adresē (html[data-theme="light"]).
+   Tumšais paliek noklusējums — nekas nav noņemts.
+   ============================================================ */
+html[data-theme="light"] {
+    --glass-bg:         rgba(255, 253, 247, 0.64);
+    --glass-bg-heavy:   rgba(255, 254, 250, 0.80);
+    --glass-border:     rgba(120, 96, 60, 0.20);
+    --glass-border-top: rgba(255, 255, 255, 0.92);
+    --glass-shadow:     0 16px 42px rgba(95, 72, 40, 0.15), 0 2px 10px rgba(95, 72, 40, 0.09), inset 0 1px 0 rgba(255,255,255,0.78);
+    --glass-shadow-sm:  0 6px 20px rgba(95, 72, 40, 0.13), inset 0 1px 0 rgba(255,255,255,0.66);
+    --text:       #39322a;
+    --text-dim:   rgba(57, 50, 42, 0.66);
+    --accent:     rgba(57, 50, 42, 0.9);
+    --gold:       #b0781d;
+}
+html[data-theme="light"] body {
+    background:
+        radial-gradient(900px 620px at 50% -8%, rgba(214,182,120,0.22), transparent 70%),
+        linear-gradient(180deg, #f5f0e6 0%, #efe7d8 46%, #e9dfcd 100%);
+    color: var(--text);
+}
+
+/* Aurora — silta, ļoti maiga */
+html[data-theme="light"] .aurora { opacity: 0.32; filter: blur(90px) saturate(115%); }
+html[data-theme="light"] .aurora .a1 { background: radial-gradient(circle at 40% 40%, rgba(226,182,120,0.55), transparent 64%); }
+html[data-theme="light"] .aurora .a2 { background: radial-gradient(circle at 55% 45%, rgba(150,188,158,0.42), transparent 64%); }
+html[data-theme="light"] .aurora .a3 { background: radial-gradient(circle at 50% 50%, rgba(230,168,88,0.42), transparent 60%); }
+html[data-theme="light"] .aurora .a4 { background: radial-gradient(circle at 50% 50%, rgba(206,152,182,0.36), transparent 64%); }
+
+/* Virsraksti + galvenie teksti → silti tumši */
+html[data-theme="light"] h1,
+html[data-theme="light"] h2,
+html[data-theme="light"] h3,
+html[data-theme="light"] h4,
+html[data-theme="light"] #gallery h2,
+html[data-theme="light"] #kontakti > h1,
+html[data-theme="light"] .image-size,
+html[data-theme="light"] .delivery-modal h3,
+html[data-theme="light"] .delivery-modal p,
+html[data-theme="light"] .delivery-modal p strong,
+html[data-theme="light"] .alert-pulse2,
+html[data-theme="light"] .alert-pulse2 strong,
+html[data-theme="light"] strong { color: var(--text); }
+
+html[data-theme="light"] .gallery-number { color: rgba(57,50,42,0.5); }
+
+/* Header — gaišs stikls */
+html[data-theme="light"] header {
+    background: rgba(255, 253, 247, 0.72);
+    border-color: rgba(120,96,60,0.18);
+    border-top-color: rgba(255,255,255,0.92);
+}
+html[data-theme="light"] header nav ul li a { color: rgba(57,50,42,0.82); }
+html[data-theme="light"] header nav ul li a:hover { color: #2b2620; }
+
+/* Sort izvēlne */
+html[data-theme="light"] .sort-btn:hover,
+html[data-theme="light"] .sort-menu button:hover { color: #2b2620; background: rgba(90,70,40,0.09); }
+
+/* Valodu pārslēgs uz gaiša fona */
+html[data-theme="light"] .lang-switch { background: rgba(255,253,247,0.62); border-color: rgba(120,96,60,0.2); box-shadow: 0 4px 18px rgba(95,72,40,0.15); }
+html[data-theme="light"] .lang-opt { color: rgba(57,50,42,0.6); }
+html[data-theme="light"] .lang-opt:hover,
+html[data-theme="light"] .lang-opt.active { color: #2b2620; }
+html[data-theme="light"] .lang-opt.active { background: rgba(90,70,40,0.12); }
+
+/* Piegādes logs — gaišs */
+html[data-theme="light"] .delivery-modal {
+    background: rgba(255, 253, 247, 0.94);
+    border-color: rgba(120,96,60,0.2);
+    border-top-color: rgba(255,255,255,0.92);
+}
+html[data-theme="light"] .delivery-modal-close { color: rgba(57,50,42,0.55); }
+
+/* Galerijas kartiņas — gaišs stikls (pārraksta veiktspējas media query tumšo toni) */
+html[data-theme="light"] .gallery-item { background: var(--glass-bg); }
+html[data-theme="light"] .gallery-item::before { background: linear-gradient(to right, transparent, rgba(120,96,60,0.25), transparent); }
+
+/* Kārtošanas poga/izvēlne — gaiša */
+html[data-theme="light"] .sort-btn { background: rgba(255,253,247,0.6); border-color: rgba(120,96,60,0.2); }
+html[data-theme="light"] .sort-menu { background: rgba(255,253,247,0.96); border-color: rgba(120,96,60,0.2); }
+html[data-theme="light"] .sort-menu button { color: rgba(57,50,42,0.7); }
+
+/* Info josla zem gleznas + tipa teksts */
+html[data-theme="light"] .image-info .image-name[style] { color: rgba(57,50,42,0.5) !important; }
+
+/* Sadaļu ornamenta līnija zem virsrakstiem paliek zelta (izmanto --gold) */
