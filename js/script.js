@@ -227,6 +227,15 @@ document.addEventListener('DOMContentLoaded', () => {
             info.insertBefore(newBadge, info.firstChild);
         }
 
+        // PĀRDOTA zīmīte — lentīte pāri bildei + pieklusina attēlu
+        if (item.dataset.sold === 'true') {
+            item.classList.add('sold');
+            const soldBadge = document.createElement('span');
+            soldBadge.className = 'sold-badge';
+            soldBadge.textContent = window.T('Pārdota');
+            item.appendChild(soldBadge);
+        }
+
         // jēgpilns alt teksts Google Attēliem un ekrāna lasītājiem
         const itemImg = item.querySelector('img');
         const sizeTxt = info.querySelector('.image-name')?.textContent || '';

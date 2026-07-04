@@ -234,6 +234,7 @@
         <label class="check"><input type="checkbox" id="framed"> Ierāmēta glezna <span class="muted">(liek pie “Ierāmētās gleznas”)</span></label>
         <label class="check"><input type="checkbox" id="small"> Mazā glezna <span class="muted">(liek pie “Mazās gleznas”)</span></label>
         <label class="check"><input type="checkbox" id="isnew" checked> Jauns <span class="muted">(JAUNUMS nozīmīte)</span></label>
+        <label class="check"><input type="checkbox" id="sold"> Pārdota <span class="muted">(rāda “Pārdota” zīmīti)</span></label>
 
         <label>Novietojums galerijā</label>
         <select id="placement">
@@ -272,6 +273,7 @@
                     <div><label>Cena (€)</label><input type="number" id="editPrice" placeholder="130"></div>
                 </div>
                 <label class="check"><input type="checkbox" id="editNew"> JAUNUMS nozīmīte <span class="muted">(rāda “JAUNUMS”)</span></label>
+                <label class="check"><input type="checkbox" id="editSold"> Pārdota <span class="muted">(rāda “Pārdota” zīmīti)</span></label>
                 <button class="btn" id="editSave">💾 Saglabāt izmaiņas</button>
                 <button class="btn danger" id="editDelete">🗑️ Dzēst gleznu</button>
             </div>
@@ -397,6 +399,7 @@ $('go').addEventListener('click', async () => {
     const framed = $('framed').checked;
     const small = $('small').checked;
     const isnew = $('isnew').checked;
+    const sold = $('sold').checked;
     if (!token) return log('⚠️ Ievadi GitHub token (Iestatījumi).', 'err');
     if (!pickedFile) return log('⚠️ Izvēlies bildi.', 'err');
     if (!sizeLen || !sizeWid || !price) return log('⚠️ Aizpildi izmēru (garumu un platumu) un cenu.', 'err');
@@ -421,7 +424,7 @@ $('go').addEventListener('click', async () => {
         let html = b64ToUtf8(idx.content);
         const cat = framed ? 'ieramettas' : (small ? 'mazas' : 'bez-ramja');
         const item =
-'\n<div class="gallery-item" data-category="'+cat+'"'+(isnew?' data-new="true"':'')+'>\n'+
+'\n<div class="gallery-item" data-category="'+cat+'"'+(isnew?' data-new="true"':'')+(sold?' data-sold="true"':'')+'>\n'+
 '<img loading="lazy" decoding="async" alt="Glezna" data-src="img/'+id+'.webp" src="img/thumb-'+id+'.webp"/>\n'+
 '<div class="image-info">\n'+
 '<p class="image-name">'+size+' cm</p>\n'+
@@ -452,7 +455,7 @@ $('go').addEventListener('click', async () => {
         log('Pēc ~1 min būs redzama: https://'+$('owner').value+'.github.io/'+$('repo').value+'/', 'ok');
         log('(Ja neredzi — atver privātajā cilnē, keša dēļ.)', 'muted');
         // notīra formu nākamajai
-        pickedFile = null; preview.style.display='none'; $('dropText').textContent='Ievelc bildi šeit vai klikšķini';
+        pickedFile = null; preview.style.display='none'; $('dropText').textContent='Ievelc bildi šeit vai klikšķini'; $('sold').checked=false;
         $('sizeLen').value=''; $('sizeWid').value=''; $('price').value='';
     } catch (e) {
         log('✗ Kļūda: ' + e.message, 'err');
@@ -503,11 +506,12 @@ function parseItem(str) {
         size:     g(/<p class="image-name">([\s\S]*?)<\/p>/),
         price:    g(/<p class="image-size">([\s\S]*?)<\/p>/),
         isNew:    /data-new="true"/.test(str),
+        isSold:   /data-sold="true"/.test(str),
         category: g(/data-category="([^"]+)"/)
     };
 }
 
-const optionRow = it => '<option value="' + it.dataSrc + '">Nr. ' + it.num + ' · ' + (it.size || '?') + ' · ' + (it.price || '?') + (it.isNew ? ' · ⭐JAUNUMS' : '') + '</option>';
+const optionRow = it => '<option value="' + it.dataSrc + '">Nr. ' + it.num + ' · ' + (it.size || '?') + ' · ' + (it.price || '?') + (it.isNew ? ' · ⭐JAUNUMS' : '') + (it.isSold ? ' · 🔴PĀRDOTA' : '') + '</option>';
 
 $('editLoad').addEventListener('click', async () => {
     $('editLog').innerHTML = '';
@@ -558,6 +562,7 @@ function onEditPick(which) {
     $('editSize').value = it.size;
     $('editPrice').value = (it.price.match(/[\d.,]+/) || [''])[0];
     $('editNew').checked = it.isNew;
+    $('editSold').checked = it.isSold;
     $('editNum').textContent = 'Nr. ' + it.num + (it.category === 'ieramettas' ? ' · ierāmēta' : (it.category === 'mazas' ? ' · mazā' : ''));
     const prev = $('editPreview');
     if (it.thumb) { prev.src = 'https://' + $('owner').value + '.github.io/' + $('repo').value + '/' + it.thumb; prev.style.display = 'block'; }
@@ -574,6 +579,7 @@ $('editSave').addEventListener('click', async () => {
     const newSize = $('editSize').value.trim();
     const newPrice = $('editPrice').value.trim();
     const newIsNew = $('editNew').checked;
+    const newSold = $('editSold').checked;
     if (!newSize || !newPrice) return log3('⚠️ Aizpildi izmēru un cenu.', 'err');
     $('editSave').disabled = true;
     try {
@@ -591,6 +597,8 @@ $('editSave').addEventListener('click', async () => {
         // JAUNUMS — vispirms noņem, tad pieliek, ja vajag
         s = s.replace(/\s+data-new="true"/g, '');
         if (newIsNew) s = s.replace(/(<div class="gallery-item"[^>]*?)>/, '$1 data-new="true">');
+        s = s.replace(/\s+data-sold="true"/g, '');
+        if (newSold) s = s.replace(/(<div class="gallery-item"[^>]*?)>/, '$1 data-sold="true">');
         html = html.slice(0, target.index) + s + html.slice(target.index + target[0].length);
 
         log3('Saglabā…', 'muted');
@@ -600,9 +608,9 @@ $('editSave').addEventListener('click', async () => {
         // atjauno lokālo sarakstu, lai dropdown rāda jaunos datus
         const cached = editItems.find(x => x.dataSrc === dataSrc);
         if (cached) {
-            cached.size = newSize; cached.price = newPrice + ' €'; cached.isNew = newIsNew;
+            cached.size = newSize; cached.price = newPrice + ' €'; cached.isNew = newIsNew; cached.isSold = newSold;
             const opt = [...$('editSelectBez').options, ...$('editSelectRam').options, ...$('editSelectMaz').options].find(o => o.value === dataSrc);
-            if (opt) opt.textContent = 'Nr. ' + cached.num + ' · ' + cached.size + ' · ' + cached.price + (cached.isNew ? ' · ⭐JAUNUMS' : '');
+            if (opt) opt.textContent = 'Nr. ' + cached.num + ' · ' + cached.size + ' · ' + cached.price + (cached.isNew ? ' · ⭐JAUNUMS' : '') + (cached.isSold ? ' · 🔴PĀRDOTA' : '');
         }
     } catch (e) {
         log3('✗ Kļūda: ' + e.message, 'err');

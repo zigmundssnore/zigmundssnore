@@ -16,6 +16,7 @@
     var DYN = {
         'Nr. ': 'No. ',
         'JAUNUMS': 'NEW',
+        'Pārdota': 'Sold',
         'Saņemšana': 'Delivery',
         'Saņemšana & ierāmēšana': 'Delivery & framing',
         '🛋️ Skatīt interjerā': '🛋️ View in room',
