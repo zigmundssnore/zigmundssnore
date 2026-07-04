@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
             : window.T('Saņemšana & ierāmēšana');
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
-            openDeliveryModal(num);
+            openDeliveryModal(num, item);
         });
         info.appendChild(btn);
  
@@ -318,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalKlatiene = document.getElementById('modalKlatiene');
     const modalOmniva = document.getElementById('modalOmniva');
  
-    function openDeliveryModal(num) {
+    function openDeliveryModal(num, item) {
         const msgKlatiene = encodeURIComponent('Sveiki, vēlos iegādāties un saņemt klātienē gleznu Nr.' + num + '. Vai tā ir pieejama?');
         const msgOmniva = encodeURIComponent('Sveiki, vēlos iegādāties un saņemt ar pakomātu gleznu Nr.' + num + '. Vai tā ir pieejama?');
         modalKlatiene.href = 'https://wa.me/' + waNumber + '?text=' + msgKlatiene;
@@ -326,8 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
  
         const frameNote = document.getElementById('modalFrameNote');
         const modalIeramet = document.getElementById('modalIeramet');
-        const allGalleryItems = Array.from(document.querySelectorAll('.gallery-container .gallery-item'));
-        const clickedItem = allGalleryItems[num - 1];
+        const clickedItem = item || Array.from(document.querySelectorAll('.gallery-container .gallery-item'))[num - 1];
         const isFramed = clickedItem?.dataset.category === 'ieramettas';
         const isSold = clickedItem?.dataset.sold === 'true';
         const soldNote = document.getElementById('modalSoldNote');
@@ -801,7 +800,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     lbInquire?.addEventListener('click', (e) => {
         e.stopPropagation();
-        openDeliveryModal(currentIndex + 1);
+        openDeliveryModal(currentIndex + 1, galleryItems[currentIndex]);
     });
 
     document.getElementById('lightboxShare')?.addEventListener('click', (e) => {
