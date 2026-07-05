@@ -2122,7 +2122,11 @@ header nav ul li a.active {
 
     .site-footer { padding-bottom: 110px; }
 
-    .gallery-tabs { top: 10px; }
+    .gallery-tabs { top: 64px; }
+
+    /* Telefonā JAUNUMS/TOP zīmītes ir info joslas stūros — pabīda numuru zem tām */
+    .gallery-item[data-new="true"] .image-info,
+    .gallery-item.is-top .image-info { padding-top: 32px; }
 }
 
 @keyframes dockUp {
