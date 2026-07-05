@@ -2947,6 +2947,59 @@ input, textarea, [contenteditable] {
     pointer-events: none;
 }
 
+/* ── Augšējie vadīkli: tēmas pārslēgs + valodu pārslēgs (kopīgs konteiners) ── */
+.top-controls {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+/* valodu pārslēgs kļūst par flex-bērnu konteinerā (atceļ pašam savu fiksēto pozīciju) */
+.top-controls .lang-switch { position: static; inset: auto; transform: none; }
+
+.theme-switch {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex: none;
+    border-radius: 999px;
+    background: rgba(12, 18, 34, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
+    color: #f4f6fb;
+    cursor: pointer;
+    opacity: 0.78;
+    transition: opacity 0.25s ease, transform 0.15s ease, background 0.25s ease;
+}
+.theme-switch:hover { opacity: 1; }
+.theme-switch:active { transform: scale(0.92); }
+.theme-switch svg { width: 20px; height: 20px; display: block; }
+.theme-switch .ico-sun { display: none; }
+html[data-theme="light"] .theme-switch .ico-sun { display: block; }
+html[data-theme="light"] .theme-switch .ico-moon { display: none; }
+html[data-theme="light"] .theme-switch {
+    background: rgba(255, 253, 247, 0.62);
+    border-color: rgba(120, 96, 60, 0.2);
+    color: #39322a;
+    box-shadow: 0 4px 18px rgba(95, 72, 40, 0.15);
+}
+/* atverot bildi/logu — paslēpj arī tēmas pārslēgu (kā valodas) */
+body.lightbox-open .top-controls,
+body.modal-open .top-controls { opacity: 0; pointer-events: none; }
+
+@media (max-width: 600px) {
+    .top-controls { top: 10px; right: auto; left: 50%; transform: translateX(-50%); gap: 8px; }
+    .theme-switch { width: 37px; height: 37px; }
+    .theme-switch svg { width: 18px; height: 18px; }
+}
+
 /* ── Valodas pārslēgs (LV / EN) — desktopā augšējā labajā stūrī ── */
 .lang-switch {
     position: fixed;
