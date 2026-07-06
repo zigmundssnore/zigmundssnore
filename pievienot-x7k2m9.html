@@ -173,6 +173,16 @@
     .pick-meta { flex: 1; min-width: 0; font-size: 0.9rem; }
     .pick-meta .pk-sub { font-size: 0.77rem; color: rgba(235,240,252,0.6); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+    /* ── Salokāmās kategorijas (bez rāmja / ierāmētās / mazās) ── */
+    .pick-acc { border: 1px solid rgba(255,255,255,0.14); border-radius: 13px; margin: 8px 0; background: rgba(255,255,255,0.03); overflow: hidden; }
+    .pick-acc > summary { cursor: pointer; padding: 13px 15px; font-weight: 700; font-size: 0.95rem; list-style: none; display: flex; align-items: center; gap: 8px; color: rgba(235,240,252,0.92); }
+    .pick-acc > summary::-webkit-details-marker { display: none; }
+    .pick-acc > summary::after { content: '⌄'; margin-left: auto; font-size: 1.15rem; opacity: 0.6; transition: transform 0.2s; }
+    .pick-acc[open] > summary::after { transform: rotate(180deg); }
+    .pick-acc[open] > summary { border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .pick-acc .pick-list { margin: 0; padding: 10px; }
+    .acc-cnt { font-weight: 600; font-size: 0.8rem; color: rgba(235,240,252,0.5); }
+
     .row { display: flex; gap: 12px; }
     .row > div { flex: 1; }
     .size-row { display: flex; align-items: center; gap: 12px; }
@@ -312,12 +322,18 @@
         <p class="card-title">Rediģēt gleznas datus</p>
         <p class="small" style="margin-top:0">Maini esošas gleznas cenu, izmēru vai JAUNUMS nozīmīti.</p>
         <div id="editPick" style="display:none">
-            <label>🖼️ Gleznas bez rāmja</label>
-            <div id="editListBez" class="pick-list"></div>
-            <label>🪟 Ierāmētās gleznas</label>
-            <div id="editListRam" class="pick-list"></div>
-            <label>🔸 Mazās gleznas</label>
-            <div id="editListMaz" class="pick-list"></div>
+            <details class="pick-acc" open>
+                <summary>🖼️ Gleznas bez rāmja <span id="cntBez" class="acc-cnt"></span></summary>
+                <div id="editListBez" class="pick-list"></div>
+            </details>
+            <details class="pick-acc">
+                <summary>🪟 Ierāmētās gleznas <span id="cntRam" class="acc-cnt"></span></summary>
+                <div id="editListRam" class="pick-list"></div>
+            </details>
+            <details class="pick-acc">
+                <summary>🔸 Mazās gleznas <span id="cntMaz" class="acc-cnt"></span></summary>
+                <div id="editListMaz" class="pick-list"></div>
+            </details>
 
             <div id="editFields" style="display:none">
                 <div class="edit-head">
@@ -650,6 +666,9 @@ async function loadEditList() {
         $('editListBez').innerHTML = bez.map(it => pickRow(it, base)).join('');
         $('editListRam').innerHTML = ar.map(it => pickRow(it, base)).join('');
         $('editListMaz').innerHTML = maz.map(it => pickRow(it, base)).join('');
+        $('cntBez').textContent = '(' + bez.length + ')';
+        $('cntRam').textContent = '(' + ar.length + ')';
+        $('cntMaz').textContent = '(' + maz.length + ')';
         editCurrent = '';
         $('editPick').style.display = 'block';
         $('editFields').style.display = 'none';
