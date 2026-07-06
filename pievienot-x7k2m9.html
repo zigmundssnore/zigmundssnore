@@ -137,6 +137,18 @@
     .news-row .nr-del:disabled { opacity: 0.6; cursor: default; }
     hr.sep { border: none; border-top: 1px solid rgba(255,255,255,0.12); margin: 22px 0 6px; }
 
+    /* ── Like skaita saraksts ── */
+    .like-total { margin: 14px 0 4px; font-size: 0.95rem; color: rgba(235,240,252,0.85); }
+    .like-total b { color: #ff8fa3; font-size: 1.2rem; }
+    .like-list { margin-top: 6px; display: flex; flex-direction: column; gap: 8px; max-height: 460px; overflow-y: auto; }
+    .like-row { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); }
+    .like-row.top { border-color: rgba(232,196,119,0.5); background: rgba(232,196,119,0.09); }
+    .like-thumb { width: 46px; height: 46px; object-fit: cover; border-radius: 9px; flex: none; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); }
+    .like-meta { flex: 1; min-width: 0; font-size: 0.9rem; }
+    .like-meta .lm-sub { font-size: 0.76rem; color: rgba(235,240,252,0.55); margin-top: 2px; }
+    .like-num { flex: none; display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 1.08rem; color: #ff8fa3; }
+    .like-num svg { width: 17px; height: 17px; fill: #ff6b81; }
+
     .row { display: flex; gap: 12px; }
     .row > div { flex: 1; }
     .size-row { display: flex; align-items: center; gap: 12px; }
@@ -318,6 +330,14 @@
     </div>
 
     </div>
+    </div>
+
+    <div class="card" id="likeCard">
+        <p class="card-title">📊 Like skaits</p>
+        <p class="small" style="margin-top:0">Cik “patīk” savākusi katra glezna (reāli skaitļi no visiem apmeklētājiem). ⭐TOP = vairāk par 15.</p>
+        <button class="btn violet" id="likeLoad">❤️ Ielādēt like skaitu</button>
+        <div id="likeSummary"></div>
+        <div id="likeList" class="like-list"></div>
     </div>
 
     <div class="card" id="newsCard">
@@ -730,6 +750,58 @@ $('editDelete').addEventListener('click', async () => {
         log3('✗ Kļūda: ' + e.message, 'err');
     } finally {
         $('editDelete').disabled = false; $('editSave').disabled = false;
+    }
+});
+
+// ── Like skaits (Firebase Realtime Database — publisks lasījums) ──
+const FB_URL = 'https://zigmunds-majaslapa-default-rtdb.europe-west1.firebasedatabase.app';
+const LIKE_HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+// atslēga = tāda pati kā script.js: bildes fails bez thumb-/paplašinājuma
+function likeKeyFromSrc(src) {
+    const id = (src || '').split('/').pop().replace(/^thumb-/, '').replace(/\.(webp|jpe?g|png)$/i, '');
+    return 'glezna_' + id;
+}
+$('likeLoad').addEventListener('click', async () => {
+    $('likeList').innerHTML = ''; $('likeSummary').innerHTML = '';
+    if (!$('token').value.trim()) { $('likeSummary').innerHTML = '<p class="small err">⚠️ Ievadi GitHub token (Iestatījumi).</p>'; return; }
+    $('likeLoad').disabled = true;
+    try {
+        // 1) visi like skaiti no Firebase
+        const lr = await fetch(FB_URL + '/likes.json');
+        if (!lr.ok) throw new Error('Firebase → ' + lr.status);
+        const likes = (await lr.json()) || {};
+        // 2) gleznu saraksts no index.html (Nr., kategorija, sīktēls)
+        const idx = await getFile('index.html');
+        const html = b64ToUtf8(idx.content);
+        const items = liveItems(html).map((m, i) => ({ num: i + 1, ...parseItem(m[0]) }));
+        const usedKeys = new Set();
+        const rows = items.map(it => {
+            const key = likeKeyFromSrc(it.dataSrc || it.thumb);
+            usedKeys.add(key);
+            const catLabel = it.category === 'ieramettas' ? 'ierāmēta' : (it.category === 'mazas' ? 'mazā' : 'bez rāmja');
+            return { num: it.num, sub: catLabel, thumb: it.thumb, count: likes[key] || 0 };
+        });
+        // like atslēgas, kas vairs nav galerijā (piem. noņemtas gleznas), ja tām ir >0
+        Object.keys(likes).forEach(k => {
+            if (!usedKeys.has(k) && (likes[k] || 0) > 0)
+                rows.push({ num: null, key: k, sub: '(nav galerijā — varbūt noņemta)', thumb: '', count: likes[k] });
+        });
+        rows.sort((a, b) => b.count - a.count);
+        const total = rows.reduce((s, r) => s + r.count, 0);
+        $('likeSummary').innerHTML = '<p class="like-total">Kopā: <b>' + total + '</b> ❤️ · ' + rows.length + ' ieraksti</p>';
+        const base = 'https://' + $('owner').value + '.github.io/' + $('repo').value + '/';
+        $('likeList').innerHTML = rows.map(r => {
+            const top = r.count > 15;
+            const title = r.num ? ('Nr. ' + r.num + (top ? ' · ⭐TOP' : '')) : esc(r.key || '?');
+            const thumb = r.thumb ? '<img class="like-thumb" src="' + base + r.thumb + '" alt="" loading="lazy">' : '<div class="like-thumb"></div>';
+            return '<div class="like-row' + (top ? ' top' : '') + '">' + thumb +
+                '<div class="like-meta">' + title + '<div class="lm-sub">' + esc(r.sub) + '</div></div>' +
+                '<div class="like-num">' + LIKE_HEART + r.count + '</div></div>';
+        }).join('');
+    } catch (e) {
+        $('likeSummary').innerHTML = '<p class="small err">✗ Kļūda: ' + esc(e.message) + '</p>';
+    } finally {
+        $('likeLoad').disabled = false;
     }
 });
 
