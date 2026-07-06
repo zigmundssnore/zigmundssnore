@@ -342,7 +342,6 @@
     <div class="card" id="likeCard">
         <p class="card-title">📊 Like skaits</p>
         <p class="small" style="margin-top:0">Cik “patīk” savākusi katra glezna (reāli skaitļi no visiem apmeklētājiem). ⭐TOP = vairāk par 15. Skaitli var mainīt — spied <b>✎</b> blakus skaitlim.</p>
-        <button class="btn violet" id="likeLoad">❤️ Ielādēt like skaitu</button>
         <div id="likeSummary"></div>
         <div id="likeList" class="like-list"></div>
     </div>
@@ -392,8 +391,7 @@
 
         <hr class="sep">
         <p class="card-title" style="font-size:1.02rem">Esošās kartiņas</p>
-        <p class="small" style="margin-top:0">Ielādē un dzēs vecās kartiņas (piem. “Dzīves stāsti”).</p>
-        <button class="btn" id="nLoad" style="background:linear-gradient(135deg,#e8b760,#c98f2f); box-shadow:0 12px 30px rgba(201,143,47,0.4), inset 0 1px 0 rgba(255,255,255,0.4)">📋 Ielādēt esošās kartiņas</button>
+        <p class="small" style="margin-top:0">Šeit vari dzēst vecās kartiņas (piem. “Dzīves stāsti”).</p>
         <div id="nList" class="news-list"></div>
     </div>
 
@@ -816,10 +814,9 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (e.key === 'Escape') { likeCancelEdit(e.target.closest('.like-num')); }
     });
 });
-$('likeLoad').addEventListener('click', async () => {
-    $('likeList').innerHTML = ''; $('likeSummary').innerHTML = '';
-    if (!$('token').value.trim()) { $('likeSummary').innerHTML = '<p class="small err">⚠️ Ievadi GitHub token (Iestatījumi).</p>'; return; }
-    $('likeLoad').disabled = true;
+async function loadLikes() {
+    if (!$('token').value.trim()) { $('likeSummary').innerHTML = '<p class="small">⚠️ Ievadi GitHub token (Iestatījumi), lai redzētu like skaitu.</p>'; $('likeList').innerHTML = ''; return; }
+    $('likeSummary').innerHTML = '<p class="small muted">Ielādē…</p>'; $('likeList').innerHTML = '';
     try {
         // 1) visi like skaiti no Firebase
         const lr = await fetch(FB_URL + '/likes.json');
@@ -836,12 +833,18 @@ $('likeLoad').addEventListener('click', async () => {
             const catLabel = it.category === 'ieramettas' ? 'ierāmēta' : (it.category === 'mazas' ? 'mazā' : 'bez rāmja');
             return { num: it.num, key: key, sub: catLabel, thumb: it.thumb, count: likes[key] || 0 };
         });
-        // like atslēgas, kas vairs nav galerijā (piem. noņemtas gleznas), ja tām ir >0
+        // like atslēgas, kas vairs nav galerijā (noņemtas gleznas), ja tām ir >0
         Object.keys(likes).forEach(k => {
             if (!usedKeys.has(k) && (likes[k] || 0) > 0)
-                rows.push({ num: null, key: k, sub: '(nav galerijā — varbūt noņemta)', thumb: '', count: likes[k] });
+                rows.push({ num: null, key: k, sub: 'Glezna noņemta no galerijas.', thumb: '', count: likes[k] });
         });
-        rows.sort((a, b) => b.count - a.count);
+        // šķiro pēc gleznas numura (noņemtās — beigās)
+        rows.sort((a, b) => {
+            if (a.num == null && b.num == null) return b.count - a.count;
+            if (a.num == null) return 1;
+            if (b.num == null) return -1;
+            return a.num - b.num;
+        });
         const total = rows.reduce((s, r) => s + r.count, 0);
         $('likeSummary').innerHTML = '<p class="like-total">Kopā: <b>' + total + '</b> ❤️ · ' + rows.length + ' ieraksti</p>';
         const base = 'https://' + $('owner').value + '.github.io/' + $('repo').value + '/';
@@ -855,10 +858,8 @@ $('likeLoad').addEventListener('click', async () => {
         }).join('');
     } catch (e) {
         $('likeSummary').innerHTML = '<p class="small err">✗ Kļūda: ' + esc(e.message) + '</p>';
-    } finally {
-        $('likeLoad').disabled = false;
     }
-});
+}
 
 // ── Jaunumu sadaļa (pievienot / dzēst kartiņas) ──
 function logN(msg, cls) { const e = $('nLog'); const s = document.createElement('span'); if (cls) s.className = cls; s.textContent = msg + '\n'; e.appendChild(s); e.scrollTop = e.scrollHeight; }
@@ -961,6 +962,7 @@ $('nAdd').addEventListener('click', async () => {
         $('nTitle').value = ''; $('nText').value = ''; $('nTitleEn').value = ''; $('nTextEn').value = '';
         $('nBtnText').value = ''; $('nBtnUrl').value = ''; $('nBtnTextEn').value = '';
         nFile = null; nPreview.style.display = 'none'; $('nDropText').textContent = 'Ievelc bildi šeit vai klikšķini';
+        loadNewsCards();   // atsvaidzina esošo kartiņu sarakstu
     } catch (e) {
         logN('✗ Kļūda: ' + e.message, 'err');
     } finally {
@@ -981,10 +983,9 @@ function newsCards(html) {
     });
 }
 
-$('nLoad').addEventListener('click', async () => {
-    $('nList').innerHTML = '';
-    if (!$('token').value.trim()) { $('nList').innerHTML = '<p class="small err">⚠️ Ievadi GitHub token (Iestatījumi).</p>'; return; }
-    $('nLoad').disabled = true;
+async function loadNewsCards() {
+    if (!$('token').value.trim()) { $('nList').innerHTML = '<p class="small">⚠️ Ievadi GitHub token (Iestatījumi), lai redzētu kartiņas.</p>'; return; }
+    $('nList').innerHTML = '<p class="small muted">Ielādē…</p>';
     try {
         const idx = await getFile('index.html');
         const html = b64ToUtf8(idx.content);
@@ -996,10 +997,8 @@ $('nLoad').addEventListener('click', async () => {
         $('nList').querySelectorAll('.nr-del').forEach(b => b.addEventListener('click', () => deleteNews(cards[+b.dataset.i], b)));
     } catch (e) {
         $('nList').innerHTML = '<p class="small err">✗ ' + e.message + '</p>';
-    } finally {
-        $('nLoad').disabled = false;
     }
-});
+}
 
 async function deleteNews(card, btn) {
     if (!confirm('⚠️ DZĒST kartiņu?\n\n"' + card.title + '"\n\nTā tiks neatgriezeniski noņemta no lapas “Jaunumi”.\n\nSpied OK, lai dzēstu, vai Atcelt.')) return;
@@ -1019,6 +1018,12 @@ async function deleteNews(card, btn) {
         alert('Kļūda: ' + e.message); btn.disabled = false; btn.textContent = '🗑️ Dzēst';
     }
 }
+
+// ── Auto-ielāde, atverot paneli (bez pogām) ──
+function autoLoadPanels() { loadLikes(); loadNewsCards(); }
+document.addEventListener('DOMContentLoaded', autoLoadPanels);
+// ja token ievadīts vēlāk (pirmā reize) — ielādē, tiklīdz tas parādās
+$('token').addEventListener('change', () => { if ($('token').value.trim()) autoLoadPanels(); });
 </script>
 </body>
 </html>
