@@ -135,6 +135,8 @@
     .news-row .nr-del { flex: none; padding: 7px 12px; border-radius: 9px; border: 1px solid rgba(224,89,106,0.5); background: rgba(224,89,106,0.14); color: #ffb3bd; font-weight: 700; cursor: pointer; font-size: 0.82rem; transition: background 0.2s; }
     .news-row .nr-del:hover { background: rgba(224,89,106,0.28); }
     .news-row .nr-del:disabled { opacity: 0.6; cursor: default; }
+    .news-row .nr-edit { flex: none; padding: 7px 12px; border-radius: 9px; border: 1px solid rgba(232,196,119,0.5); background: rgba(232,196,119,0.14); color: #f0d9a6; font-weight: 700; cursor: pointer; font-size: 0.82rem; transition: background 0.2s; }
+    .news-row .nr-edit:hover { background: rgba(232,196,119,0.28); }
     hr.sep { border: none; border-top: 1px solid rgba(255,255,255,0.12); margin: 22px 0 6px; }
 
     /* ── Like skaita saraksts ── */
@@ -416,6 +418,7 @@
         </details>
 
         <button class="btn" id="nAdd">Pievienot jaunumu karti</button>
+        <button class="btn" id="nCancelEdit" style="display:none; margin-top:10px; background:rgba(255,255,255,0.08); box-shadow:none; border-color:rgba(255,255,255,0.2)">✕ Atcelt rediģēšanu</button>
         <div id="nLog"></div>
 
         <hr class="sep">
@@ -956,15 +959,32 @@ nDrop.addEventListener('dragleave', () => nDrop.classList.remove('over'));
 nDrop.addEventListener('drop', e => { e.preventDefault(); nDrop.classList.remove('over'); if (e.dataTransfer.files[0]) setNFile(e.dataTransfer.files[0]); });
 function setNFile(f) { if (!f || !f.type.startsWith('image/')) { logN('Tas nav attēls.', 'err'); return; } nFile = f; nPreview.src = URL.createObjectURL(f); nPreview.style.display = 'block'; $('nDropText').textContent = f.name; }
 
+// rediģēšanas stāvoklis (null = pievieno jaunu; citādi rediģē šo raw)
+let newsEditRaw = null, newsEditImg = null;
+function clearNewsForm() {
+    $('nTitle').value = ''; $('nText').value = ''; $('nTitleEn').value = ''; $('nTextEn').value = '';
+    $('nBtnText').value = ''; $('nBtnUrl').value = ''; $('nBtnTextEn').value = '';
+    nFile = null; nPreview.style.display = 'none'; $('nDropText').textContent = 'Ievelc bildi šeit vai klikšķini';
+}
+// HTML → forma (atpakaļ uz **treknraksts** un tīru tekstu)
+function htmlToMarked(s) {
+    return (s || '')
+        .replace(/<\/?strong>/gi, '**')
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<[^>]+>/g, '')
+        .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#0?39;/g, "'").replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&')
+        .trim();
+}
+
 function buildNewsCard(o) {
     // o: {titleLv, titleEn, linesLv[], linesEn[], img, btnText, btnUrl, btnTextEn}
     let h = '\n<article class="bento-card" data-news-managed="1">\n';
-    h += '<h3' + (o.titleEn ? ' data-en="' + attrEsc(o.titleEn) + '"' : '') + '>' + esc(o.titleLv) + '</h3>\n';
+    h += '<h3' + (o.titleEn ? ' data-en="' + attrEsc(fmtLine(o.titleEn)) + '"' : '') + '>' + fmtLine(o.titleLv) + '</h3>\n';
     o.linesLv.forEach((ln, i) => {
         const en = o.linesEn[i];
         h += '<p' + (en ? ' data-en="' + attrEsc(fmtLine(en)) + '"' : '') + '>' + fmtLine(ln) + '</p>\n';
     });
-    if (o.img) h += '<img src="' + o.img + '" alt="' + attrEsc(o.titleLv) + '" class="news-img" loading="lazy" decoding="async">\n';
+    if (o.img) h += '<img src="' + o.img + '" alt="' + attrEsc(o.titleLv.replace(/\*\*/g, '')) + '" class="news-img" loading="lazy" decoding="async">\n';
     if (o.btnText && o.btnUrl) {
         // krāsa + ikona pēc pogas teksta (kā kontaktu sadaļā)
         const t = o.btnText.toLowerCase();
@@ -989,6 +1009,7 @@ $('nAdd').addEventListener('click', async () => {
     const linesEn = $('nTextEn').value.trim().split(/\n+/).map(s => s.trim()).filter(Boolean);
     const btnText = $('nBtnText').value.trim(), btnUrl = $('nBtnUrl').value.trim();
     if (btnText && !btnUrl) return logN('⚠️ Pogai vajag arī saiti (URL).', 'err');
+    const editRaw = newsEditRaw, editImg = newsEditImg;   // fiksē režīmu
     $('nAdd').disabled = true;
     try {
         let imgPath = null;
@@ -999,6 +1020,8 @@ $('nAdd').addEventListener('click', async () => {
             logN('  ' + im.kb + 'KB', 'muted');
             await putFile('img/' + id + '.webp', im.b64, 'jaunuma bilde ' + id);
             imgPath = 'img/' + id + '.webp';
+        } else if (editRaw && editImg) {
+            imgPath = editImg;   // patur esošo bildi
         }
         logN('Atjauno lapu…', 'muted');
         const idx = await getFile('index.html');
@@ -1007,18 +1030,26 @@ $('nAdd').addEventListener('click', async () => {
             titleLv, titleEn: $('nTitleEn').value.trim(), linesLv, linesEn,
             img: imgPath, btnText, btnUrl, btnTextEn: $('nBtnTextEn').value.trim()
         });
-        const marker = '<div class="bento-grid">';
-        const pos = html.indexOf(marker);
-        if (pos < 0) throw new Error('Neatrada jaunumu sadaļu (bento-grid) index.html.');
-        const at = pos + marker.length;
-        html = html.slice(0, at) + card + html.slice(at);
-        await putFile('index.html', utf8ToB64(html), 'pievienota jaunuma kartiņa: ' + titleLv, idx.sha);
-        logN('✓ Gatavs! Kartiņa pievienota (parādās pirmā).', 'ok');
+        if (editRaw) {
+            // REDIĢĒ — aizvieto konkrēto kartiņu
+            const at = html.indexOf(editRaw);
+            if (at < 0) throw new Error('Neatradu rediģējamo kartiņu (varbūt jau mainīta). Ielādē sarakstu vēlreiz.');
+            html = html.slice(0, at) + card.trim() + html.slice(at + editRaw.length);
+            await putFile('index.html', utf8ToB64(html), 'rediģēta jaunuma kartiņa: ' + titleLv, idx.sha);
+            logN('✓ Gatavs! Kartiņa rediģēta.', 'ok');
+        } else {
+            // PIEVIENO jaunu — sākumā
+            const marker = '<div class="bento-grid">';
+            const pos = html.indexOf(marker);
+            if (pos < 0) throw new Error('Neatrada jaunumu sadaļu (bento-grid) index.html.');
+            const at = pos + marker.length;
+            html = html.slice(0, at) + card + html.slice(at);
+            await putFile('index.html', utf8ToB64(html), 'pievienota jaunuma kartiņa: ' + titleLv, idx.sha);
+            logN('✓ Gatavs! Kartiņa pievienota (parādās pirmā).', 'ok');
+        }
         logN('Pēc ~1 min redzama lapā (privātajā cilnē, keša dēļ).', 'muted');
-        // notīra formu
-        $('nTitle').value = ''; $('nText').value = ''; $('nTitleEn').value = ''; $('nTextEn').value = '';
-        $('nBtnText').value = ''; $('nBtnUrl').value = ''; $('nBtnTextEn').value = '';
-        nFile = null; nPreview.style.display = 'none'; $('nDropText').textContent = 'Ievelc bildi šeit vai klikšķini';
+        clearNewsForm();
+        exitNewsEdit();
         loadNewsCards();   // atsvaidzina esošo kartiņu sarakstu
     } catch (e) {
         logN('✗ Kļūda: ' + e.message, 'err');
@@ -1026,6 +1057,54 @@ $('nAdd').addEventListener('click', async () => {
         $('nAdd').disabled = false;
     }
 });
+
+// ── Rediģēt esošu kartiņu (aizpilda augšējo formu) ──
+function exitNewsEdit() {
+    newsEditRaw = null; newsEditImg = null;
+    $('nAdd').textContent = 'Pievienot jaunumu karti';
+    $('nCancelEdit').style.display = 'none';
+}
+$('nCancelEdit').addEventListener('click', () => { clearNewsForm(); exitNewsEdit(); $('nLog').innerHTML = ''; });
+
+function startEditNews(card) {
+    const doc = new DOMParser().parseFromString(card.raw, 'text/html');
+    const art = doc.querySelector('article');
+    if (!art) return;
+    if (art.querySelector('input, select, textarea, datalist, .compare, .slider-wrapper')) {
+        alert('Šo kartiņu nevar rediģēt šeit — tā satur īpašu saturu (piem. attēlu slīdni).\nVari to dzēst un izveidot no jauna.');
+        return;
+    }
+    const h3 = art.querySelector('h3');
+    const ps = [...art.querySelectorAll('p')];
+    const img = art.querySelector('img');
+    const a = art.querySelector('a');
+    const span = a ? a.querySelector('span') : null;
+
+    clearNewsForm();
+    $('nTitle').value = h3 ? htmlToMarked(h3.innerHTML) : '';
+    $('nTitleEn').value = (h3 && h3.getAttribute('data-en')) ? htmlToMarked(h3.getAttribute('data-en')) : '';
+    $('nText').value = ps.map(p => htmlToMarked(p.innerHTML)).join('\n');
+    const ens = ps.map(p => p.getAttribute('data-en') ? htmlToMarked(p.getAttribute('data-en')) : '');
+    $('nTextEn').value = ens.some(x => x) ? ens.join('\n') : '';
+    $('nBtnText').value = a ? htmlToMarked((span || a).innerHTML) : '';
+    $('nBtnUrl').value = a ? (a.getAttribute('href') || '') : '';
+    $('nBtnTextEn').value = (span && span.getAttribute('data-en')) ? htmlToMarked(span.getAttribute('data-en')) : '';
+
+    newsEditRaw = card.raw;
+    newsEditImg = img ? img.getAttribute('src') : null;
+    if (newsEditImg) {
+        const base = 'https://' + $('owner').value + '.github.io/' + $('repo').value + '/';
+        nPreview.src = /^https?:/.test(newsEditImg) ? newsEditImg : base + newsEditImg;
+        nPreview.style.display = 'block';
+        $('nDropText').textContent = 'Esošā bilde — izvēlies jaunu, lai nomainītu';
+    }
+    $('nAdd').textContent = '💾 Saglabāt izmaiņas';
+    $('nCancelEdit').style.display = 'block';
+    $('nLog').innerHTML = '';
+    if (art.querySelector('[data-i18n]')) logN('ℹ️ Šai kartiņai bija iebūvēts tulkojums — ja vajag EN, ieraksti to “Angļu tulkojums” sadaļā.', 'muted');
+    $('nTitle').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    $('nTitle').focus();
+}
 
 // ── esošo kartiņu ielāde + dzēšana ──
 function newsCards(html) {
@@ -1049,8 +1128,11 @@ async function loadNewsCards() {
         const cards = newsCards(html);
         if (!cards.length) { $('nList').innerHTML = '<p class="small">Nav atrastu kartiņu.</p>'; return; }
         $('nList').innerHTML = cards.map((c, i) =>
-            '<div class="news-row"><span class="nr-title">' + (i + 1) + '. ' + esc(c.title) + '</span><button class="nr-del" data-i="' + i + '">🗑️ Dzēst</button></div>'
+            '<div class="news-row"><span class="nr-title">' + (i + 1) + '. ' + esc(c.title) + '</span>' +
+            '<button class="nr-edit" data-i="' + i + '">✏️ Rediģēt</button>' +
+            '<button class="nr-del" data-i="' + i + '">🗑️ Dzēst</button></div>'
         ).join('');
+        $('nList').querySelectorAll('.nr-edit').forEach(b => b.addEventListener('click', () => startEditNews(cards[+b.dataset.i])));
         $('nList').querySelectorAll('.nr-del').forEach(b => b.addEventListener('click', () => deleteNews(cards[+b.dataset.i], b)));
     } catch (e) {
         $('nList').innerHTML = '<p class="small err">✗ ' + e.message + '</p>';
