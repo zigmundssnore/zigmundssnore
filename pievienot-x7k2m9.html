@@ -120,6 +120,14 @@
         background: rgba(255,255,255,0.10); box-shadow: 0 0 0 3px rgba(232,196,119,0.15);
     }
 
+    /* ── Teksta formatēšanas josla (treknraksts) ── */
+    .fmt-bar { display: flex; align-items: center; gap: 10px; margin: 8px 0 7px; flex-wrap: wrap; }
+    .fmt-b { padding: 6px 12px; border-radius: 9px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: rgba(235,240,252,0.9); font-size: 0.82rem; cursor: pointer; font-family: inherit; transition: background 0.2s, border-color 0.2s; }
+    .fmt-b b { font-family: var(--font-display); }
+    .fmt-b:hover { background: rgba(232,196,119,0.14); border-color: rgba(232,196,119,0.5); }
+    .fmt-hint { font-size: 0.76rem; color: rgba(235,240,252,0.5); }
+    .fmt-hint code { background: rgba(255,255,255,0.1); padding: 1px 5px; border-radius: 5px; }
+
     /* ── Jaunumu kartiņu saraksts ── */
     .news-list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
     .news-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); transition: opacity 0.3s; }
@@ -320,7 +328,11 @@
         <input type="text" id="nTitle" placeholder="Piem. Jauna izstāde Rīgā">
 
         <label>Teksts <span class="muted">(katra rinda = jauna rindkopa)</span></label>
-        <textarea id="nText" placeholder="Pirmā rindkopa.&#10;Otrā rindkopa."></textarea>
+        <div class="fmt-bar">
+            <button type="button" class="fmt-b" data-ta="nText"><b>B</b> Treknraksts</button>
+            <span class="fmt-hint">Iezīmē vārdu → spied. Vai raksti <code>**vārds**</code></span>
+        </div>
+        <textarea id="nText" placeholder="Pirmā rindkopa.&#10;Otrā rindkopa ar **izceltu** vārdu."></textarea>
 
         <label>Bilde <span class="muted">(nav obligāti)</span></label>
         <div class="drop" id="nDrop">
@@ -333,13 +345,17 @@
             <div><label>Pogas teksts <span class="muted">(nav obligāti)</span></label><input type="text" id="nBtnText" placeholder="Piem. Skatīties YouTube"></div>
             <div><label>Pogas saite (URL)</label><input type="text" id="nBtnUrl" placeholder="https://..."></div>
         </div>
+        <p class="small" style="margin-top:7px">Ja pogas tekstā ir <b>YouTube</b> → sarkana, <b>WhatsApp</b> → zaļa, <b>SMS</b> → dzeltena, <b>Facebook</b> → zila (ar ikonu, kā kontaktu sadaļā).</p>
 
         <details class="card" style="margin-top:16px; padding:18px 18px; background:rgba(255,255,255,0.04)">
             <summary>🇬🇧 Angļu tulkojums (nav obligāti)</summary>
             <label>Virsraksts (EN)</label>
             <input type="text" id="nTitleEn" placeholder="e.g. New exhibition in Riga">
             <label>Teksts (EN) <span class="muted">(tikpat rindu, cik latviski)</span></label>
-            <textarea id="nTextEn" placeholder="First paragraph.&#10;Second paragraph."></textarea>
+            <div class="fmt-bar">
+                <button type="button" class="fmt-b" data-ta="nTextEn"><b>B</b> Treknraksts</button>
+            </div>
+            <textarea id="nTextEn" placeholder="First paragraph.&#10;Second paragraph with a **bold** word."></textarea>
             <label>Pogas teksts (EN)</label>
             <input type="text" id="nBtnTextEn" placeholder="e.g. Watch on YouTube">
         </details>
@@ -721,8 +737,29 @@ $('editDelete').addEventListener('click', async () => {
 function logN(msg, cls) { const e = $('nLog'); const s = document.createElement('span'); if (cls) s.className = cls; s.textContent = msg + '\n'; e.appendChild(s); e.scrollTop = e.scrollHeight; }
 const attrEsc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
-// YouTube ikona (kā galvenajā lapā)
+// Kontaktu ikonas (kā galvenajā lapā)
 const YT_ICO = '<svg class="btn-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>';
+const WA_ICO = '<svg class="btn-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
+const SMS_ICO = '<svg class="btn-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8.25 11a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0zm5 0a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0zm5 0a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0z"/></svg>';
+const FB_ICO = '<svg class="btn-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>';
+
+// treknraksts: iezīmē tekstu → ietin **...**; tukša izvēle ievieto **|**
+function toggleBold(id) {
+    const ta = $(id); if (!ta) return;
+    const s = ta.selectionStart, e = ta.selectionEnd, v = ta.value, sel = v.slice(s, e);
+    if (s === e) { ta.value = v.slice(0, s) + '****' + v.slice(e); ta.focus(); ta.selectionStart = ta.selectionEnd = s + 2; return; }
+    if (sel.startsWith('**') && sel.endsWith('**') && sel.length >= 4) {         // jau treknraksts → noņem
+        const inner = sel.slice(2, -2);
+        ta.value = v.slice(0, s) + inner + v.slice(e);
+        ta.focus(); ta.selectionStart = s; ta.selectionEnd = s + inner.length;
+    } else {
+        ta.value = v.slice(0, s) + '**' + sel + '**' + v.slice(e);
+        ta.focus(); ta.selectionStart = s; ta.selectionEnd = e + 4;
+    }
+}
+document.querySelectorAll('.fmt-b').forEach(b => b.addEventListener('click', () => toggleBold(b.dataset.ta)));
+// **vārds** → <strong>vārds</strong> (pēc HTML aizsardzības)
+const fmtLine = ln => esc(ln).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 
 // bildes izvēle jaunumu kartei
 let nFile = null;
@@ -740,13 +777,19 @@ function buildNewsCard(o) {
     h += '<h3' + (o.titleEn ? ' data-en="' + attrEsc(o.titleEn) + '"' : '') + '>' + esc(o.titleLv) + '</h3>\n';
     o.linesLv.forEach((ln, i) => {
         const en = o.linesEn[i];
-        h += '<p' + (en ? ' data-en="' + attrEsc(en) + '"' : '') + '>' + esc(ln) + '</p>\n';
+        h += '<p' + (en ? ' data-en="' + attrEsc(fmtLine(en)) + '"' : '') + '>' + fmtLine(ln) + '</p>\n';
     });
     if (o.img) h += '<img src="' + o.img + '" alt="' + attrEsc(o.titleLv) + '" class="news-img" loading="lazy" decoding="async">\n';
     if (o.btnText && o.btnUrl) {
-        const yt = /youtu\.?be/.test(o.btnUrl);
-        h += '<a href="' + attrEsc(o.btnUrl) + '" class="button' + (yt ? ' youtube' : '') + '" target="_blank" rel="noopener">' +
-             (yt ? YT_ICO : '') + '<span' + (o.btnTextEn ? ' data-en="' + attrEsc(o.btnTextEn) + '"' : '') + '>' + esc(o.btnText) + '</span></a>\n';
+        // krāsa + ikona pēc pogas teksta (kā kontaktu sadaļā)
+        const t = o.btnText.toLowerCase();
+        let cls = '', ico = '';
+        if (t.includes('youtube'))       { cls = ' youtube';  ico = YT_ICO; }
+        else if (t.includes('whatsapp')) { cls = ' whatsapp'; ico = WA_ICO; }
+        else if (/\bsms\b/.test(t))      { cls = ' sms';      ico = SMS_ICO; }
+        else if (t.includes('facebook')) { cls = ' facebook'; ico = FB_ICO; }
+        h += '<a href="' + attrEsc(o.btnUrl) + '" class="button' + cls + '" target="_blank" rel="noopener">' +
+             ico + '<span' + (o.btnTextEn ? ' data-en="' + attrEsc(o.btnTextEn) + '"' : '') + '>' + esc(o.btnText) + '</span></a>\n';
     }
     h += '</article>\n';
     return h;
