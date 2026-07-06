@@ -148,6 +148,13 @@
     .like-meta .lm-sub { font-size: 0.76rem; color: rgba(235,240,252,0.55); margin-top: 2px; }
     .like-num { flex: none; display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 1.08rem; color: #ff8fa3; }
     .like-num svg { width: 17px; height: 17px; fill: #ff6b81; }
+    .lm-title { display: block; }
+    .lc-edit, .lc-save, .lc-cancel { flex: none; border: none; background: none; cursor: pointer; padding: 3px 5px; border-radius: 7px; font-size: 0.9rem; line-height: 1; font-family: inherit; }
+    .lc-edit { color: rgba(235,240,252,0.4); }
+    .lc-edit:hover { color: #f0d9a6; background: rgba(232,196,119,0.15); }
+    .lc-input { width: 64px; padding: 5px 7px; border-radius: 8px; border: 1px solid rgba(232,196,119,0.6); background: rgba(255,255,255,0.1); color: #fff; font-size: 0.95rem; font-weight: 700; text-align: center; font-family: inherit; }
+    .lc-save { color: #6fe7ac; } .lc-save:hover { background: rgba(111,231,172,0.18); }
+    .lc-cancel { color: #ff8a98; } .lc-cancel:hover { background: rgba(255,138,152,0.18); }
 
     .row { display: flex; gap: 12px; }
     .row > div { flex: 1; }
@@ -334,7 +341,7 @@
 
     <div class="card" id="likeCard">
         <p class="card-title">📊 Like skaits</p>
-        <p class="small" style="margin-top:0">Cik “patīk” savākusi katra glezna (reāli skaitļi no visiem apmeklētājiem). ⭐TOP = vairāk par 15.</p>
+        <p class="small" style="margin-top:0">Cik “patīk” savākusi katra glezna (reāli skaitļi no visiem apmeklētājiem). ⭐TOP = vairāk par 15. Skaitli var mainīt — spied <b>✎</b> blakus skaitlim.</p>
         <button class="btn violet" id="likeLoad">❤️ Ielādēt like skaitu</button>
         <div id="likeSummary"></div>
         <div id="likeList" class="like-list"></div>
@@ -761,6 +768,54 @@ function likeKeyFromSrc(src) {
     const id = (src || '').split('/').pop().replace(/^thumb-/, '').replace(/\.(webp|jpe?g|png)$/i, '');
     return 'glezna_' + id;
 }
+// skaitļa skats / labošanas skats vienā rindā
+function numView(count) { return LIKE_HEART + '<span class="lc-val">' + count + '</span><button class="lc-edit" title="Mainīt skaitli">✎</button>'; }
+function numEdit(count) { return '<input class="lc-input" type="number" min="0" value="' + count + '"><button class="lc-save" title="Saglabāt">✓</button><button class="lc-cancel" title="Atcelt">✕</button>'; }
+
+function likeRefreshTotal() {
+    let t = 0; $('likeList').querySelectorAll('.like-num').forEach(n => t += (+n.dataset.count || 0));
+    const b = $('likeSummary').querySelector('.like-total b'); if (b) b.textContent = t;
+}
+function likeStartEdit(numEl) { numEl.innerHTML = numEdit(numEl.dataset.count); const i = numEl.querySelector('.lc-input'); i.focus(); i.select(); }
+function likeCancelEdit(numEl) { numEl.innerHTML = numView(numEl.dataset.count); }
+async function likeSaveEdit(numEl) {
+    const key = numEl.dataset.key;
+    const inp = numEl.querySelector('.lc-input');
+    if (!inp) return;
+    const val = Math.max(0, Math.round(+inp.value || 0));
+    if (!key) { alert('Nav atslēgas šai rindai.'); return likeCancelEdit(numEl); }
+    numEl.querySelectorAll('button,input').forEach(el => el.disabled = true);
+    try {
+        const r = await fetch(FB_URL + '/likes/' + encodeURIComponent(key) + '.json', { method: 'PUT', body: JSON.stringify(val) });
+        if (!r.ok) throw new Error('Firebase → ' + r.status);
+        numEl.dataset.count = val;
+        numEl.innerHTML = numView(val);
+        // atjauno TOP izcēlumu + virsrakstu
+        const row = numEl.closest('.like-row'); const top = val > 15;
+        row.classList.toggle('top', top);
+        const num = row.dataset.num, t = row.querySelector('.lm-title');
+        if (num && t) t.textContent = 'Nr. ' + num + (top ? ' · ⭐TOP' : '');
+        likeRefreshTotal();
+    } catch (e) {
+        alert('Neizdevās saglabāt: ' + e.message);
+        likeCancelEdit(numEl);
+    }
+}
+// notikumu deleģēšana uz saraksta
+document.addEventListener('DOMContentLoaded', () => {
+    const list = $('likeList');
+    list.addEventListener('click', e => {
+        const numEl = e.target.closest('.like-num'); if (!numEl) return;
+        if (e.target.classList.contains('lc-edit')) likeStartEdit(numEl);
+        else if (e.target.classList.contains('lc-save')) likeSaveEdit(numEl);
+        else if (e.target.classList.contains('lc-cancel')) likeCancelEdit(numEl);
+    });
+    list.addEventListener('keydown', e => {
+        if (!e.target.classList || !e.target.classList.contains('lc-input')) return;
+        if (e.key === 'Enter') { e.preventDefault(); likeSaveEdit(e.target.closest('.like-num')); }
+        else if (e.key === 'Escape') { likeCancelEdit(e.target.closest('.like-num')); }
+    });
+});
 $('likeLoad').addEventListener('click', async () => {
     $('likeList').innerHTML = ''; $('likeSummary').innerHTML = '';
     if (!$('token').value.trim()) { $('likeSummary').innerHTML = '<p class="small err">⚠️ Ievadi GitHub token (Iestatījumi).</p>'; return; }
@@ -779,7 +834,7 @@ $('likeLoad').addEventListener('click', async () => {
             const key = likeKeyFromSrc(it.dataSrc || it.thumb);
             usedKeys.add(key);
             const catLabel = it.category === 'ieramettas' ? 'ierāmēta' : (it.category === 'mazas' ? 'mazā' : 'bez rāmja');
-            return { num: it.num, sub: catLabel, thumb: it.thumb, count: likes[key] || 0 };
+            return { num: it.num, key: key, sub: catLabel, thumb: it.thumb, count: likes[key] || 0 };
         });
         // like atslēgas, kas vairs nav galerijā (piem. noņemtas gleznas), ja tām ir >0
         Object.keys(likes).forEach(k => {
@@ -794,9 +849,9 @@ $('likeLoad').addEventListener('click', async () => {
             const top = r.count > 15;
             const title = r.num ? ('Nr. ' + r.num + (top ? ' · ⭐TOP' : '')) : esc(r.key || '?');
             const thumb = r.thumb ? '<img class="like-thumb" src="' + base + r.thumb + '" alt="" loading="lazy">' : '<div class="like-thumb"></div>';
-            return '<div class="like-row' + (top ? ' top' : '') + '">' + thumb +
-                '<div class="like-meta">' + title + '<div class="lm-sub">' + esc(r.sub) + '</div></div>' +
-                '<div class="like-num">' + LIKE_HEART + r.count + '</div></div>';
+            return '<div class="like-row' + (top ? ' top' : '') + '" data-num="' + (r.num || '') + '">' + thumb +
+                '<div class="like-meta"><span class="lm-title">' + title + '</span><div class="lm-sub">' + esc(r.sub) + '</div></div>' +
+                '<div class="like-num" data-key="' + attrEsc(r.key || '') + '" data-count="' + r.count + '">' + numView(r.count) + '</div></div>';
         }).join('');
     } catch (e) {
         $('likeSummary').innerHTML = '<p class="small err">✗ Kļūda: ' + esc(e.message) + '</p>';
