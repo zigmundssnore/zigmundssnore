@@ -294,9 +294,6 @@
     <div class="card">
         <p class="card-title">Rediģēt gleznas datus</p>
         <p class="small" style="margin-top:0">Maini esošas gleznas cenu, izmēru vai JAUNUMS nozīmīti.</p>
-        <button class="btn" id="editLoad" style="background:linear-gradient(135deg,#e8b760,#c98f2f); box-shadow:0 12px 30px rgba(201,143,47,0.4), inset 0 1px 0 rgba(255,255,255,0.4)">📋 Ielādēt gleznu sarakstu</button>
-        <div class="edit-bar" id="editBar"><div class="edit-bar-fill" id="editBarFill"></div></div>
-
         <div id="editPick" style="display:none">
             <label>🖼️ Gleznas bez rāmja</label>
             <select id="editSelectBez"></select>
@@ -608,23 +605,14 @@ function parseItem(str) {
 
 const optionRow = it => '<option value="' + it.dataSrc + '">Nr. ' + it.num + ' · ' + (it.size || '?') + ' · ' + (it.price || '?') + (it.isNew ? ' · ⭐JAUNUMS' : '') + (it.isSold ? ' · 🔴PĀRDOTA' : '') + '</option>';
 
-$('editLoad').addEventListener('click', async () => {
+async function loadEditList() {
     $('editLog').innerHTML = '';
-    if (!$('token').value.trim()) return log3('⚠️ Ievadi GitHub token (Iestatījumi).', 'err');
-    $('editLoad').disabled = true;
-    // progress josla — aizpildās ~4 sekundēs neatkarīgi no ielādes ātruma
-    const bar = $('editBar'), fill = $('editBarFill');
-    bar.style.display = 'block';
-    fill.style.transition = 'none'; fill.style.width = '0%';
-    void fill.offsetWidth;                               // piespiež pārzīmēt
-    fill.style.transition = 'width 4s linear'; fill.style.width = '100%';
-    const minDelay = new Promise(r => setTimeout(r, 4000));
+    if (!$('token').value.trim()) { $('editPick').style.display = 'none'; log3('⚠️ Ievadi GitHub token (Iestatījumi), lai rediģētu gleznas.', 'muted'); return; }
+    log3('Ielādē…', 'muted');
     try {
-        log3('Nolasa galeriju…', 'muted');
         const idx = await getFile('index.html');
         const html = b64ToUtf8(idx.content);
         editItems = liveItems(html).map((m, i) => ({ num: i + 1, ...parseItem(m[0]) }));
-        await minDelay;                                  // nogaida līdz pilniem ~4 s
         const bez = editItems.filter(it => it.category !== 'ieramettas' && it.category !== 'mazas');
         const ar  = editItems.filter(it => it.category === 'ieramettas');
         const maz = editItems.filter(it => it.category === 'mazas');
@@ -634,17 +622,12 @@ $('editLoad').addEventListener('click', async () => {
         editCurrent = '';
         $('editPick').style.display = 'block';
         $('editFields').style.display = 'none';
-        $('editLoad').style.display = 'none';            // paslēpj pogu — jau ielādēts
         $('editLog').innerHTML = '';
         log3('✓ Ielādētas ' + editItems.length + ' gleznas. Izvēlies vienu sarakstā.', 'ok');
     } catch (e) {
         log3('✗ Kļūda: ' + e.message, 'err');
-        $('editLoad').disabled = false;                  // ļauj mēģināt vēlreiz
-    } finally {
-        bar.style.display = 'none';
-        fill.style.width = '0%';
     }
-});
+}
 
 function onEditPick(which) {
     const sel = $(which);
@@ -1011,7 +994,7 @@ async function deleteNews(card, btn) {
 }
 
 // ── Auto-ielāde, atverot paneli (bez pogām) ──
-function autoLoadPanels() { loadLikes(); loadNewsCards(); }
+function autoLoadPanels() { loadEditList(); loadLikes(); loadNewsCards(); }
 document.addEventListener('DOMContentLoaded', autoLoadPanels);
 // ja token ievadīts vēlāk (pirmā reize) — ielādē, tiklīdz tas parādās
 $('token').addEventListener('change', () => { if ($('token').value.trim()) autoLoadPanels(); });
