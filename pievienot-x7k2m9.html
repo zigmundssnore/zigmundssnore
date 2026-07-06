@@ -143,7 +143,7 @@
     .like-list { margin-top: 6px; display: flex; flex-direction: column; gap: 8px; max-height: 460px; overflow-y: auto; }
     .like-row { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); }
     .like-row.top { border-color: rgba(232,196,119,0.5); background: rgba(232,196,119,0.09); }
-    .like-thumb { width: 46px; height: 46px; object-fit: cover; border-radius: 9px; flex: none; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); }
+    .like-thumb { width: 34px; height: 34px; object-fit: cover; border-radius: 8px; flex: none; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); }
     .like-meta { flex: 1; min-width: 0; font-size: 0.9rem; }
     .like-meta .lm-sub { font-size: 0.76rem; color: rgba(235,240,252,0.55); margin-top: 2px; }
     .like-num { flex: none; display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 1.08rem; color: #ff8fa3; }
@@ -155,6 +155,23 @@
     .lc-input { width: 64px; padding: 5px 7px; border-radius: 8px; border: 1px solid rgba(232,196,119,0.6); background: rgba(255,255,255,0.1); color: #fff; font-size: 0.95rem; font-weight: 700; text-align: center; font-family: inherit; }
     .lc-save { color: #6fe7ac; } .lc-save:hover { background: rgba(111,231,172,0.18); }
     .lc-cancel { color: #ff8a98; } .lc-cancel:hover { background: rgba(255,138,152,0.18); }
+
+    /* ── TOP sliekšņa vadīkla ── */
+    .top-thr { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; margin: 6px 0 4px; }
+    .top-thr > div { flex: 0 0 auto; }
+    .top-thr input { width: 90px; text-align: center; font-weight: 700; }
+    .top-thr .btn { margin-top: 0; width: auto; padding: 12px 18px; }
+    #topMinLog { font-size: 0.82rem; margin-top: 4px; }
+
+    /* ── Smukie izvēles saraksti (Rediģēt gleznas) ── */
+    .pick-list { max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 7px; margin: 4px 0 10px; padding: 2px; }
+    .pick-list:empty::after { content: '—'; color: rgba(235,240,252,0.4); font-size: 0.85rem; padding: 6px; }
+    .pick-row { display: flex; align-items: center; gap: 11px; padding: 8px 11px; border-radius: 11px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); cursor: pointer; transition: background 0.15s, border-color 0.15s; }
+    .pick-row:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.22); }
+    .pick-row.selected { border-color: rgba(232,196,119,0.75); background: rgba(232,196,119,0.13); box-shadow: 0 0 0 1px rgba(232,196,119,0.4); }
+    .pick-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 8px; flex: none; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); }
+    .pick-meta { flex: 1; min-width: 0; font-size: 0.9rem; }
+    .pick-meta .pk-sub { font-size: 0.77rem; color: rgba(235,240,252,0.6); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     .row { display: flex; gap: 12px; }
     .row > div { flex: 1; }
@@ -296,11 +313,11 @@
         <p class="small" style="margin-top:0">Maini esošas gleznas cenu, izmēru vai JAUNUMS nozīmīti.</p>
         <div id="editPick" style="display:none">
             <label>🖼️ Gleznas bez rāmja</label>
-            <select id="editSelectBez"></select>
+            <div id="editListBez" class="pick-list"></div>
             <label>🪟 Ierāmētās gleznas</label>
-            <select id="editSelectRam"></select>
+            <div id="editListRam" class="pick-list"></div>
             <label>🔸 Mazās gleznas</label>
-            <select id="editSelectMaz"></select>
+            <div id="editListMaz" class="pick-list"></div>
 
             <div id="editFields" style="display:none">
                 <div class="edit-head">
@@ -329,7 +346,15 @@
 
     <div class="card" id="likeCard">
         <p class="card-title">📊 Like skaits</p>
-        <p class="small" style="margin-top:0">Cik “patīk” savākusi katra glezna (reāli skaitļi no visiem apmeklētājiem). ⭐TOP = vairāk par 15. Skaitli var mainīt — spied <b>✎</b> blakus skaitlim.</p>
+        <p class="small" style="margin-top:0">Cik “patīk” savākusi katra glezna (reāli skaitļi no visiem apmeklētājiem). Skaitli var mainīt — spied <b>✎</b> blakus skaitlim.</p>
+
+        <label class="tight">⭐ TOP nozīmīte, ja like vairāk par:</label>
+        <div class="top-thr">
+            <div><input type="number" id="topMinInput" min="0" placeholder="15"></div>
+            <button class="btn" id="topMinSave">💾 Saglabāt slieksni</button>
+        </div>
+        <div id="topMinLog"></div>
+
         <div id="likeSummary"></div>
         <div id="likeList" class="like-list"></div>
     </div>
@@ -603,7 +628,12 @@ function parseItem(str) {
     };
 }
 
-const optionRow = it => '<option value="' + it.dataSrc + '">Nr. ' + it.num + ' · ' + (it.size || '?') + ' · ' + (it.price || '?') + (it.isNew ? ' · ⭐JAUNUMS' : '') + (it.isSold ? ' · 🔴PĀRDOTA' : '') + '</option>';
+function pickRow(it, base) {
+    const badges = (it.isNew ? ' · ⭐JAUNUMS' : '') + (it.isSold ? ' · 🔴PĀRDOTA' : '');
+    const thumb = it.thumb ? '<img class="pick-thumb" src="' + base + it.thumb + '" alt="" loading="lazy" decoding="async">' : '<div class="pick-thumb"></div>';
+    return '<div class="pick-row" data-src="' + esc(it.dataSrc) + '">' + thumb +
+        '<div class="pick-meta">Nr. ' + it.num + '<div class="pk-sub">' + esc(it.size || '?') + ' · ' + esc(it.price || '?') + badges + '</div></div></div>';
+}
 
 async function loadEditList() {
     $('editLog').innerHTML = '';
@@ -616,25 +646,24 @@ async function loadEditList() {
         const bez = editItems.filter(it => it.category !== 'ieramettas' && it.category !== 'mazas');
         const ar  = editItems.filter(it => it.category === 'ieramettas');
         const maz = editItems.filter(it => it.category === 'mazas');
-        $('editSelectBez').innerHTML = '<option value="">— izvēlies gleznu bez rāmja —</option>' + bez.map(optionRow).join('');
-        $('editSelectRam').innerHTML = '<option value="">— izvēlies ierāmēto gleznu —</option>' + ar.map(optionRow).join('');
-        $('editSelectMaz').innerHTML = '<option value="">— izvēlies mazo gleznu —</option>' + maz.map(optionRow).join('');
+        const base = 'https://' + $('owner').value + '.github.io/' + $('repo').value + '/';
+        $('editListBez').innerHTML = bez.map(it => pickRow(it, base)).join('');
+        $('editListRam').innerHTML = ar.map(it => pickRow(it, base)).join('');
+        $('editListMaz').innerHTML = maz.map(it => pickRow(it, base)).join('');
         editCurrent = '';
         $('editPick').style.display = 'block';
         $('editFields').style.display = 'none';
         $('editLog').innerHTML = '';
-        log3('✓ Ielādētas ' + editItems.length + ' gleznas. Izvēlies vienu sarakstā.', 'ok');
+        log3('✓ Ielādētas ' + editItems.length + ' gleznas. Klikšķini uz gleznas, lai rediģētu.', 'ok');
     } catch (e) {
         log3('✗ Kļūda: ' + e.message, 'err');
     }
 }
 
-function onEditPick(which) {
-    const sel = $(which);
-    // aktīva tikai viena izvēlne — pārējās nullējam
-    if (sel.value) ['editSelectBez', 'editSelectRam', 'editSelectMaz'].forEach(x => { if (x !== which) $(x).value = ''; });
-    editCurrent = sel.value;
-    const it = editItems.find(x => x.dataSrc === editCurrent);
+function selectEditItem(dataSrc) {
+    editCurrent = dataSrc;
+    $('editPick').querySelectorAll('.pick-row').forEach(r => r.classList.toggle('selected', r.dataset.src === dataSrc));
+    const it = editItems.find(x => x.dataSrc === dataSrc);
     if (!it) { $('editFields').style.display = 'none'; return; }
     $('editFields').style.display = 'block';
     $('editSize').value = it.size;
@@ -645,10 +674,13 @@ function onEditPick(which) {
     const prev = $('editPreview');
     if (it.thumb) { prev.src = 'https://' + $('owner').value + '.github.io/' + $('repo').value + '/' + it.thumb; prev.style.display = 'block'; }
     else prev.style.display = 'none';
+    $('editFields').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
-$('editSelectBez').addEventListener('change', () => onEditPick('editSelectBez'));
-$('editSelectRam').addEventListener('change', () => onEditPick('editSelectRam'));
-$('editSelectMaz').addEventListener('change', () => onEditPick('editSelectMaz'));
+// klikšķis uz jebkuras rindas trijos sarakstos
+$('editPick').addEventListener('click', e => {
+    const row = e.target.closest('.pick-row'); if (!row) return;
+    selectEditItem(row.dataset.src);
+});
 
 $('editSave').addEventListener('click', async () => {
     $('editLog').innerHTML = '';
@@ -683,12 +715,13 @@ $('editSave').addEventListener('click', async () => {
         await putFile('index.html', utf8ToB64(html), 'rediģēti gleznas dati (' + dataSrc + ')', idx.sha);
         log3('✓ Gatavs! Izmaiņas saglabātas.', 'ok');
         log3('Pēc ~1 min redzams lapā (privātajā cilnē, keša dēļ).', 'muted');
-        // atjauno lokālo sarakstu, lai dropdown rāda jaunos datus
+        // atjauno lokālo sarakstu, lai rinda rāda jaunos datus
         const cached = editItems.find(x => x.dataSrc === dataSrc);
         if (cached) {
             cached.size = newSize; cached.price = newPrice + ' €'; cached.isNew = newIsNew; cached.isSold = newSold;
-            const opt = [...$('editSelectBez').options, ...$('editSelectRam').options, ...$('editSelectMaz').options].find(o => o.value === dataSrc);
-            if (opt) opt.textContent = 'Nr. ' + cached.num + ' · ' + cached.size + ' · ' + cached.price + (cached.isNew ? ' · ⭐JAUNUMS' : '') + (cached.isSold ? ' · 🔴PĀRDOTA' : '');
+            const base = 'https://' + $('owner').value + '.github.io/' + $('repo').value + '/';
+            const row = $('editPick').querySelector('.pick-row[data-src="' + dataSrc + '"]');
+            if (row) { row.outerHTML = pickRow(cached, base); const nr = $('editPick').querySelector('.pick-row[data-src="' + dataSrc + '"]'); if (nr) nr.classList.add('selected'); }
         }
     } catch (e) {
         log3('✗ Kļūda: ' + e.message, 'err');
@@ -719,11 +752,11 @@ $('editDelete').addEventListener('click', async () => {
         await putFile('index.html', utf8ToB64(html), 'dzēsta glezna (' + dataSrc + ')', idx.sha);
         log3('✓ Gatavs! Glezna izdzēsta.', 'ok');
         log3('Pēc ~1 min pazudīs no lapas (privātajā cilnē, keša dēļ).', 'muted');
-        // atjauno UI: izņem no abām izvēlnēm + saraksta, paslēpj laukus
+        // atjauno UI: izņem rindu no saraksta, paslēpj laukus
         editItems = editItems.filter(x => x.dataSrc !== dataSrc);
-        [...$('editSelectBez').options, ...$('editSelectRam').options, ...$('editSelectMaz').options].forEach(o => { if (o.value === dataSrc) o.remove(); });
+        const drow = $('editPick').querySelector('.pick-row[data-src="' + dataSrc + '"]');
+        if (drow) drow.remove();
         editCurrent = '';
-        $('editSelectBez').value = ''; $('editSelectRam').value = ''; $('editSelectMaz').value = '';
         $('editFields').style.display = 'none';
     } catch (e) {
         log3('✗ Kļūda: ' + e.message, 'err');
@@ -734,6 +767,7 @@ $('editDelete').addEventListener('click', async () => {
 
 // ── Like skaits (Firebase Realtime Database — publisks lasījums) ──
 const FB_URL = 'https://zigmunds-majaslapa-default-rtdb.europe-west1.firebasedatabase.app';
+let topMin = 15;   // TOP slieksnis (nolasa no js/script.js)
 const LIKE_HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
 // atslēga = tāda pati kā script.js: bildes fails bez thumb-/paplašinājuma
 function likeKeyFromSrc(src) {
@@ -763,7 +797,7 @@ async function likeSaveEdit(numEl) {
         numEl.dataset.count = val;
         numEl.innerHTML = numView(val);
         // atjauno TOP izcēlumu + virsrakstu
-        const row = numEl.closest('.like-row'); const top = val > 15;
+        const row = numEl.closest('.like-row'); const top = val > topMin;
         row.classList.toggle('top', top);
         const num = row.dataset.num, t = row.querySelector('.lm-title');
         if (num && t) t.textContent = 'Nr. ' + num + (top ? ' · ⭐TOP' : '');
@@ -796,6 +830,12 @@ async function loadLikes() {
         const lr = await fetch(FB_URL + '/likes.json');
         if (!lr.ok) throw new Error('Firebase → ' + lr.status);
         const likes = (await lr.json()) || {};
+        // 1.5) TOP slieksnis no js/script.js
+        try {
+            const sc = await getFile('js/script.js');
+            const mm = b64ToUtf8(sc.content).match(/TOP_MIN_LIKES\s*=\s*(\d+)/);
+            if (mm) { topMin = +mm[1]; $('topMinInput').value = topMin; }
+        } catch (e) { /* saglabā noklusējumu */ }
         // 2) gleznu saraksts no index.html (Nr., kategorija, sīktēls)
         const idx = await getFile('index.html');
         const html = b64ToUtf8(idx.content);
@@ -823,7 +863,7 @@ async function loadLikes() {
         $('likeSummary').innerHTML = '<p class="like-total">Kopā: <b>' + total + '</b> ❤️ · ' + rows.length + ' ieraksti</p>';
         const base = 'https://' + $('owner').value + '.github.io/' + $('repo').value + '/';
         $('likeList').innerHTML = rows.map(r => {
-            const top = r.count > 15;
+            const top = r.count > topMin;
             const title = r.num ? ('Nr. ' + r.num + (top ? ' · ⭐TOP' : '')) : esc(r.key || '?');
             const thumb = r.thumb ? '<img class="like-thumb" src="' + base + r.thumb + '" alt="" loading="lazy">' : '<div class="like-thumb"></div>';
             return '<div class="like-row' + (top ? ' top' : '') + '" data-num="' + (r.num || '') + '">' + thumb +
@@ -834,6 +874,30 @@ async function loadLikes() {
         $('likeSummary').innerHTML = '<p class="small err">✗ Kļūda: ' + esc(e.message) + '</p>';
     }
 }
+
+// ── TOP sliekšņa saglabāšana (maina js/script.js TOP_MIN_LIKES) ──
+$('topMinSave').addEventListener('click', async () => {
+    const setLog = (msg, cls) => $('topMinLog').innerHTML = '<span class="' + (cls || '') + '">' + msg + '</span>';
+    setLog('', '');
+    if (!$('token').value.trim()) return setLog('⚠️ Ievadi GitHub token (Iestatījumi).', 'err');
+    const val = Math.max(0, Math.round(+$('topMinInput').value || 0));
+    $('topMinSave').disabled = true;
+    setLog('Saglabā…', 'muted');
+    try {
+        const sc = await getFile('js/script.js');
+        let txt = b64ToUtf8(sc.content);
+        if (!/TOP_MIN_LIKES\s*=\s*\d+/.test(txt)) throw new Error('Neatradu TOP_MIN_LIKES js/script.js.');
+        txt = txt.replace(/(TOP_MIN_LIKES\s*=\s*)\d+/, '$1' + val);
+        await putFile('js/script.js', utf8ToB64(txt), 'TOP slieksnis = ' + val, sc.sha);
+        topMin = val;
+        setLog('✓ Saglabāts! TOP saņems gleznas ar vairāk par ' + val + ' like (~1 min lapā).', 'ok');
+        loadLikes();   // pārzīmē sarakstu ar jauno slieksni
+    } catch (e) {
+        setLog('✗ Kļūda: ' + e.message, 'err');
+    } finally {
+        $('topMinSave').disabled = false;
+    }
+});
 
 // ── Jaunumu sadaļa (pievienot / dzēst kartiņas) ──
 function logN(msg, cls) { const e = $('nLog'); const s = document.createElement('span'); if (cls) s.className = cls; s.textContent = msg + '\n'; e.appendChild(s); e.scrollTop = e.scrollHeight; }
