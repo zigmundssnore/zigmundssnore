@@ -118,6 +118,16 @@
         });
     }
 
+    // ── Inline EN tulkojums caur data-en atribūtu ──
+    // (izmanto "Pievienot gleznu" rīka pievienotās jaunumu kartiņas)
+    function applyInline() {
+        if (window.SITE_LANG !== 'en') return;
+        document.querySelectorAll('[data-en]').forEach(function (el) {
+            var v = el.getAttribute('data-en');
+            if (v) el.innerHTML = v;
+        });
+    }
+
     // ── Frāžu aizstāšana galerijas tekstā (garākās frāzes vispirms) ──
     var PHRASES = [
         ['Rāmis ar stiklu un paspartū', 'Frame with glass and passe-partout'],
@@ -161,6 +171,7 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         applyStatic();
+        applyInline();
         applyPhrases();
         buildSwitcher();
     });
