@@ -3285,4 +3285,55 @@ html[data-theme="light"] .ornament-divider::after {
 }
 html[data-theme="light"] .ornament-divider span { box-shadow: 0 0 9px rgba(176,120,29,0.55); }
 
+/* ── Gaišā režīma pogu labojumi ── */
+
+/* Kontaktu pogas (WhatsApp/Facebook/SMS/YouTube) — gaišs stikls ar brenda toni,
+   tumšs teksts (labi lasāms), brenda krāsas ikona */
+html[data-theme="light"] .button {
+    color: #2f2a22;
+    background:
+        linear-gradient(110deg, transparent 28%, rgba(255,255,255,0.55) 50%, transparent 72%) no-repeat,
+        linear-gradient(160deg, rgba(var(--brand), 0.14), rgba(var(--brand), 0.05) 55%, rgba(var(--brand), 0.12));
+    border: 1px solid rgba(var(--brand), 0.42);
+    border-top-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 4px 14px rgba(95,72,40,0.10), inset 0 1px 0 rgba(255,255,255,0.6);
+}
+html[data-theme="light"] .button::before {
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.85), transparent);
+}
+
+/* Like skaitlis — tumšs */
+html[data-theme="light"] .like-count { color: rgba(57, 50, 42, 0.82); }
+
+/* "Uz augšu" poga — gaiša ar tumšu bultiņu */
+html[data-theme="light"] .to-top {
+    background: rgba(255, 253, 247, 0.72);
+    border-color: rgba(120, 96, 60, 0.22);
+    color: #39322a;
+}
+html[data-theme="light"] .to-top svg { stroke: #39322a; fill: #39322a; }
+
+/* WhatsApp peldošā poga — balts teksts/ikona uz zaļā */
+html[data-theme="light"] .whatsapp-float,
+html[data-theme="light"] .whatsapp-float .whatsapp-text { color: #fff; }
+
+/* "Saņemšana & ierāmēšana" poga uz katras kartes — tumšs teksts, silts stikls */
+html[data-theme="light"] .btn-inquire {
+    color: #39322a;
+    background: rgba(90, 70, 40, 0.06);
+    border-color: rgba(120, 96, 60, 0.28);
+    border-top-color: rgba(120, 96, 60, 0.34);
+}
+html[data-theme="light"] .btn-inquire:hover { background: rgba(90, 70, 40, 0.13); }
+
+/* Piegādes loga pogas — tumšs teksts uz gaiša/tonēta */
+html[data-theme="light"] .delivery-btn { color: #39322a; border-color: rgba(120, 96, 60, 0.28); }
+html[data-theme="light"] .delivery-btn.omniva {
+    background: linear-gradient(160deg, rgba(255,253,247,0.88), rgba(244,236,222,0.72));
+}
+html[data-theme="light"] .delivery-btn.klatiene {
+    background: linear-gradient(160deg, rgba(37,180,90,0.22), rgba(37,180,90,0.11));
+    border-color: rgba(37, 160, 80, 0.42);
+}
+
 /* Sadaļu ornamenta līnija zem virsrakstiem paliek zelta (izmanto --gold) */
