@@ -3142,6 +3142,33 @@ body.modal-open .lang-switch { opacity: 0; pointer-events: none; }
 .glass-dialog-ok:hover { background: rgba(255,255,255,0.22); }
 .glass-dialog-ok:active { transform: scale(0.96); }
 
+/* ── "Novietot sākumekrānā" uzaicinājums ── */
+.pwa-install-icon {
+    display: block;
+    margin: 0 auto 18px;
+    border-radius: 16px;
+    box-shadow: 0 10px 26px rgba(3,6,16,0.45), inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.pwa-install-ok {
+    background: linear-gradient(160deg, rgba(232,196,119,0.9), rgba(196,154,79,0.85));
+    border-color: rgba(255,255,255,0.35);
+    color: #241a08;
+}
+.pwa-install-ok:hover { background: linear-gradient(160deg, rgba(238,205,135,0.95), rgba(206,164,90,0.9)); }
+.pwa-install-dismiss {
+    display: block;
+    margin: 14px auto 0;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.55);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+.pwa-install-dismiss:hover { color: rgba(255,255,255,0.8); }
+
 @media (max-width: 600px) {
     .glass-dialog { padding: 34px 24px 28px; }
     .glass-dialog-text { font-size: 1.18rem; }
