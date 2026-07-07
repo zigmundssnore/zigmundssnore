@@ -13,6 +13,12 @@ if ('serviceWorker' in navigator) {
     var STORAGE_INSTALLED = 'pwa_installed';
     var DISMISS_DAYS = 14;
 
+    var INSTALL_ICON =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+        'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+        '<rect x="5" y="2" width="14" height="20" rx="3"/><path d="M12 7.5v6.5M9 11.5l3 3 3-3"/>' +
+        '<path d="M10 18.5h4"/></svg>';
+
     function isStandalone() {
         return window.matchMedia('(display-mode: standalone)').matches ||
             window.navigator.standalone === true;
@@ -37,11 +43,8 @@ if ('serviceWorker' in navigator) {
 
     if (isStandalone()) markInstalled();
 
-    var alreadyHandled = isStandalone() ||
-        localStorage.getItem(STORAGE_INSTALLED) === '1' ||
-        recentlyDismissed();
-
-    if (!isMobile() || alreadyHandled) return;
+    var installed = isStandalone() || localStorage.getItem(STORAGE_INSTALLED) === '1';
+    if (installed) return;
 
     document.addEventListener('DOMContentLoaded', function () {
         var overlay = document.getElementById('pwaInstallOverlay');
@@ -52,15 +55,43 @@ if ('serviceWorker' in navigator) {
         var subText = document.getElementById('pwaInstallSub');
         var deferredPrompt = null;
 
+        var headerBtn = document.createElement('button');
+        headerBtn.type = 'button';
+        headerBtn.id = 'pwaInstallBtn';
+        headerBtn.className = 'theme-switch install-btn';
+        headerBtn.hidden = true;
+        headerBtn.setAttribute('aria-label', 'Instalēt lietotni');
+        headerBtn.title = 'Instalēt lietotni';
+        headerBtn.innerHTML = INSTALL_ICON + '<span class="install-btn-label">Instalēt lietotni</span>';
+
+        var topControls = document.querySelector('.top-controls');
+        if (topControls) {
+            topControls.insertBefore(headerBtn, topControls.firstChild);
+        } else {
+            document.body.appendChild(headerBtn);
+        }
+
+        function showHeaderButton() {
+            if (!installed) headerBtn.hidden = false;
+        }
         function openDialog() {
             overlay.classList.add('open');
             overlay.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('modal-open');
         }
         function closeDialog() {
             overlay.classList.remove('open');
             overlay.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('modal-open');
+        }
+        function onInstalled() {
+            installed = true;
+            markInstalled();
+            headerBtn.hidden = true;
+            closeDialog();
         }
 
+        headerBtn.addEventListener('click', openDialog);
         dismissBtn.addEventListener('click', function () {
             closeDialog();
             markDismissed();
@@ -74,12 +105,14 @@ if ('serviceWorker' in navigator) {
                 closeDialog();
                 markDismissed();
             });
-            setTimeout(openDialog, 2200);
+            showHeaderButton();
+            if (!recentlyDismissed()) setTimeout(openDialog, 2200);
         } else {
             window.addEventListener('beforeinstallprompt', function (e) {
                 e.preventDefault();
                 deferredPrompt = e;
-                setTimeout(openDialog, 800);
+                showHeaderButton();
+                if (isMobile() && !recentlyDismissed()) setTimeout(openDialog, 800);
             });
 
             okBtn.addEventListener('click', function () {
@@ -87,16 +120,13 @@ if ('serviceWorker' in navigator) {
                 if (!deferredPrompt) return;
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then(function (choice) {
-                    if (choice.outcome === 'accepted') markInstalled();
+                    if (choice.outcome === 'accepted') onInstalled();
                     else markDismissed();
                     deferredPrompt = null;
                 });
             });
 
-            window.addEventListener('appinstalled', function () {
-                closeDialog();
-                markInstalled();
-            });
+            window.addEventListener('appinstalled', onInstalled);
         }
     });
 })();

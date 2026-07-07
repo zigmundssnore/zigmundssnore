@@ -3004,6 +3004,37 @@ body.modal-open .top-controls { opacity: 0; pointer-events: none; }
     .theme-switch svg { width: 18px; height: 18px; }
 }
 
+/* ── "Instalēt lietotni" poga (top-controls) ── */
+.install-btn {
+    width: auto;
+    padding: 0 16px 0 12px;
+    gap: 7px;
+    background: linear-gradient(160deg, rgba(232,196,119,0.30), rgba(196,154,79,0.20));
+    border-color: rgba(232,196,119,0.45);
+    color: #f4f6fb;
+    opacity: 0.92;
+}
+.install-btn:hover {
+    opacity: 1;
+    background: linear-gradient(160deg, rgba(232,196,119,0.42), rgba(196,154,79,0.28));
+}
+.install-btn-label {
+    font-family: var(--font-body);
+    font-size: 0.83rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+}
+html[data-theme="light"] .install-btn {
+    color: #4a3814;
+    border-color: rgba(176, 120, 29, 0.4);
+}
+
+@media (max-width: 600px) {
+    .install-btn { width: 37px; height: 37px; padding: 0; }
+    .install-btn-label { display: none; }
+}
+
 /* ── Valodas pārslēgs (LV / EN) — desktopā augšējā labajā stūrī ── */
 .lang-switch {
     position: fixed;
