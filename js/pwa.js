@@ -11,7 +11,7 @@ if ('serviceWorker' in navigator) {
 
     var STORAGE_DISMISSED = 'pwa_prompt_dismissed_at';
     var STORAGE_INSTALLED = 'pwa_installed';
-    var DISMISS_DAYS = 14;
+    var DISMISS_DAYS = 3;
 
     var INSTALL_ICON =
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
