@@ -10,7 +10,6 @@ if ('serviceWorker' in navigator) {
     'use strict';
 
     var STORAGE_DISMISSED = 'pwa_prompt_dismissed_at';
-    var STORAGE_INSTALLED = 'pwa_installed';
     var DISMISS_DAYS = 3;
 
     var INSTALL_ICON =
@@ -34,17 +33,13 @@ if ('serviceWorker' in navigator) {
         if (!t) return false;
         return (Date.now() - parseInt(t, 10)) / 86400000 < DISMISS_DAYS;
     }
-    function markInstalled() {
-        try { localStorage.setItem(STORAGE_INSTALLED, '1'); } catch (e) { /* ignore */ }
-    }
     function markDismissed() {
         try { localStorage.setItem(STORAGE_DISMISSED, String(Date.now())); } catch (e) { /* ignore */ }
     }
 
-    if (isStandalone()) markInstalled();
-
-    var installed = isStandalone() || localStorage.getItem(STORAGE_INSTALLED) === '1';
-    if (installed) return;
+    // Instalēšanas stāvokli katrā ielādē pārbaudām no jauna (isStandalone) —
+    // netiek glabāts pastāvīgi, lai poga/logs atgriežas, ja lietotne tiek atinstalēta.
+    if (isStandalone() || !isMobile()) return;
 
     document.addEventListener('DOMContentLoaded', function () {
         var overlay = document.getElementById('pwaInstallOverlay');
@@ -54,6 +49,7 @@ if ('serviceWorker' in navigator) {
         var dismissBtn = document.getElementById('pwaInstallDismiss');
         var subText = document.getElementById('pwaInstallSub');
         var deferredPrompt = null;
+        var installed = false;
 
         var headerBtn = document.createElement('button');
         headerBtn.type = 'button';
@@ -62,7 +58,7 @@ if ('serviceWorker' in navigator) {
         headerBtn.hidden = true;
         headerBtn.setAttribute('aria-label', 'Instalēt lietotni');
         headerBtn.title = 'Instalēt lietotni';
-        headerBtn.innerHTML = INSTALL_ICON + '<span class="install-btn-label">Instalēt lietotni</span>';
+        headerBtn.innerHTML = INSTALL_ICON + '<span class="install-btn-label">Instalēt</span>';
 
         var topControls = document.querySelector('.top-controls');
         if (topControls) {
@@ -86,7 +82,6 @@ if ('serviceWorker' in navigator) {
         }
         function onInstalled() {
             installed = true;
-            markInstalled();
             headerBtn.hidden = true;
             closeDialog();
         }
@@ -112,7 +107,7 @@ if ('serviceWorker' in navigator) {
                 e.preventDefault();
                 deferredPrompt = e;
                 showHeaderButton();
-                if (isMobile() && !recentlyDismissed()) setTimeout(openDialog, 800);
+                if (!recentlyDismissed()) setTimeout(openDialog, 800);
             });
 
             okBtn.addEventListener('click', function () {

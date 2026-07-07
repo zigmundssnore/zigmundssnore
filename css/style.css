@@ -3031,8 +3031,8 @@ html[data-theme="light"] .install-btn {
 }
 
 @media (max-width: 600px) {
-    .install-btn { width: 37px; height: 37px; padding: 0; }
-    .install-btn-label { display: none; }
+    .install-btn { height: 37px; padding: 0 13px 0 10px; }
+    .install-btn-label { font-size: 0.78rem; }
 }
 
 /* ── Valodas pārslēgs (LV / EN) — desktopā augšējā labajā stūrī ── */
