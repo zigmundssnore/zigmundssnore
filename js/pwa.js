@@ -25,8 +25,17 @@ if ('serviceWorker' in navigator) {
     function isMobile() {
         return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     }
+    function isAndroid() {
+        return /Android/i.test(navigator.userAgent);
+    }
     function isIOS() {
         return /iPhone|iPad|iPod/i.test(navigator.userAgent) && !window.MSStream;
+    }
+    // Facebook / Instagram / Messenger iekšējais "mini-pārlūks" — tam nav
+    // instalēšanas iespēju un bieži nesaglabā localStorage starp reizēm,
+    // tāpēc jāaicina atvērt saiti īstajā pārlūkā, nevis jārāda parastais logs.
+    function isInAppBrowser() {
+        return /FBAN|FBAV|FB_IAB|FBIOS|Instagram|MessengerForiOS|Line\//i.test(navigator.userAgent);
     }
     function recentlyDismissed() {
         var t = localStorage.getItem(STORAGE_DISMISSED);
@@ -45,6 +54,7 @@ if ('serviceWorker' in navigator) {
         var overlay = document.getElementById('pwaInstallOverlay');
         if (!overlay) return;
 
+        var titleEl = document.getElementById('pwaInstallTitle');
         var okBtn = document.getElementById('pwaInstallOk');
         var dismissBtn = document.getElementById('pwaInstallDismiss');
         var subText = document.getElementById('pwaInstallSub');
@@ -92,7 +102,28 @@ if ('serviceWorker' in navigator) {
             markDismissed();
         });
 
-        if (isIOS()) {
+        if (isInAppBrowser()) {
+            // Instalēšana no FB/IG/Messenger iekšējā pārlūka nestrādā —
+            // jāaizsūta uz īsto pārlūku, nevis jārāda parastais uzaicinājums.
+            titleEl.textContent = 'Lai instalētu, atveriet šo lapu īstajā pārlūkā';
+            if (isAndroid()) {
+                subText.textContent = 'Šī saite atvērta lietotnes iekšējā pārlūkā, kur instalēšana nestrādā.';
+                okBtn.textContent = 'Atvērt pārlūkā';
+                okBtn.addEventListener('click', function () {
+                    var bare = location.href.replace(/^https?:\/\//, '');
+                    window.location.href = 'intent://' + bare + '#Intent;scheme=https;end;';
+                });
+            } else {
+                subText.textContent = 'Pieskaries "•••" vai kopīgošanas ikonai un izvēlies "Atvērt pārlūkā" (Open in Safari).';
+                okBtn.textContent = 'Sapratu';
+                okBtn.addEventListener('click', function () {
+                    closeDialog();
+                    markDismissed();
+                });
+            }
+            showHeaderButton();
+            if (!recentlyDismissed()) setTimeout(openDialog, 1500);
+        } else if (isIOS()) {
             // Safari (iOS) nepiedāvā automātisku instalēšanas API — jāparāda instrukcija.
             subText.textContent = 'Pieskaries "Kopīgot" ⌃ pārlūka joslā un izvēlies "Pievienot sākuma ekrānam".';
             okBtn.textContent = 'Sapratu';
