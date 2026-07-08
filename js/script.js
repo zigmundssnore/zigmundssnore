@@ -66,7 +66,7 @@ function playLikeSound(up) {
 // "TOP" nozīmītes — gleznas ar visvairāk like
 // =========================
 const likeCounts = new Map();   // item -> like skaits
-const TOP_MIN_LIKES = 15;       // TOP nozīmīti saņem gleznas ar VAIRĀK kā tik like
+const TOP_MIN_LIKES = 14;       // TOP nozīmīti saņem gleznas ar VAIRĀK kā tik like
 
 function recomputeTop() {
     likeCounts.forEach((c, item) => {
