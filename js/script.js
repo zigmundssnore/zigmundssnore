@@ -197,6 +197,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 bioLabel.textContent = window.T('Apturēt');
             }
         });
+
+        // Izslēdzot ekrānu / pārslēdzoties uz citu cilni-lietotni, audio apstājas
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && bioAudio && !bioAudio.paused) {
+                bioAudio.pause();
+                bioAudio.currentTime = 0;
+                resetBioBtn();
+            }
+        });
     }
 
     // =========================
