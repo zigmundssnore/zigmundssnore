@@ -377,7 +377,7 @@
 
     <div class="card" id="visCard">
         <p class="card-title">👁️ Sadaļu redzamība</p>
-        <p class="small" style="margin-top:0">Izslēdz cilni, ja tajā vēl nav gleznu vai to grib īslaicīgi paslēpt no apmeklētājiem galerijā.</p>
+        <p class="small" style="margin-top:0">Izslēdz cilni, ja tajā vēl nav gleznu vai to grib īslaicīgi paslēpt no apmeklētājiem galerijā. Slēdži paši neko nemaina — spied <b>"Saglabāt izmaiņas"</b>, lai tās publicētu.</p>
         <div class="vis-row">
             <span class="vis-label">Gleznas<span class="vis-sub">bez rāmja</span></span>
             <label class="switch"><input type="checkbox" id="visBez" checked><span class="slider"></span></label>
@@ -390,6 +390,7 @@
             <span class="vis-label">Mazās gleznas</span>
             <label class="switch"><input type="checkbox" id="visMaz" checked><span class="slider"></span></label>
         </div>
+        <button class="btn" id="visSave">💾 Saglabāt izmaiņas</button>
         <div id="visLog"></div>
     </div>
 
@@ -835,31 +836,36 @@ async function loadVisibility() {
     } catch (e) { /* klusi ignorē — mēģinās vēlreiz nākamajā ielādē */ }
 }
 
-async function saveVisibility(id, tab, visible) {
+// Slēdži paši NEKO nesaglabā — tikai maina izskatu. Reāli izmaiņas
+// notiek TIKAI, nospiežot "Saglabāt izmaiņas" (visas 3 vienā piegājienā).
+$('visSave').addEventListener('click', async () => {
     logVis('', '');
-    if (!$('token').value.trim()) { $(id).checked = !visible; return logVis('⚠️ Ievadi GitHub token (Iestatījumi).', 'err'); }
-    $(id).disabled = true;
+    if (!$('token').value.trim()) return logVis('⚠️ Ievadi GitHub token (Iestatījumi).', 'err');
+    $('visSave').disabled = true;
     logVis('Saglabā…', 'muted');
     try {
         const idx = await getFile('index.html');
-        let html = b64ToUtf8(idx.content);
-        const m = html.match(tabTagRegex(tab));
-        if (!m) throw new Error('Neatradu cilni "' + tab + '" index.html.');
-        let tag = m[0].replace(/\s+data-hidden="true"/, '');
-        if (!visible) tag = tag.slice(0, -1) + ' data-hidden="true">';
-        html = html.slice(0, m.index) + tag + html.slice(m.index + m[0].length);
-        await putFile('index.html', utf8ToB64(html), (visible ? 'rāda' : 'paslēpj') + ' galerijas cilni: ' + tab, idx.sha);
+        const original = b64ToUtf8(idx.content);
+        let html = original;
+        Object.entries(VIS_TABS).forEach(([id, tab]) => {
+            const visible = $(id).checked;
+            const m = html.match(tabTagRegex(tab));
+            if (!m) throw new Error('Neatradu cilni "' + tab + '" index.html.');
+            let tag = m[0].replace(/\s+data-hidden="true"/, '');
+            if (!visible) tag = tag.slice(0, -1) + ' data-hidden="true">';
+            html = html.slice(0, m.index) + tag + html.slice(m.index + m[0].length);
+        });
+        if (html === original) {
+            logVis('Nav izmaiņu — nekas netika sūtīts.', 'muted');
+            return;
+        }
+        await putFile('index.html', utf8ToB64(html), 'atjaunota galerijas sadaļu redzamība', idx.sha);
         logVis('✓ Saglabāts! (~1 min redzams lapā)', 'ok');
     } catch (e) {
-        $(id).checked = !visible;   // atgriež slēdzi iepriekšējā stāvoklī
         logVis('✗ Kļūda: ' + e.message, 'err');
     } finally {
-        $(id).disabled = false;
+        $('visSave').disabled = false;
     }
-}
-
-Object.entries(VIS_TABS).forEach(([id, tab]) => {
-    $(id).addEventListener('change', () => saveVisibility(id, tab, $(id).checked));
 });
 
 // ── Like skaits (Firebase Realtime Database — publisks lasījums) ──
