@@ -1,9 +1,460 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://zigmundssnore.github.io/zigmundssnore/</loc>
-    <lastmod>2026-07-04</lastmod>
+    <lastmod>2026-07-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/gmr2kqy4q.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 22 x 30 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 22 x 30 cm — 60 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/gmr2kk01a.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 20 x 30 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 20 x 30 cm — 50 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-55.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 70 x 40 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 70 x 40 cm — 120 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-29.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 65 x 70 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 65 x 70 cm — 150 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/foto-2.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 84 x 60 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 84 x 60 cm — 150 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/ramis-3.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, Glezna 21 x 30 cm | Rāmis 32 x 42 cm</image:title>
+      <image:caption>Akvarelis uz papīra — Glezna 21 x 30 cm | Rāmis 32 x 42 cm — 60 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-4.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 51 x 30 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 51 x 30 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-49.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 55 x 40 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 55 x 40 cm — 140 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-3.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 60 x 38 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 60 x 38 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-53.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 65 x 40 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 65 x 40 cm — 140 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/liela%20%281%29.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 55 x 35 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 55 x 35 cm — (pārdota)</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/45x25-2.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 45 x 25 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 45 x 25 cm — 100 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-61.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 50 x 25 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 50 x 25 cm — 110 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/55x35-2.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 55 x 35 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 55 x 35 cm — 100 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-46.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 50 x 60 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 50 x 60 cm — 140 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-30.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 60 x 40 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 60 x 40 cm — 150 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-56.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 60 x 45 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 60 x 45 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-10.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 51 x 70 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 51 x 70 cm — 110 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-43.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 40 x 55 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 40 x 55 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/foto-3.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 73 x 40 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 73 x 40 cm — 140 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-39.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 55 x 75 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 55 x 75 cm — 140 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/foto-5.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 70 x 49 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 70 x 49 cm — 140 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-38.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 60 x 40 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 60 x 40 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-42.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 45 x 60 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 45 x 60 cm — 200 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-37.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 50 x 40 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 50 x 40 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-31.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 40 x 60 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 40 x 60 cm — 120 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-59.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 50 x 30 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 50 x 30 cm — 120 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/ramis-4.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, Glezna 21 x 30 cm | Rāmis 32 x 42 cm</image:title>
+      <image:caption>Akvarelis uz papīra — Glezna 21 x 30 cm | Rāmis 32 x 42 cm — 65 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/ramis-10.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, Glezna 40 x 52 cm | Rāmis 42 x 54 cm</image:title>
+      <image:caption>Akvarelis uz papīra — Glezna 40 x 52 cm | Rāmis 42 x 54 cm — 120 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/50x30-2.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 50 x 30 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 50 x 30 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-22.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 65 x 75 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 65 x 75 cm — 140 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-50.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 60 x 40 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 60 x 40 cm — 150 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/ramis-7.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, Glezna 20 x 39 cm | Rāmis 32 x 42 cm</image:title>
+      <image:caption>Akvarelis uz papīra — Glezna 20 x 39 cm | Rāmis 32 x 42 cm — 110 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-47.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 70 x 50 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 70 x 50 cm — 150 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-54.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 50 x 65 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 50 x 65 cm — 160 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/ramis-11.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, Glezna 24 x 32 cm | Rāmis 32 x 42 cm</image:title>
+      <image:caption>Akvarelis uz papīra — Glezna 24 x 32 cm | Rāmis 32 x 42 cm — 50 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/cerini-h.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 42 x 59 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 42 x 59 cm — 140 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-8.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 49 x 67 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 49 x 67 cm — 110 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-15.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 71 x 36 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 71 x 36 cm — 150 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-34.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 65 x 50 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 65 x 50 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/ramis-2.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, Glezna 24 x 33 cm | Rāmis 32 x 42 cm</image:title>
+      <image:caption>Akvarelis uz papīra — Glezna 24 x 33 cm | Rāmis 32 x 42 cm — 60 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-25.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 50 x 35 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 50 x 35 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/ramis-1.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, Glezna 39 x 52 cm | Rāmis 42 x 55 cm</image:title>
+      <image:caption>Akvarelis uz papīra — Glezna 39 x 52 cm | Rāmis 42 x 55 cm — 120 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/ramis-9.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, Glezna 25 x 32 cm | Rāmis 30 x 43 cm</image:title>
+      <image:caption>Akvarelis uz papīra — Glezna 25 x 32 cm | Rāmis 30 x 43 cm — 60 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/ramis-6.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, Glezna 25 x 32 cm | Rāmis 32 x 42 cm</image:title>
+      <image:caption>Akvarelis uz papīra — Glezna 25 x 32 cm | Rāmis 32 x 42 cm — 60 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-40.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 40 x 60 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 40 x 60 cm — 140 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-33.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 40 x 55 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 40 x 55 cm — 150 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-52.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 70 x 50 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 70 x 50 cm — 140 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-7.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 54 x 72 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 54 x 72 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-32.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 50 x 60 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 50 x 60 cm — 140 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-41.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 55 x 71 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 55 x 71 cm — 140 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-riga1.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 70 x 50 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 70 x 50 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-14.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 43 x 63 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 43 x 63 cm — 100 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/ramis-14.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, Glezna 64 x 45 cm | Rāmis 50 x 70 cm</image:title>
+      <image:caption>Akvarelis uz papīra — Glezna 64 x 45 cm | Rāmis 50 x 70 cm — 220 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-51.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 70 x 50 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 70 x 50 cm — 160 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/liela%20%285%29.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 45 x 25 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 45 x 25 cm — 140 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-6.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 73 x 46 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 73 x 46 cm — 160 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-60.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 45 x 25 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 45 x 25 cm — 100 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-24.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 67 x 50 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 67 x 50 cm — 150 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-27.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 75 x 60 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 75 x 60 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-57.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 70 x 50 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 70 x 50 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-62.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 35 x 25 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 35 x 25 cm — 100 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/ramis-5.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, Glezna 20 x 30 cm | Rāmis 32 x 42 cm</image:title>
+      <image:caption>Akvarelis uz papīra — Glezna 20 x 30 cm | Rāmis 32 x 42 cm — 70 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-16.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 50 x 71 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 50 x 71 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/liela%20%287%29.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 30 x 35 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 30 x 35 cm — 110 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/cerini.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 60 x 42 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 60 x 42 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-48.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 75 x 50 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 75 x 50 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-12.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 60 x 31 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 60 x 31 cm — 140 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/ramis-12.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, Glezna 23 x 31 cm | Rāmis 32 x 42 cm</image:title>
+      <image:caption>Akvarelis uz papīra — Glezna 23 x 31 cm | Rāmis 32 x 42 cm — 50 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/ramis-8.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, Glezna 25 x 18 cm | Rāmis 23 x 32 cm</image:title>
+      <image:caption>Akvarelis uz papīra — Glezna 25 x 18 cm | Rāmis 23 x 32 cm — 50 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-58.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 35 x 50 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 35 x 50 cm — 120 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-2.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 59 x 42 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 59 x 42 cm — 140 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-21.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 63 x 98 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 63 x 98 cm — 190 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-36.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 60 x 40 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 60 x 40 cm — 120 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-26.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 70 x 50 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 70 x 50 cm — 140 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-11.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 71 x 54 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 71 x 54 cm — 100 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-9.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 56 x 67 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 56 x 67 cm — 140 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-19.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 43 x 61 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 43 x 61 cm — 120 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-45.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 50 x 75 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 50 x 75 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/foto-4.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 60 x 84 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 60 x 84 cm — 170 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/foto-1.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 84 x 60 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 84 x 60 cm — 160 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-1.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 54 x 36 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 54 x 36 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/50x35-2.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 50 x 35 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 50 x 35 cm — 100 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-35.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 50 x 70 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 50 x 70 cm — 150 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-13.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 38 x 47 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 38 x 47 cm — 110 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-28.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 65 x 80 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 65 x 80 cm — 150 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-20.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 56 x 37 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 56 x 37 cm — 150 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-44.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 50 x 65 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 50 x 65 cm — 130 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/ramis-13.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, Glezna 37 x 55 cm | Rāmis 50 x 70 cm</image:title>
+      <image:caption>Akvarelis uz papīra — Glezna 37 x 55 cm | Rāmis 50 x 70 cm — 170 €</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://zigmundssnore.github.io/zigmundssnore/img/photo-17.webp</image:loc>
+      <image:title>Zigmunds Šnore akvarelis, 40 x 74 cm</image:title>
+      <image:caption>Akvarelis uz papīra — 40 x 74 cm — 170 €</image:caption>
+    </image:image>
   </url>
 </urlset>
