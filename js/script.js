@@ -644,7 +644,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================
     // Galerijas bilžu fade-in pēc ielādes
     // =========================
-    document.querySelectorAll('.gallery-container .gallery-item img').forEach(img => {
+    // izmanto allItems (uztverts PIRMS cilņu filtra) — tā aptver arī
+    // ierāmēto/mazo gleznu bildes, kas sākotnēji nav pievienotas .gallery-container
+    allItems.forEach(item => {
+        const img = item.querySelector('img');
+        if (!img) return;
         const markLoaded = () => img.classList.add('img-loaded');
         if (img.complete && img.naturalWidth > 0) markLoaded();
         else img.addEventListener('load', markLoaded, { once: true });
