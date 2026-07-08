@@ -513,7 +513,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // sākuma stāvoklis: rādām tikai aktīvās cilnes gleznas (ierāmētās
     // neparādās "Gleznas" sadaļas apakšā). Reveal animāciju neaiztiekam.
-    const startTab = document.querySelector('.gallery-tab.active');
+    let startTab = document.querySelector('.gallery-tab.active');
+    // ja noklusējuma cilne ir paslēpta (vadības panelī izslēgta) — izvēlas pirmo redzamo
+    if (!startTab || startTab.dataset.hidden === 'true') {
+        const firstVisible = Array.from(tabs).find(t => t.dataset.hidden !== 'true');
+        if (firstVisible) {
+            tabs.forEach(t => t.classList.toggle('active', t === firstVisible));
+            startTab = firstVisible;
+        }
+    }
     if (startTab) {
         allItems.forEach(item => {
             item.classList.toggle('hidden', item.dataset.category !== startTab.dataset.tab);

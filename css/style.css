@@ -1505,6 +1505,11 @@ body.modal-open {
                 inset 0 1px 0 rgba(255,255,255,0.9);
 }
 
+/* Sadaļa paslēpta caur vadības paneli (data-hidden="true") */
+.gallery-tab[data-hidden="true"] {
+    display: none;
+}
+
 .gallery-tab:hover:not(.active) {
     background: rgba(255,255,255,0.10);
     color: #fff;

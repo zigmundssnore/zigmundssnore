@@ -158,6 +158,19 @@
     .lc-save { color: #6fe7ac; } .lc-save:hover { background: rgba(111,231,172,0.18); }
     .lc-cancel { color: #ff8a98; } .lc-cancel:hover { background: rgba(255,138,152,0.18); }
 
+    /* ── Sadaļu redzamības slēdži ── */
+    .vis-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); margin-bottom: 8px; }
+    .vis-row:last-child { margin-bottom: 0; }
+    .vis-label { font-size: 0.92rem; font-weight: 600; }
+    .vis-label .vis-sub { display: block; font-size: 0.76rem; font-weight: 400; color: rgba(235,240,252,0.55); margin-top: 2px; }
+    .switch { position: relative; display: inline-block; width: 46px; height: 26px; flex: none; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .switch .slider { position: absolute; cursor: pointer; inset: 0; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.22); border-radius: 999px; transition: background 0.2s, border-color 0.2s; }
+    .switch .slider::before { content: ''; position: absolute; width: 20px; height: 20px; left: 2px; top: 2px; background: #fff; border-radius: 50%; transition: transform 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+    .switch input:checked + .slider { background: rgba(232,196,119,0.75); border-color: rgba(232,196,119,0.9); }
+    .switch input:checked + .slider::before { transform: translateX(20px); }
+    .switch input:disabled + .slider { opacity: 0.5; cursor: not-allowed; }
+
     /* ── TOP sliekšņa vadīkla ── */
     .top-thr { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; margin: 6px 0 4px; }
     .top-thr > div { flex: 0 0 auto; }
@@ -360,6 +373,24 @@
         <p class="small" style="margin-top:0">Sajauc visas gleznas nejaušā secībā (bildes nemainās, tikai secība). Strādā arī ar ierāmētajām atsevišķi.</p>
         <button class="btn violet" id="shuffle">🔀 Sajaukt visas gleznas</button>
         <div id="log2"></div>
+    </div>
+
+    <div class="card" id="visCard">
+        <p class="card-title">👁️ Sadaļu redzamība</p>
+        <p class="small" style="margin-top:0">Izslēdz cilni, ja tajā vēl nav gleznu vai to grib īslaicīgi paslēpt no apmeklētājiem galerijā.</p>
+        <div class="vis-row">
+            <span class="vis-label">Gleznas<span class="vis-sub">bez rāmja</span></span>
+            <label class="switch"><input type="checkbox" id="visBez" checked><span class="slider"></span></label>
+        </div>
+        <div class="vis-row">
+            <span class="vis-label">Ierāmētas gleznas</span>
+            <label class="switch"><input type="checkbox" id="visRam" checked><span class="slider"></span></label>
+        </div>
+        <div class="vis-row">
+            <span class="vis-label">Mazās gleznas</span>
+            <label class="switch"><input type="checkbox" id="visMaz" checked><span class="slider"></span></label>
+        </div>
+        <div id="visLog"></div>
     </div>
 
     <div class="card" id="likeCard">
@@ -787,6 +818,50 @@ $('editDelete').addEventListener('click', async () => {
     }
 });
 
+// ── Sadaļu redzamība (maina index.html <button class="gallery-tab" data-tab="..."> data-hidden) ──
+const VIS_TABS = { visBez: 'bez-ramja', visRam: 'ieramettas', visMaz: 'mazas' };
+function logVis(msg, cls) { $('visLog').innerHTML = msg ? ('<span class="' + (cls || '') + '">' + msg + '</span>') : ''; }
+function tabTagRegex(tab) { return new RegExp('<button class="gallery-tab[^"]*" data-tab="' + tab + '"[^>]*>'); }
+
+async function loadVisibility() {
+    if (!$('token').value.trim()) return;
+    try {
+        const idx = await getFile('index.html');
+        const html = b64ToUtf8(idx.content);
+        Object.entries(VIS_TABS).forEach(([id, tab]) => {
+            const m = html.match(tabTagRegex(tab));
+            $(id).checked = !(m && /data-hidden="true"/.test(m[0]));
+        });
+    } catch (e) { /* klusi ignorē — mēģinās vēlreiz nākamajā ielādē */ }
+}
+
+async function saveVisibility(id, tab, visible) {
+    logVis('', '');
+    if (!$('token').value.trim()) { $(id).checked = !visible; return logVis('⚠️ Ievadi GitHub token (Iestatījumi).', 'err'); }
+    $(id).disabled = true;
+    logVis('Saglabā…', 'muted');
+    try {
+        const idx = await getFile('index.html');
+        let html = b64ToUtf8(idx.content);
+        const m = html.match(tabTagRegex(tab));
+        if (!m) throw new Error('Neatradu cilni "' + tab + '" index.html.');
+        let tag = m[0].replace(/\s+data-hidden="true"/, '');
+        if (!visible) tag = tag.slice(0, -1) + ' data-hidden="true">';
+        html = html.slice(0, m.index) + tag + html.slice(m.index + m[0].length);
+        await putFile('index.html', utf8ToB64(html), (visible ? 'rāda' : 'paslēpj') + ' galerijas cilni: ' + tab, idx.sha);
+        logVis('✓ Saglabāts! (~1 min redzams lapā)', 'ok');
+    } catch (e) {
+        $(id).checked = !visible;   // atgriež slēdzi iepriekšējā stāvoklī
+        logVis('✗ Kļūda: ' + e.message, 'err');
+    } finally {
+        $(id).disabled = false;
+    }
+}
+
+Object.entries(VIS_TABS).forEach(([id, tab]) => {
+    $(id).addEventListener('change', () => saveVisibility(id, tab, $(id).checked));
+});
+
 // ── Like skaits (Firebase Realtime Database — publisks lasījums) ──
 const FB_URL = 'https://zigmunds-majaslapa-default-rtdb.europe-west1.firebasedatabase.app';
 let topMin = 15;   // TOP slieksnis (nolasa no js/script.js)
@@ -1159,7 +1234,7 @@ async function deleteNews(card, btn) {
 }
 
 // ── Auto-ielāde, atverot paneli (bez pogām) ──
-function autoLoadPanels() { loadEditList(); loadLikes(); loadNewsCards(); }
+function autoLoadPanels() { loadEditList(); loadLikes(); loadNewsCards(); loadVisibility(); }
 document.addEventListener('DOMContentLoaded', autoLoadPanels);
 // ja token ievadīts vēlāk (pirmā reize) — ielādē, tiklīdz tas parādās
 $('token').addEventListener('change', () => { if ($('token').value.trim()) autoLoadPanels(); });
