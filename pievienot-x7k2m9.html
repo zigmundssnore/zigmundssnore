@@ -359,7 +359,13 @@
                     <div><label>Izmērs</label><input type="text" id="editSize" placeholder="60 x 42 cm"></div>
                     <div><label>Cena (€)</label><input type="number" id="editPrice" placeholder="130"></div>
                 </div>
-                <label class="check"><input type="checkbox" id="editNew"> JAUNUMS nozīmīte <span class="muted">(rāda “JAUNUMS”)</span></label>
+                <label>Glezna veids</label>
+                <select id="editCategory">
+                    <option value="bez-ramja">Parasta (bez rāmja)</option>
+                    <option value="ieramettas">Ierāmēta</option>
+                    <option value="mazas">Mazā</option>
+                </select>
+                <label class="check"><input type="checkbox" id="editNew"> JAUNUMS nozīmīte <span class="muted">(rāda "JAUNUMS")</span></label>
                 <label class="check"><input type="checkbox" id="editSold"> Pārdota <span class="muted">(rāda “Pārdota” zīmīti)</span></label>
                 <button class="btn" id="editSave">💾 Saglabāt izmaiņas</button>
                 <button class="btn danger" id="editDelete">🗑️ Dzēst gleznu</button>
@@ -722,6 +728,7 @@ function selectEditItem(dataSrc) {
     $('editFields').style.display = 'block';
     $('editSize').value = it.size;
     $('editPrice').value = (it.price.match(/[\d.,]+/) || [''])[0];
+    $('editCategory').value = it.category || 'bez-ramja';
     $('editNew').checked = it.isNew;
     $('editSold').checked = it.isSold;
     $('editNum').textContent = 'Nr. ' + it.num + (it.category === 'ieramettas' ? ' · ierāmēta' : (it.category === 'mazas' ? ' · mazā' : ''));
@@ -742,6 +749,7 @@ $('editSave').addEventListener('click', async () => {
     if (!dataSrc) return log3('⚠️ Izvēlies gleznu.', 'err');
     const newSize = $('editSize').value.trim();
     const newPrice = $('editPrice').value.trim();
+    const newCategory = $('editCategory').value;
     const newIsNew = $('editNew').checked;
     const newSold = $('editSold').checked;
     if (!newSize || !newPrice) return log3('⚠️ Aizpildi izmēru un cenu.', 'err');
@@ -763,6 +771,9 @@ $('editSave').addEventListener('click', async () => {
         if (newIsNew) s = s.replace(/(<div class="gallery-item"[^>]*?)>/, '$1 data-new="true">');
         s = s.replace(/\s+data-sold="true"/g, '');
         if (newSold) s = s.replace(/(<div class="gallery-item"[^>]*?)>/, '$1 data-sold="true">');
+        // glezna veids (bez rāmja / ierāmēta / mazā)
+        if (/data-category="[^"]*"/.test(s)) s = s.replace(/data-category="[^"]*"/, 'data-category="' + newCategory + '"');
+        else s = s.replace(/(<div class="gallery-item"[^>]*?)>/, '$1 data-category="' + newCategory + '">');
         html = html.slice(0, target.index) + s + html.slice(target.index + target[0].length);
 
         log3('Saglabā…', 'muted');
@@ -772,10 +783,20 @@ $('editSave').addEventListener('click', async () => {
         // atjauno lokālo sarakstu, lai rinda rāda jaunos datus
         const cached = editItems.find(x => x.dataSrc === dataSrc);
         if (cached) {
-            cached.size = newSize; cached.price = newPrice + ' €'; cached.isNew = newIsNew; cached.isSold = newSold;
+            const oldCategory = cached.category;
+            cached.size = newSize; cached.price = newPrice + ' €'; cached.isNew = newIsNew; cached.isSold = newSold; cached.category = newCategory;
             const base = 'https://' + $('owner').value + '.github.io/' + $('repo').value + '/';
-            const row = $('editPick').querySelector('.pick-row[data-src="' + dataSrc + '"]');
-            if (row) { row.outerHTML = pickRow(cached, base); const nr = $('editPick').querySelector('.pick-row[data-src="' + dataSrc + '"]'); if (nr) nr.classList.add('selected'); }
+            const oldRow = $('editPick').querySelector('.pick-row[data-src="' + dataSrc + '"]');
+            if (oldRow) oldRow.remove();
+            const listId = newCategory === 'ieramettas' ? 'editListRam' : (newCategory === 'mazas' ? 'editListMaz' : 'editListBez');
+            $(listId).insertAdjacentHTML('beforeend', pickRow(cached, base));
+            const nr = $('editPick').querySelector('.pick-row[data-src="' + dataSrc + '"]');
+            if (nr) nr.classList.add('selected');
+            if (oldCategory !== newCategory) {
+                $('cntBez').textContent = '(' + $('editListBez').children.length + ')';
+                $('cntRam').textContent = '(' + $('editListRam').children.length + ')';
+                $('cntMaz').textContent = '(' + $('editListMaz').children.length + ')';
+            }
         }
     } catch (e) {
         log3('✗ Kļūda: ' + e.message, 'err');
